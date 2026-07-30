@@ -11,10 +11,15 @@
     "@nestjs/common": "^11.1.28",
     "@nestjs/core": "^11.1.28",
     "@nestjs/platform-express": "^11.1.28",
+    "@prisma/client": "^7.9.1",
     "@simahal/types": "workspace:*",
-    "@simahal/utils": "workspace:*"
+    "@simahal/utils": "workspace:*",
+    "dotenv": "^17.4.2"
   },
   "devDependencies": {
-    "@types/express": "^5.0.6"
+    "@types/dotenv": "^8.2.3",
+    "@types/express": "^5.0.6",
+    "@types/node": "^20.0.0",
+    "prisma": "^7.9.1"
   }
 }
