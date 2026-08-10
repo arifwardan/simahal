@@ -5,7 +5,10 @@ import {
     FolderGit2,
     GraduationCap,
     HeartHandshake,
+    History,
     LayoutGrid,
+    Library,
+    Target,
     Users,
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
@@ -27,6 +30,9 @@ import { index as orangTuasIndex } from '@/routes/admin/orang-tuas';
 import { index as santrisIndex } from '@/routes/admin/santris';
 import { index as ustadzsIndex } from '@/routes/admin/ustadzs';
 import { index as usersIndex } from '@/routes/admin/users';
+import { index as ustadzHalaqahsIndex } from '@/routes/ustadz/halaqahs';
+import { history as ustadzMutabaahsHistory } from '@/routes/ustadz/mutabaahs';
+import { index as ustadzTargetsIndex } from '@/routes/ustadz/targets';
 import type { NavItem } from '@/types';
 
 const adminNavItems: NavItem[] = [
@@ -35,6 +41,12 @@ const adminNavItems: NavItem[] = [
     { title: 'Manajemen Ustadz', href: ustadzsIndex(), icon: BookMarked },
     { title: 'Manajemen Orang Tua', href: orangTuasIndex(), icon: HeartHandshake },
     { title: 'Manajemen Halaqah', href: halaqahsIndex(), icon: FolderGit2 },
+];
+
+const ustadzNavItems: NavItem[] = [
+    { title: 'Halaqah Saya', href: ustadzHalaqahsIndex(), icon: Library },
+    { title: 'Riwayat Mutabaah', href: ustadzMutabaahsHistory(), icon: History },
+    { title: 'Target Hafalan', href: ustadzTargetsIndex(), icon: Target },
 ];
 
 const footerNavItems: NavItem[] = [
@@ -60,6 +72,7 @@ export function AppSidebar() {
             icon: LayoutGrid,
         },
         ...(auth.user?.role === 'admin' ? adminNavItems : []),
+        ...(auth.user?.role === 'ustadz' ? ustadzNavItems : []),
     ];
 
     return (

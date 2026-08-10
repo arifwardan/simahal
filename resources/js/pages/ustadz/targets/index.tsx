@@ -127,12 +127,56 @@ export default function UstadzTargetsIndex({ santris, statuses }: PageProps) {
                                                     <div className="mt-2 h-2 overflow-hidden rounded-full bg-muted">
                                                         <div className="h-full bg-primary" style={{ width: `${target.progress_percent}%` }} />
                                                     </div>
-                                                    <div className="mt-2 flex items-center gap-2">
+                                                    <div className="mt-2 flex items-center justify-between gap-2">
                                                         <span className="text-xs text-muted-foreground">{target.status_label}</span>
                                                         <Form {...TargetHafalanController.destroy.form({ targetHafalan: target.id })}>
                                                             <Button type="submit" size="sm" variant="ghost" className="text-destructive">Hapus</Button>
                                                         </Form>
                                                     </div>
+                                                    {target.status !== 'selesai' && (
+                                                        <Form {...TargetHafalanController.update.form({ targetHafalan: target.id })} className="mt-3">
+                                                            {({ errors }) => (
+                                                                <>
+                                                                    <input type="hidden" name="periode" defaultValue={target.periode} />
+                                                                    <input type="hidden" name="target" defaultValue={target.target} />
+                                                                    <input type="hidden" name="status" value="selesai" />
+                                                                    <Button type="submit" size="sm">Tandai Selesai</Button>
+                                                                    <InputError message={errors.periode ?? errors.target ?? errors.status} />
+                                                                </>
+                                                            )}
+                                                        </Form>
+                                                    )}
+                                                    <Form {...TargetHafalanController.update.form({ targetHafalan: target.id })} className="mt-3 space-y-3">
+                                                        {({ errors }) => (
+                                                            <>
+                                                                <div className="grid gap-3 sm:grid-cols-3">
+                                                                    <div className="grid gap-1">
+                                                                        <Label htmlFor={`periode-${target.id}`}>Periode</Label>
+                                                                        <Input id={`periode-${target.id}`} name="periode" maxLength={50} defaultValue={target.periode} />
+                                                                        <InputError message={errors.periode} />
+                                                                    </div>
+                                                                    <div className="grid gap-1">
+                                                                        <Label htmlFor={`target-${target.id}`}>Target (ayat)</Label>
+                                                                        <Input id={`target-${target.id}`} name="target" type="number" min={1} defaultValue={target.target} />
+                                                                        <InputError message={errors.target} />
+                                                                    </div>
+                                                                    <div className="grid gap-1">
+                                                                        <Label htmlFor={`status-${target.id}`}>Status</Label>
+                                                                        <Select name="status" defaultValue={target.status}>
+                                                                            <SelectTrigger id={`status-${target.id}`}><SelectValue /></SelectTrigger>
+                                                                            <SelectContent>
+                                                                                {statuses.map((o) => (
+                                                                                    <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                                                                                ))}
+                                                                            </SelectContent>
+                                                                        </Select>
+                                                                        <InputError message={errors.status} />
+                                                                    </div>
+                                                                </div>
+                                                                <Button type="submit" size="sm">Update</Button>
+                                                            </>
+                                                        )}
+                                                    </Form>
                                                 </li>
                                             ))}
                                         </ul>
