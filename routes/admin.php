@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\SantriController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\UstadzController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -14,4 +15,9 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::post('santris', [SantriController::class, 'store'])->name('santris.store');
     Route::patch('santris/{santri}', [SantriController::class, 'update'])->name('santris.update');
     Route::delete('santris/{santri}', [SantriController::class, 'destroy'])->name('santris.destroy');
+
+    Route::get('ustadzs', [UstadzController::class, 'index'])->name('ustadzs.index');
+    Route::post('ustadzs', [UstadzController::class, 'store'])->name('ustadzs.store');
+    Route::patch('ustadzs/{ustadz}', [UstadzController::class, 'update'])->name('ustadzs.update');
+    Route::delete('ustadzs/{ustadz}', [UstadzController::class, 'destroy'])->name('ustadzs.destroy');
 });
