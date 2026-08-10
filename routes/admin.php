@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\HalaqahController;
 use App\Http\Controllers\Admin\OrangTuaController;
 use App\Http\Controllers\Admin\SantriController;
 use App\Http\Controllers\Admin\UserController;
@@ -26,4 +27,9 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::post('orang-tuas', [OrangTuaController::class, 'store'])->name('orang-tuas.store');
     Route::patch('orang-tuas/{orangTua}', [OrangTuaController::class, 'update'])->name('orang-tuas.update');
     Route::delete('orang-tuas/{orangTua}', [OrangTuaController::class, 'destroy'])->name('orang-tuas.destroy');
+
+    Route::get('halaqahs', [HalaqahController::class, 'index'])->name('halaqahs.index');
+    Route::post('halaqahs', [HalaqahController::class, 'store'])->name('halaqahs.store');
+    Route::patch('halaqahs/{halaqah}', [HalaqahController::class, 'update'])->name('halaqahs.update');
+    Route::delete('halaqahs/{halaqah}', [HalaqahController::class, 'destroy'])->name('halaqahs.destroy');
 });
