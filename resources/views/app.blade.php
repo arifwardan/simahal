@@ -30,8 +30,11 @@
             }
         </style>
 
-        <link rel="icon" href="/favicon.ico" sizes="any">
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+        @php
+            $faviconVersion = filemtime(public_path('favicon.ico')) ?: 1;
+        @endphp
+        <link rel="icon" href="/favicon.ico?v={{ $faviconVersion }}" sizes="any">
+        <link rel="icon" href="/favicon.svg?v={{ $faviconVersion }}" type="image/svg+xml">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
         @fonts
