@@ -1,0 +1,52 @@
+<?php
+
+namespace App\Models;
+
+use App\Enums\TargetHafalanStatus;
+use Database\Factories\TargetHafalanFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+/**
+ * @property int $id
+ * @property int $santri_id
+ * @property string $periode
+ * @property int $target
+ * @property int $progress
+ * @property TargetHafalanStatus $status
+ */
+#[Fillable(['santri_id', 'periode', 'target', 'progress', 'status'])]
+class TargetHafalan extends Model
+{
+    /** @use HasFactory<TargetHafalanFactory> */
+    use HasFactory;
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'status' => TargetHafalanStatus::class,
+        ];
+    }
+
+    /**
+     * @return BelongsTo<Santri, $this>
+     */
+    public function santri(): BelongsTo
+    {
+        return $this->belongsTo(Santri::class);
+    }
+
+    public function progressPercent(): int
+    {
+        if ($this->target <= 0) {
+            return 0;
+        }
+
+        return (int) floor(($this->progress / $this->target) * 100);
+    }
+}

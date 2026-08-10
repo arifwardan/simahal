@@ -8,6 +8,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -68,5 +69,29 @@ class User extends Authenticatable implements PasskeyUser
     public function roleLabel(): string
     {
         return $this->role->label();
+    }
+
+    /**
+     * @return HasOne<Santri, $this>
+     */
+    public function santri(): HasOne
+    {
+        return $this->hasOne(Santri::class);
+    }
+
+    /**
+     * @return HasOne<Ustadz, $this>
+     */
+    public function ustadz(): HasOne
+    {
+        return $this->hasOne(Ustadz::class);
+    }
+
+    /**
+     * @return HasOne<OrangTua, $this>
+     */
+    public function orangTua(): HasOne
+    {
+        return $this->hasOne(OrangTua::class);
     }
 }
