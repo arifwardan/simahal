@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\OrangTuaController;
 use App\Http\Controllers\Admin\SantriController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\UstadzController;
@@ -20,4 +21,9 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::post('ustadzs', [UstadzController::class, 'store'])->name('ustadzs.store');
     Route::patch('ustadzs/{ustadz}', [UstadzController::class, 'update'])->name('ustadzs.update');
     Route::delete('ustadzs/{ustadz}', [UstadzController::class, 'destroy'])->name('ustadzs.destroy');
+
+    Route::get('orang-tuas', [OrangTuaController::class, 'index'])->name('orang-tuas.index');
+    Route::post('orang-tuas', [OrangTuaController::class, 'store'])->name('orang-tuas.store');
+    Route::patch('orang-tuas/{orangTua}', [OrangTuaController::class, 'update'])->name('orang-tuas.update');
+    Route::delete('orang-tuas/{orangTua}', [OrangTuaController::class, 'destroy'])->name('orang-tuas.destroy');
 });
