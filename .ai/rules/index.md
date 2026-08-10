@@ -6,3 +6,5 @@ Before planning or editing, find the row whose globs match the file's path and r
 | --- | --- |
 | app/Http/Controllers/Admin/** | .ai/rules/admin.md |
 | app/Http/Controllers/** | .ai/rules/controllers.md |
+| routes/ustadz.php | .ai/rules/routes.md |
+| app/Http/Controllers/Ustadz/** | .ai/rules/ustadz.md |
