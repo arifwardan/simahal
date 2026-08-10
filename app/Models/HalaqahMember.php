@@ -23,6 +23,13 @@ class HalaqahMember extends Pivot
     use HasFactory;
 
     /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'halaqah_members';
+
+    /**
      * @return array<string, string>
      */
     protected function casts(): array
