@@ -55,7 +55,7 @@ export default function SantriProgressView({
                     </div>
                     <div className="h-3 w-full overflow-hidden rounded-full bg-muted">
                         <div
-                            className="h-full rounded-full bg-primary"
+                            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600"
                             style={{ width: `${Math.min(100, progress.percent)}%` }}
                         />
                     </div>
