@@ -23,6 +23,24 @@ test('authenticated users can visit the dashboard', function () {
     $response->assertOk();
 });
 
+test('santri without a profile gets a clean 403', function () {
+    $user = User::factory()->create(['role' => UserRole::Santri]);
+
+    $this->actingAs($user)->get(route('dashboard'))->assertForbidden();
+});
+
+test('ustadz without a profile gets a clean 403', function () {
+    $user = User::factory()->create(['role' => UserRole::Ustadz]);
+
+    $this->actingAs($user)->get(route('dashboard'))->assertForbidden();
+});
+
+test('orang tua without a profile gets a clean 403', function () {
+    $user = User::factory()->create(['role' => UserRole::OrangTua]);
+
+    $this->actingAs($user)->get(route('dashboard'))->assertForbidden();
+});
+
 test('admin dashboard renders the admin component', function () {
     $admin = User::factory()->create(['role' => UserRole::Admin]);
 
@@ -35,12 +53,17 @@ test('ustadz dashboard renders the ustadz component with their halaqah', functio
     $user = User::factory()->create(['role' => UserRole::Ustadz]);
     $ustadz = Ustadz::factory()->create(['user_id' => $user->id]);
     Halaqah::factory()->count(2)->create(['ustadz_id' => $ustadz->id]);
+    $own = Mutabaah::factory()->count(3)->create(['ustadz_id' => $ustadz->id]);
+    $other = Ustadz::factory()->create();
+    Mutabaah::factory()->count(2)->create(['ustadz_id' => $other->id]);
 
     $this->actingAs($user)->get(route('dashboard'))
         ->assertOk()
         ->assertInertia(fn ($page) => $page
             ->component('dashboard/ustadz')
-            ->has('halaqahs', 2));
+            ->has('halaqahs', 2)
+            ->has('recentMutabaahs', 3)
+            ->where('totalMutabaahs', 3));
 });
 
 test('santri dashboard renders the santri component with progress', function () {

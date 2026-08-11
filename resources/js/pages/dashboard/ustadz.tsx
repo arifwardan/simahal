@@ -30,9 +30,10 @@ type MutabaahRow = {
 type PageProps = {
     halaqahs: HalaqahRow[];
     recentMutabaahs: MutabaahRow[];
+    totalMutabaahs: number;
 };
 
-export default function UstadzDashboard({ halaqahs, recentMutabaahs }: PageProps) {
+export default function UstadzDashboard({ halaqahs, recentMutabaahs, totalMutabaahs }: PageProps) {
     const totalSantri = halaqahs.reduce((sum, h) => sum + h.santris_count, 0);
 
     return (
@@ -41,7 +42,7 @@ export default function UstadzDashboard({ halaqahs, recentMutabaahs }: PageProps
             <div className="grid gap-4 sm:grid-cols-3">
                 <StatCard label="Halaqah" value={halaqahs.length} />
                 <StatCard label="Santri" value={totalSantri} />
-                <StatCard label="Mutabaah" value={recentMutabaahs.length} />
+                <StatCard label="Mutabaah" value={totalMutabaahs} />
             </div>
 
             <Card className="mt-6">

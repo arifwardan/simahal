@@ -65,6 +65,7 @@ class DashboardController extends Controller
         return Inertia::render('dashboard/ustadz', [
             'halaqahs' => $halaqahs,
             'recentMutabaahs' => $recentMutabaahs,
+            'totalMutabaahs' => $ustadz->mutabaahs()->count(),
         ]);
     }
 
