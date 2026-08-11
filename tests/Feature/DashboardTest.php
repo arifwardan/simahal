@@ -53,7 +53,7 @@ test('ustadz dashboard renders the ustadz component with their halaqah', functio
     $user = User::factory()->create(['role' => UserRole::Ustadz]);
     $ustadz = Ustadz::factory()->create(['user_id' => $user->id]);
     Halaqah::factory()->count(2)->create(['ustadz_id' => $ustadz->id]);
-    $own = Mutabaah::factory()->count(3)->create(['ustadz_id' => $ustadz->id]);
+    $own = Mutabaah::factory()->count(6)->create(['ustadz_id' => $ustadz->id]);
     $other = Ustadz::factory()->create();
     Mutabaah::factory()->count(2)->create(['ustadz_id' => $other->id]);
 
@@ -62,8 +62,8 @@ test('ustadz dashboard renders the ustadz component with their halaqah', functio
         ->assertInertia(fn ($page) => $page
             ->component('dashboard/ustadz')
             ->has('halaqahs', 2)
-            ->has('recentMutabaahs', 3)
-            ->where('totalMutabaahs', 3));
+            ->has('recentMutabaahs', 5)
+            ->where('totalMutabaahs', 6));
 });
 
 test('santri dashboard renders the santri component with progress', function () {
