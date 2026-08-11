@@ -76,7 +76,7 @@ export function AppSidebar() {
     ];
 
     return (
-        <Sidebar collapsible="icon" variant="inset" className="relative overflow-hidden">
+        <Sidebar collapsible="icon" variant="inset" className="overflow-hidden">
             <div aria-hidden className="pointer-events-none absolute inset-0">
                 <div className="absolute -top-20 -right-12 size-60 rounded-full bg-emerald-500/25 blur-3xl" />
                 <div className="absolute -bottom-16 -left-10 size-44 rounded-full bg-emerald-400/15 blur-3xl" />
