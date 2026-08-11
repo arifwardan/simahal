@@ -2,6 +2,7 @@ import { Form } from '@inertiajs/react';
 import SantriController from '@/actions/App/Http/Controllers/Admin/SantriController';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
+import PageContainer from '@/components/page-container';
 import { index } from '@/routes/admin/santris';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -46,7 +47,7 @@ export default function AdminSantrisIndex({ santris, orangTuas, statuses }: Page
         statuses.find((s) => s.value === value)?.label ?? value;
 
     return (
-        <>
+        <PageContainer>
             <Heading title="Manajemen Santri" description="Kelola data santri dan akun loginnya." />
 
             <Card>
@@ -140,7 +141,7 @@ export default function AdminSantrisIndex({ santris, orangTuas, statuses }: Page
                     </ul>
                 </CardContent>
             </Card>
-        </>
+        </PageContainer>
     );
 }
 

@@ -2,6 +2,7 @@ import { Form } from '@inertiajs/react';
 import HalaqahController from '@/actions/App/Http/Controllers/Admin/HalaqahController';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
+import PageContainer from '@/components/page-container';
 import { index } from '@/routes/admin/halaqahs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -44,7 +45,7 @@ export default function AdminHalaqahsIndex({ halaqahs, ustadzs, santris, statuse
     const [selectedSantris, setSelectedSantris] = useState<number[]>([]);
 
     return (
-        <>
+        <PageContainer>
             <Heading title="Manajemen Halaqah" description="Kelola halaqah dan keanggotaan santrinya." />
 
             <Card>
@@ -150,7 +151,7 @@ export default function AdminHalaqahsIndex({ halaqahs, ustadzs, santris, statuse
                     </ul>
                 </CardContent>
             </Card>
-        </>
+        </PageContainer>
     );
 }
 

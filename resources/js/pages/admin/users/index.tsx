@@ -2,6 +2,7 @@ import { Form, Link, usePage } from '@inertiajs/react';
 import UserController from '@/actions/App/Http/Controllers/Admin/UserController';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
+import PageContainer from '@/components/page-container';
 import { index } from '@/routes/admin/users';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -43,7 +44,7 @@ export default function AdminUsersIndex({ users, roles }: PageProps) {
     const [showForm, setShowForm] = useState(false);
 
     return (
-        <>
+        <PageContainer>
             <Heading title="Manajemen User" description="Kelola akun dan peran pengguna SIMAHAL." />
 
             <Card>
@@ -120,7 +121,7 @@ export default function AdminUsersIndex({ users, roles }: PageProps) {
                     </ul>
                 </CardContent>
             </Card>
-        </>
+        </PageContainer>
     );
 }
 

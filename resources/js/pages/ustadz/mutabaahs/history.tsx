@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import Heading from '@/components/heading';
+import PageContainer from '@/components/page-container';
 import { history } from '@/routes/ustadz/mutabaahs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -42,7 +43,7 @@ export default function UstadzMutabaahHistory({ mutabaahs, santriOptions, filter
     const [santri, setSantri] = useState<string>(filters?.santri ? String(filters.santri) : '');
 
     return (
-        <>
+        <PageContainer>
             <Heading title="Riwayat Mutabaah" description="Riwayat pencatatan mutabaah yang Anda lakukan." />
 
             <Card>
@@ -83,7 +84,7 @@ export default function UstadzMutabaahHistory({ mutabaahs, santriOptions, filter
                     </ul>
                 </CardContent>
             </Card>
-        </>
+        </PageContainer>
     );
 }
 

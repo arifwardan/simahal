@@ -1,4 +1,5 @@
 import { Head } from '@inertiajs/react';
+import PageContainer from '@/components/page-container';
 import SantriProgressView from '@/components/santri-progress-view';
 import { dashboard } from '@/routes';
 
@@ -22,7 +23,7 @@ type PageProps = {
 
 export default function OrangTuaDashboard({ children }: PageProps) {
     return (
-        <>
+        <PageContainer>
             <Head title="Dashboard Orang Tua" />
             {children.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
@@ -41,7 +42,7 @@ export default function OrangTuaDashboard({ children }: PageProps) {
                     ))}
                 </div>
             )}
-        </>
+        </PageContainer>
     );
 }
 

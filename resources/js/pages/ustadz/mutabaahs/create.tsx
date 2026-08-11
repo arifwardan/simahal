@@ -2,6 +2,7 @@ import { Form, Link } from '@inertiajs/react';
 import MutabaahController from '@/actions/App/Http/Controllers/Ustadz/MutabaahController';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
+import PageContainer from '@/components/page-container';
 import { index as halaqahIndex } from '@/routes/ustadz/halaqahs';
 import { Button } from '@/components/ui/button';
 import {
@@ -30,7 +31,7 @@ type PageProps = {
 
 export default function UstadzMutabaahCreate({ santri, jenisOptions, statusOptions }: PageProps) {
     return (
-        <>
+        <PageContainer>
             <Heading title="Catat Mutabaah" description={`Santri: ${santri.nama}${santri.nis ? ` (${santri.nis})` : ''}`} />
 
             <Card>
@@ -124,7 +125,7 @@ export default function UstadzMutabaahCreate({ santri, jenisOptions, statusOptio
                     </Form>
                 </CardContent>
             </Card>
-        </>
+        </PageContainer>
     );
 }
 

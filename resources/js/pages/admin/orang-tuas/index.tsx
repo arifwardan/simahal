@@ -2,6 +2,7 @@ import { Form } from '@inertiajs/react';
 import OrangTuaController from '@/actions/App/Http/Controllers/Admin/OrangTuaController';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
+import PageContainer from '@/components/page-container';
 import { index } from '@/routes/admin/orang-tuas';
 import { Button } from '@/components/ui/button';
 import {
@@ -26,7 +27,7 @@ export default function AdminOrangTuasIndex({ orangTuas }: { orangTuas: { data: 
     const [showForm, setShowForm] = useState(false);
 
     return (
-        <>
+        <PageContainer>
             <Heading title="Manajemen Orang Tua" description="Kelola akun orang tua santri." />
 
             <Card>
@@ -90,7 +91,7 @@ export default function AdminOrangTuasIndex({ orangTuas }: { orangTuas: { data: 
                     </ul>
                 </CardContent>
             </Card>
-        </>
+        </PageContainer>
     );
 }
 

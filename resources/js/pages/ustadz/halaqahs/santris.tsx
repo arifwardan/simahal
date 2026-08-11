@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import Heading from '@/components/heading';
+import PageContainer from '@/components/page-container';
 import { index as halaqahIndex } from '@/routes/ustadz/halaqahs';
 import { create } from '@/routes/ustadz/mutabaahs';
 import { Button } from '@/components/ui/button';
@@ -20,7 +21,7 @@ type Halaqah = { id: number; nama: string };
 
 export default function UstadzHalaqahSantris({ halaqah, santris }: { halaqah: Halaqah; santris: { data: SantriRow[]; total: number } }) {
     return (
-        <>
+        <PageContainer>
             <Heading title={halaqah.nama} description="Daftar santri dalam halaqah ini." />
 
             <Card>
@@ -43,7 +44,7 @@ export default function UstadzHalaqahSantris({ halaqah, santris }: { halaqah: Ha
                     </ul>
                 </CardContent>
             </Card>
-        </>
+        </PageContainer>
     );
 }
 

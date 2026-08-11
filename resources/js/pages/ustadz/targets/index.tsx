@@ -2,6 +2,7 @@ import { Form } from '@inertiajs/react';
 import TargetHafalanController from '@/actions/App/Http/Controllers/Ustadz/TargetHafalanController';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
+import PageContainer from '@/components/page-container';
 import { index } from '@/routes/ustadz/targets';
 import { Button } from '@/components/ui/button';
 import {
@@ -48,7 +49,7 @@ export default function UstadzTargetsIndex({ santris, statuses }: PageProps) {
     const [targetSantriId, setTargetSantriId] = useState<string>('');
 
     return (
-        <>
+        <PageContainer>
             <Heading title="Target Hafalan" description="Pantau dan kelola target hafalan santri halaqah Anda." />
 
             <Card>
@@ -187,7 +188,7 @@ export default function UstadzTargetsIndex({ santris, statuses }: PageProps) {
                     )}
                 </CardContent>
             </Card>
-        </>
+        </PageContainer>
     );
 }
 

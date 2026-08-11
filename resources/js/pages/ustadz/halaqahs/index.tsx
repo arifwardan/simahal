@@ -1,6 +1,7 @@
 import { Link } from '@inertiajs/react';
 import { ChevronRight } from 'lucide-react';
 import Heading from '@/components/heading';
+import PageContainer from '@/components/page-container';
 import { index } from '@/routes/ustadz/halaqahs';
 import { show as santrisShow } from '@/routes/ustadz/halaqahs/santris';
 import { Badge } from '@/components/ui/badge';
@@ -21,7 +22,7 @@ type HalaqahRow = {
 
 export default function UstadzHalaqahsIndex({ halaqahs }: { halaqahs: { data: HalaqahRow[]; total: number } }) {
     return (
-        <>
+        <PageContainer>
             <Heading title="Halaqah Saya" description="Pilih halaqah untuk melihat santri dan mencatat mutabaah." />
 
             <Card>
@@ -56,7 +57,7 @@ export default function UstadzHalaqahsIndex({ halaqahs }: { halaqahs: { data: Ha
                     </ul>
                 </CardContent>
             </Card>
-        </>
+        </PageContainer>
     );
 }
 

@@ -2,6 +2,7 @@ import { Form } from '@inertiajs/react';
 import UstadzController from '@/actions/App/Http/Controllers/Admin/UstadzController';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
+import PageContainer from '@/components/page-container';
 import { index } from '@/routes/admin/ustadzs';
 import { Button } from '@/components/ui/button';
 import {
@@ -25,7 +26,7 @@ export default function AdminUstadzsIndex({ ustadzs }: { ustadzs: { data: Ustadz
     const [showForm, setShowForm] = useState(false);
 
     return (
-        <>
+        <PageContainer>
             <Heading title="Manajemen Ustadz" description="Kelola data ustadz dan akun loginnya." />
 
             <Card>
@@ -87,7 +88,7 @@ export default function AdminUstadzsIndex({ ustadzs }: { ustadzs: { data: Ustadz
                     </ul>
                 </CardContent>
             </Card>
-        </>
+        </PageContainer>
     );
 }
 

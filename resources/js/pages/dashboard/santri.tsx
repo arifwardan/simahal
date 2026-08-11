@@ -1,4 +1,5 @@
 import { Head } from '@inertiajs/react';
+import PageContainer from '@/components/page-container';
 import SantriProgressView from '@/components/santri-progress-view';
 import { dashboard } from '@/routes';
 
@@ -26,7 +27,7 @@ type PageProps = {
 
 export default function SantriDashboard({ santri, progress, riwayat, halaqahs }: PageProps) {
     return (
-        <>
+        <PageContainer>
             <Head title="Dashboard Santri" />
             <SantriProgressView
                 headline={`Selamat datang, ${santri.nama}`}
@@ -34,7 +35,7 @@ export default function SantriDashboard({ santri, progress, riwayat, halaqahs }:
                 riwayat={riwayat}
                 halaqahs={halaqahs}
             />
-        </>
+        </PageContainer>
     );
 }
 

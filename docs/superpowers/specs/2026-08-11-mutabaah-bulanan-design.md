@@ -135,11 +135,13 @@ Semua halaman memakai `page.layout = { breadcrumbs }`, Indonesian copy, komponen
 
 ### UI Konsistensi (bundled task)
 
-1. **`PageContainer`** (`resources/js/components/page-container.tsx`) — wrapper `px-4 md:px-6 pb-8 pt-4` (atau setara) untuk semua halaman app; rapikan spacing kartu vs sidebar. Terapkan di halaman dashboard + admin/ustadz yang ada agar seragam.
+1. **`PageContainer`** (`resources/js/components/page-container.tsx`) — wrapper `px-4 pb-8 pt-4 md:px-6` untuk semua halaman app; rapikan spacing kartu vs sidebar. Terapkan di halaman dashboard + admin/ustadz yang ada agar seragam.
 2. **Welcome → shadcn** — ganti token custom `ivory/ink/sand/gold/emerald-soft/deep` di `welcome.tsx` dengan token shadcn (`background`, `foreground`, `primary`, `card`, `muted`, `accent`) + aksen emerald sebagai warna brand; pertahanakan light/dark.
 3. **Verifikasi visual** — cek halaman dashboard & modul baru di mode light/dark, spacing kartu vs sidebar, dan keselarasan welcome.
 
-> Catatan: aksen emerald sudah ada sebagai token `--color-emerald-deep`/`emerald`/`emerald-soft` di `app.css`; dipakai melalui varian shadcn agar konsisten.
+> Catatan: aksen emerald memakai palet default Tailwind (`emerald-*`) dengan varian `dark:`; token brand custom (`--color-emerald-*`, `gold`, `sand`, `ivory`, `ink`) dihapus dari `app.css` karena tidak lagi dipakai.
+
+> Status: item 1 & 2 SELESAI (commit sebelum plan). `PageContainer` dipakai di semua halaman dashboard/admin/ustadz; `welcome.tsx` dipindah ke token shadcn + aksen emerald (light/dark). Item 3 diverifikasi via build + test hijau; cek visual final saat modul baru selesai.
 
 ---
 
