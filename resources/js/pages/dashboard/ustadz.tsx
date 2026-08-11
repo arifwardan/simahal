@@ -1,5 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
+import { ClipboardCheck, FolderGit2, GraduationCap } from 'lucide-react';
 import StatCard from '@/components/dashboard/stat-card';
+import PageContainer from '@/components/page-container';
 import { dashboard } from '@/routes';
 import { index as halaqahsIndex } from '@/routes/ustadz/halaqahs';
 import { Button } from '@/components/ui/button';
@@ -37,12 +39,12 @@ export default function UstadzDashboard({ halaqahs, recentMutabaahs, totalMutaba
     const totalSantri = halaqahs.reduce((sum, h) => sum + h.santris_count, 0);
 
     return (
-        <>
+        <PageContainer>
             <Head title="Dashboard Ustadz" />
             <div className="grid gap-4 sm:grid-cols-3">
-                <StatCard label="Halaqah" value={halaqahs.length} />
-                <StatCard label="Santri" value={totalSantri} />
-                <StatCard label="Mutabaah" value={totalMutabaahs} />
+                <StatCard label="Halaqah" value={halaqahs.length} icon={FolderGit2} tone="emerald" />
+                <StatCard label="Santri" value={totalSantri} icon={GraduationCap} tone="sky" />
+                <StatCard label="Mutabaah" value={totalMutabaahs} icon={ClipboardCheck} tone="violet" />
             </div>
 
             <Card className="mt-6">
@@ -67,7 +69,7 @@ export default function UstadzDashboard({ halaqahs, recentMutabaahs, totalMutaba
                     </Button>
                 </CardContent>
             </Card>
-        </>
+        </PageContainer>
     );
 }
 
