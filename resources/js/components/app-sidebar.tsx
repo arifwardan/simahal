@@ -3,6 +3,7 @@ import {
     BookMarked,
     BookOpen,
     CalendarCheck,
+    FileUp,
     FolderGit2,
     GraduationCap,
     HeartHandshake,
@@ -27,6 +28,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
+import { index as excelImportIndex } from '@/routes/admin/excel-import';
 import { index as halaqahsIndex } from '@/routes/admin/halaqahs';
 import { index as mutabaahBulananIndex } from '@/routes/admin/mutabaah-bulanan';
 import { edit as mutabaahSettingsEdit } from '@/routes/admin/mutabaah-settings';
@@ -47,6 +49,7 @@ const adminNavItems: NavItem[] = [
     { title: 'Manajemen Halaqah', href: halaqahsIndex(), icon: FolderGit2 },
     { title: 'Mutabaah Bulanan', href: mutabaahBulananIndex(), icon: CalendarCheck },
     { title: 'Pengaturan Mutabaah', href: mutabaahSettingsEdit(), icon: Settings },
+    { title: 'Import Excel', href: excelImportIndex(), icon: FileUp },
 ];
 
 const ustadzNavItems: NavItem[] = [
