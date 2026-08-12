@@ -103,6 +103,22 @@ test('non-ustadz cannot access ustadz pages', function () {
     $this->actingAs($santriUser)->get(route('ustadz.halaqahs.santris.show', $halaqah))->assertForbidden();
 });
 
+test('halaqah santri page exposes mutabaah modal data', function () {
+    $ustadz = makeActingUstadz($this);
+    $halaqah = Halaqah::factory()->create(['ustadz_id' => $ustadz->id]);
+    $santri = Santri::factory()->create();
+    $halaqah->santris()->attach($santri->id);
+
+    $this->get(route('ustadz.halaqahs.santris.show', $halaqah))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('ustadz/halaqahs/santris')
+            ->has('jenisOptions')
+            ->has('statusOptions')
+            ->has('settings')
+            ->has('bulanan', 1));
+});
+
 test('halaman is required to store a mutabaah', function () {
     $ustadz = makeActingUstadz($this);
     $halaqah = Halaqah::factory()->create(['ustadz_id' => $ustadz->id]);

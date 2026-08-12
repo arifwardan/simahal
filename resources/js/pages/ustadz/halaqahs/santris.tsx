@@ -1,8 +1,8 @@
-import { Link } from '@inertiajs/react';
+import { useState } from 'react';
+import MutabaahForm from '@/components/forms/MutabaahForm';
 import Heading from '@/components/heading';
 import PageContainer from '@/components/page-container';
 import { index as halaqahIndex } from '@/routes/ustadz/halaqahs';
-import { create } from '@/routes/ustadz/mutabaahs';
 import { Button } from '@/components/ui/button';
 import {
     Card,
@@ -10,6 +10,13 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 
 type SantriRow = {
     id: number;
@@ -17,9 +24,60 @@ type SantriRow = {
     nis?: string | null;
 };
 
+type Option = { value: string; label: string };
+
+type Settings = {
+    konversi_juz_halaman: number;
+    ambang_hadiah_juz: number;
+    tahun_aktif: number;
+};
+
+type BulananRow = {
+    santri_id: number;
+    nama: string;
+    halaman_awal_bulan: number | null;
+    prefill_kumulatif: number | null;
+    existing: {
+        halaman_kumulatif: number | null;
+        juz_dihafal: number | null;
+        tasmi_pekan_1: number | null;
+        tasmi_pekan_2: number | null;
+        tasmi_pekan_3: number | null;
+        tasmi_pekan_4: number | null;
+        tasmi_pekan_5: number | null;
+        ujian_soal_1: number | null;
+        ujian_soal_2: number | null;
+        ujian_soal_3: number | null;
+        ujian_soal_4: number | null;
+        ujian_soal_5: number | null;
+    } | null;
+};
+
 type Halaqah = { id: number; nama: string };
 
-export default function UstadzHalaqahSantris({ halaqah, santris }: { halaqah: Halaqah; santris: { data: SantriRow[]; total: number } }) {
+type PageProps = {
+    halaqah: Halaqah;
+    santris: { data: SantriRow[]; total: number };
+    jenisOptions: Option[];
+    statusOptions: Option[];
+    settings: Settings;
+    bulan: number;
+    tahun: number;
+    bulanan: BulananRow[];
+};
+
+export default function UstadzHalaqahSantris({
+    halaqah,
+    santris,
+    jenisOptions,
+    statusOptions,
+    settings,
+    bulan,
+    tahun,
+    bulanan,
+}: PageProps) {
+    const [catatSantri, setCatatSantri] = useState<SantriRow | null>(null);
+
     return (
         <PageContainer>
             <Heading title={halaqah.nama} description="Daftar santri dalam halaqah ini." />
@@ -36,14 +94,31 @@ export default function UstadzHalaqahSantris({ halaqah, santris }: { halaqah: Ha
                                     <p className="font-medium">{santri.nama}</p>
                                     {santri.nis && <p className="text-sm text-muted-foreground">{santri.nis}</p>}
                                 </div>
-                                <Button asChild size="sm">
-                                    <Link href={create({ santri: santri.id })}>Catat Mutabaah</Link>
-                                </Button>
+                                <Button size="sm" onClick={() => setCatatSantri(santri)}>Catat Mutabaah</Button>
                             </li>
                         ))}
                     </ul>
                 </CardContent>
             </Card>
+
+            <Dialog open={catatSantri !== null} onOpenChange={(open) => !open && setCatatSantri(null)}>
+                <DialogContent key={catatSantri?.id}>
+                    <DialogHeader>
+                        <DialogTitle>Catat Mutabaah</DialogTitle>
+                        <DialogDescription>
+                            {catatSantri ? `${catatSantri.nama}${catatSantri.nis ? ` (${catatSantri.nis})` : ''}` : ''}
+                        </DialogDescription>
+                    </DialogHeader>
+                    {catatSantri && (
+                        <MutabaahForm
+                            santri={catatSantri}
+                            jenisOptions={jenisOptions}
+                            statusOptions={statusOptions}
+                            onSuccess={() => setCatatSantri(null)}
+                        />
+                    )}
+                </DialogContent>
+            </Dialog>
         </PageContainer>
     );
 }
