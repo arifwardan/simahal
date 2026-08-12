@@ -23,8 +23,9 @@ use Illuminate\Support\Carbon;
  * @property int|null $nilai
  * @property MutabaahStatus $status
  * @property string|null $catatan
+ * @property int|null $halaman
  */
-#[Fillable(['santri_id', 'ustadz_id', 'tanggal', 'jenis', 'surah', 'ayat_mulai', 'ayat_selesai', 'nilai', 'status', 'catatan'])]
+#[Fillable(['santri_id', 'ustadz_id', 'tanggal', 'jenis', 'surah', 'ayat_mulai', 'ayat_selesai', 'nilai', 'status', 'catatan', 'halaman'])]
 class Mutabaah extends Model
 {
     /** @use HasFactory<MutabaahFactory> */
@@ -39,6 +40,7 @@ class Mutabaah extends Model
             'tanggal' => 'date',
             'jenis' => MutabaahJenis::class,
             'status' => MutabaahStatus::class,
+            'halaman' => 'integer',
         ];
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\SantriJenis;
 use App\Enums\SantriStatus;
 use Database\Factories\SantriFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -20,8 +21,10 @@ use Illuminate\Support\Carbon;
  * @property string $nama
  * @property Carbon|null $tanggal_lahir
  * @property SantriStatus $status
+ * @property int|null $halaman_awal
+ * @property SantriJenis|null $jenis
  */
-#[Fillable(['user_id', 'orang_tua_id', 'nis', 'nama', 'tanggal_lahir', 'status'])]
+#[Fillable(['user_id', 'orang_tua_id', 'nis', 'nama', 'tanggal_lahir', 'status', 'halaman_awal', 'jenis'])]
 class Santri extends Model
 {
     /** @use HasFactory<SantriFactory> */
@@ -35,6 +38,8 @@ class Santri extends Model
         return [
             'tanggal_lahir' => 'date',
             'status' => SantriStatus::class,
+            'halaman_awal' => 'integer',
+            'jenis' => SantriJenis::class,
         ];
     }
 

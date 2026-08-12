@@ -6,6 +6,7 @@ use App\Enums\TargetHafalanStatus;
 use App\Enums\UserRole;
 use App\Models\Halaqah;
 use App\Models\Mutabaah;
+use App\Models\MutabaahBulanan;
 use App\Models\OrangTua;
 use App\Models\Santri;
 use App\Models\TargetHafalan;
@@ -67,6 +68,13 @@ test('mutabaah belongs to santri and ustadz', function () {
 
     expect($mutabaah->santri->id)->toBe($santri->id)
         ->and($mutabaah->ustadz->id)->toBe($ustadz->id);
+});
+
+test('mutabaah bulanan belongs to santri', function () {
+    $santri = Santri::factory()->create();
+    $bulanan = MutabaahBulanan::factory()->create(['santri_id' => $santri->id]);
+
+    expect($bulanan->santri->id)->toBe($santri->id);
 });
 
 test('santri status and halaqah status enum casts work', function () {

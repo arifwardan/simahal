@@ -3,7 +3,9 @@
 use App\Enums\HalaqahMemberStatus;
 use App\Enums\HalaqahStatus;
 use App\Enums\MutabaahJenis;
+use App\Enums\MutabaahKategori;
 use App\Enums\MutabaahStatus;
+use App\Enums\SantriJenis;
 use App\Enums\SantriStatus;
 use App\Enums\TargetHafalanStatus;
 use App\Enums\UserRole;
@@ -26,6 +28,8 @@ test('all enum cases have labels', function () {
         ...TargetHafalanStatus::cases(),
         ...MutabaahJenis::cases(),
         ...MutabaahStatus::cases(),
+        ...SantriJenis::cases(),
+        ...MutabaahKategori::cases(),
     ];
 
     expect($all)->not->toBeEmpty();

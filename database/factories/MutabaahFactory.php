@@ -32,6 +32,7 @@ class MutabaahFactory extends Factory
             'nilai' => fake()->numberBetween(60, 100),
             'status' => MutabaahStatus::Lulus,
             'catatan' => null,
+            'halaman' => fake()->numberBetween(1, 10),
         ];
     }
 }

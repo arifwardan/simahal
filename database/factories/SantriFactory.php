@@ -25,6 +25,8 @@ class SantriFactory extends Factory
             'nama' => fake()->name(),
             'tanggal_lahir' => fake()->date(),
             'status' => SantriStatus::Aktif,
+            'jenis' => null,
+            'halaman_awal' => null,
         ];
     }
 }
