@@ -1,9 +1,10 @@
-import { Form, Link, usePage } from '@inertiajs/react';
+import { Form, usePage } from '@inertiajs/react';
+import { useState } from 'react';
 import UserController from '@/actions/App/Http/Controllers/Admin/UserController';
+import UserForm from '@/components/forms/UserForm';
+import type { UserRow } from '@/components/forms/UserForm';
 import Heading from '@/components/heading';
-import InputError from '@/components/input-error';
 import PageContainer from '@/components/page-container';
-import { index } from '@/routes/admin/users';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -13,121 +14,150 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
-import { useState } from 'react';
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
+import { index } from '@/routes/admin/users';
 
-type RoleOption = { value: string; label: string };
-type UserRow = {
-    id: number;
-    name: string;
-    email: string;
-    role: string;
-    role_label: string;
-};
-
-type PageProps = {
+type Props = {
     users: { data: UserRow[]; total: number };
-    roles: RoleOption[];
+    roles: { value: string; label: string }[];
 };
 
-export default function AdminUsersIndex({ users, roles }: PageProps) {
+export default function AdminUsersIndex({ users, roles }: Props) {
     const { auth } = usePage().props;
+    const [showCreate, setShowCreate] = useState(false);
     const [editing, setEditing] = useState<UserRow | null>(null);
-    const [showForm, setShowForm] = useState(false);
 
     return (
         <PageContainer>
-            <Heading title="Manajemen User" description="Kelola akun dan peran pengguna SIMAHAL." />
+            <Heading
+                title="Manajemen User"
+                description="Kelola akun dan peran pengguna SIMAHAL."
+            />
 
             <Card>
                 <CardHeader>
                     <CardTitle>Daftar User ({users.total})</CardTitle>
-                    <CardDescription>Klik "Buat User" untuk menambah akun baru.</CardDescription>
+                    <CardDescription>
+                        Klik "Buat User" untuk menambah akun baru.
+                    </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <Button onClick={() => setShowForm(true)}>Buat User</Button>
+                    <Dialog open={showCreate} onOpenChange={setShowCreate}>
+                        <DialogTrigger asChild>
+                            <Button>Buat User</Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Buat User</DialogTitle>
+                                <DialogDescription>
+                                    Tambahkan akun pengguna baru ke SIMAHAL.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <UserForm
+                                roles={roles}
+                                onSuccess={() => setShowCreate(false)}
+                            />
+                        </DialogContent>
+                    </Dialog>
 
-                    {showForm && (
-                        <Form
-                            {...UserController.store.form()}
-                            onSuccess={() => setShowForm(false)}
-                            className="space-y-4 rounded-lg border p-4"
-                        >
-                            {({ errors }) => (
-                                <>
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="name">Nama</Label>
-                                        <Input id="name" name="name" required placeholder="Nama lengkap" />
-                                        <InputError message={errors.name} />
-                                    </div>
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="email">Email</Label>
-                                        <Input id="email" name="email" type="email" required placeholder="email@example.com" />
-                                        <InputError message={errors.email} />
-                                    </div>
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="password">Password</Label>
-                                        <Input id="password" name="password" type="password" required />
-                                        <InputError message={errors.password} />
-                                    </div>
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="role">Role</Label>
-                                        <Select name="role" required defaultValue="santri">
-                                            <SelectTrigger id="role"><SelectValue placeholder="Pilih role" /></SelectTrigger>
-                                            <SelectContent>
-                                                {roles.map((r) => (
-                                                    <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                        <InputError message={errors.role} />
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <Button type="submit">Simpan</Button>
-                                        <Button type="button" variant="outline" onClick={() => setShowForm(false)}>Batal</Button>
-                                    </div>
-                                </>
-                            )}
-                        </Form>
-                    )}
-
-                    <ul className="divide-y rounded-lg border">
-                        {users.data.map((user) => (
-                            <li key={user.id} className="flex items-center justify-between gap-4 p-4">
-                                <div>
-                                    <p className="font-medium">{user.name}</p>
-                                    <p className="text-sm text-muted-foreground">{user.email}</p>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <Badge variant="secondary">{user.role_label}</Badge>
-                                    {auth.user.id !== user.id && (
-                                        <Form {...UserController.destroy.form({ user: user.id })}>
-                                            <Button type="submit" variant="ghost" className="text-destructive">
-                                                Hapus
-                                            </Button>
-                                        </Form>
-                                    )}
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                            <thead>
+                                <tr className="border-b text-left text-muted-foreground">
+                                    <th className="py-2 pr-4">Nama</th>
+                                    <th className="py-2 pr-4">Email</th>
+                                    <th className="py-2 pr-4">Role</th>
+                                    <th className="py-2 text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {users.data.map((user) => (
+                                    <tr
+                                        key={user.id}
+                                        className="border-b last:border-0"
+                                    >
+                                        <td className="py-2 pr-4 font-medium">
+                                            {user.name}
+                                        </td>
+                                        <td className="py-2 pr-4">
+                                            {user.email}
+                                        </td>
+                                        <td className="py-2 pr-4">
+                                            <Badge>{user.role_label}</Badge>
+                                        </td>
+                                        <td className="py-2 text-right">
+                                            <div className="flex items-center justify-end gap-2">
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() =>
+                                                        setEditing(user)
+                                                    }
+                                                >
+                                                    Edit
+                                                </Button>
+                                                {auth.user.id !== user.id && (
+                                                    <Form
+                                                        {...UserController.destroy.form(
+                                                            { user: user.id },
+                                                        )}
+                                                    >
+                                                        <Button
+                                                            type="submit"
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            className="text-destructive"
+                                                        >
+                                                            Hapus
+                                                        </Button>
+                                                    </Form>
+                                                )}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </CardContent>
             </Card>
+
+            <Dialog
+                open={editing !== null}
+                onOpenChange={(open) => !open && setEditing(null)}
+            >
+                <DialogContent key={editing?.id}>
+                    <DialogHeader>
+                        <DialogTitle>Edit User</DialogTitle>
+                        <DialogDescription>
+                            Perbarui akun pengguna.
+                        </DialogDescription>
+                    </DialogHeader>
+                    {editing && (
+                        <UserForm
+                            roles={roles}
+                            nilaiAwal={editing}
+                            onSuccess={() => setEditing(null)}
+                        />
+                    )}
+                </DialogContent>
+            </Dialog>
         </PageContainer>
     );
 }
 
 AdminUsersIndex.layout = {
-    breadcrumbs: [{
-        title: 'Manajemen User',
-        href: index(),
-    }],
+    breadcrumbs: [
+        {
+            title: 'Manajemen User',
+            href: index(),
+        },
+    ],
 };
