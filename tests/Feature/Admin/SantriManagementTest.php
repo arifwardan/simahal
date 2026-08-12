@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\SantriJenis;
 use App\Enums\SantriStatus;
 use App\Enums\UserRole;
 use App\Models\OrangTua;
@@ -30,6 +31,8 @@ test('admin can create a santri with a new user account', function () {
         'tanggal_lahir' => '2012-03-10',
         'status' => SantriStatus::Aktif->value,
         'orang_tua_id' => $orangTua->id,
+        'halaman_awal' => 10,
+        'jenis' => SantriJenis::Ikhwan->value,
     ])->assertRedirect(route('admin.santris.index'));
 
     $this->assertDatabaseHas('users', [
@@ -42,6 +45,8 @@ test('admin can create a santri with a new user account', function () {
         'nama' => 'Santri Cinta',
         'orang_tua_id' => $orangTua->id,
         'status' => SantriStatus::Aktif->value,
+        'halaman_awal' => 10,
+        'jenis' => SantriJenis::Ikhwan->value,
     ]);
 });
 
@@ -53,10 +58,14 @@ test('admin can update a santri and its user account', function () {
         'email' => $santri->user->email,
         'nis' => $santri->nis,
         'status' => SantriStatus::Aktif->value,
+        'halaman_awal' => 12,
+        'jenis' => SantriJenis::Akhwat->value,
     ])->assertRedirect(route('admin.santris.index'));
 
     expect($santri->fresh()->nama)->toBe('Santri Update')
-        ->and($santri->fresh()->user->name)->toBe('Santri Update');
+        ->and($santri->fresh()->user->name)->toBe('Santri Update')
+        ->and($santri->fresh()->halaman_awal)->toBe(12)
+        ->and($santri->fresh()->jenis)->toBe(SantriJenis::Akhwat);
 });
 
 test('admin can delete a santri and its user account', function () {

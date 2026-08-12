@@ -24,6 +24,7 @@ class StoreMutabaahRequest extends FormRequest
             'nilai' => ['nullable', 'integer', 'between:0,100'],
             'status' => ['required', new Enum(MutabaahStatus::class)],
             'catatan' => ['nullable', 'string', 'max:1000'],
+            'halaman' => ['required', 'integer', 'min:1'],
         ];
     }
 }

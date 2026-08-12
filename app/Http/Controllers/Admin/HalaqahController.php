@@ -20,10 +20,19 @@ class HalaqahController extends Controller
     public function index(Request $request): Response
     {
         $halaqahs = Halaqah::query()
-            ->with('ustadz')
+            ->with(['ustadz', 'santris:id'])
             ->withCount('santris')
             ->orderBy('nama')
-            ->paginate(15);
+            ->paginate(15)
+            ->through(fn (Halaqah $halaqah) => [
+                'id' => $halaqah->id,
+                'nama' => $halaqah->nama,
+                'jadwal' => $halaqah->jadwal,
+                'status' => $halaqah->status->value,
+                'santris_count' => $halaqah->santris_count,
+                'ustadz' => $halaqah->ustadz ? ['id' => $halaqah->ustadz->id, 'nama' => $halaqah->ustadz->nama] : null,
+                'santri_ids' => $halaqah->santris->pluck('id')->toArray(),
+            ]);
 
         return Inertia::render('admin/halaqahs/index', [
             'halaqahs' => $halaqahs,

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\Santri;
 
+use App\Enums\SantriJenis;
 use App\Enums\SantriStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
@@ -22,6 +23,8 @@ class StoreSantriRequest extends FormRequest
             'tanggal_lahir' => ['nullable', 'date'],
             'status' => ['required', new Enum(SantriStatus::class)],
             'orang_tua_id' => ['nullable', 'exists:orang_tuas,id'],
+            'halaman_awal' => ['nullable', 'integer', 'min:0'],
+            'jenis' => ['nullable', new Enum(SantriJenis::class)],
         ];
     }
 }

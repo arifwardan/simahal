@@ -49,10 +49,6 @@ test('ustadz can record a mutabaah for a member santri of their halaqah', functi
     $halaqah->santris()->attach($santri->id);
     TargetHafalan::factory()->create(['santri_id' => $santri->id, 'target' => 30]);
 
-    $this->get(route('ustadz.mutabaahs.create', $santri))
-        ->assertOk()
-        ->assertInertia(fn ($page) => $page->component('ustadz/mutabaahs/create'));
-
     $this->post(route('ustadz.mutabaahs.store'), [
         'santri_id' => $santri->id,
         'tanggal' => now()->toDateString(),
@@ -63,6 +59,7 @@ test('ustadz can record a mutabaah for a member santri of their halaqah', functi
         'nilai' => 90,
         'status' => MutabaahStatus::Lulus->value,
         'catatan' => 'Lancar.',
+        'halaman' => 3,
     ])->assertRedirect();
 
     $this->assertDatabaseHas('mutabaahs', [
@@ -70,6 +67,7 @@ test('ustadz can record a mutabaah for a member santri of their halaqah', functi
         'ustadz_id' => $ustadz->id,
         'surah' => 'Al-Fatihah',
         'status' => MutabaahStatus::Lulus->value,
+        'halaman' => 3,
     ]);
 
     expect($santri->targetHafalans()->first()->progress)->toBe(7);
@@ -92,14 +90,32 @@ test('ustadz cannot set ustadz_id for a mutabaah they do not own', function () {
         'ayat_selesai' => 7,
         'nilai' => 90,
         'status' => MutabaahStatus::Lulus->value,
+        'halaman' => 3,
     ])->assertRedirect();
 
     expect(Mutabaah::latest()->first()->ustadz_id)->toBe($ustadz->id);
 });
 
-test('non-ustadz cannot access mutabaah pages', function () {
+test('non-ustadz cannot access ustadz pages', function () {
     $santriUser = User::factory()->create(['role' => UserRole::Santri]);
-    $santri = Santri::factory()->create(['user_id' => $santriUser->id]);
+    $halaqah = Halaqah::factory()->create(['ustadz_id' => Ustadz::factory()->create()->id]);
 
-    $this->actingAs($santriUser)->get(route('ustadz.mutabaahs.create', $santri))->assertForbidden();
+    $this->actingAs($santriUser)->get(route('ustadz.halaqahs.santris.show', $halaqah))->assertForbidden();
+});
+
+test('halaman is required to store a mutabaah', function () {
+    $ustadz = makeActingUstadz($this);
+    $halaqah = Halaqah::factory()->create(['ustadz_id' => $ustadz->id]);
+    $santri = Santri::factory()->create();
+    $halaqah->santris()->attach($santri->id);
+
+    $this->post(route('ustadz.mutabaahs.store'), [
+        'santri_id' => $santri->id,
+        'tanggal' => now()->toDateString(),
+        'jenis' => MutabaahJenis::Setoran->value,
+        'surah' => 'Al-Fatihah',
+        'ayat_mulai' => 1,
+        'ayat_selesai' => 7,
+        'status' => MutabaahStatus::Lulus->value,
+    ])->assertSessionHasErrors('halaman');
 });
