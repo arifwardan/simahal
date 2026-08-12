@@ -2,6 +2,7 @@
 
 use App\Enums\UserRole;
 use App\Models\Halaqah;
+use App\Models\MutabaahSetting;
 use App\Models\Santri;
 use App\Models\User;
 use App\Models\Ustadz;
@@ -61,6 +62,7 @@ test('planner memetakan santri existing dengan jenis sama sebagai update', funct
 });
 
 test('planner menghasilkan nis urut dan grup dengan muhafidz placeholder diabaikan', function () {
+    MutabaahSetting::setting()->update(['tahun_aktif' => 2026, 'konversi_juz_halaman' => 20, 'ambang_hadiah_juz' => 1.5]);
     Santri::factory()->create(['nis' => 'SIM-2026-0007']);
 
     $plan = planDariWorkbook([

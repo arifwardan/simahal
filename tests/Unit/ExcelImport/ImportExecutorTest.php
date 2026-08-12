@@ -9,7 +9,10 @@ use App\Models\Santri;
 use App\Models\User;
 use App\Models\Ustadz;
 use App\Services\ExcelImport\ExcelReader;
+use App\Services\ExcelImport\ImportAction;
 use App\Services\ExcelImport\ImportExecutor;
+use App\Services\ExcelImport\ImportPlan;
+use App\Services\ExcelImport\ImportPlanItem;
 use App\Services\ExcelImport\ImportPlanner;
 use App\Services\ExcelImport\ImportResult;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -78,4 +81,27 @@ test('executor membuat akun user ustadz dan mencetak nis unik', function () {
     $ustadz = Ustadz::where('nama', 'Hammam')->first();
     expect($ustadz->user->role)->toBe(UserRole::Ustadz);
     expect(Santri::pluck('nis')->all())->toBe(['SIM-2027-0001', 'SIM-2027-0002']);
+});
+
+test('executor membatalkan seluruh transaksi saat satu item gagal', function () {
+    $santri = new ImportPlanItem(
+        type: 'santri',
+        action: ImportAction::Create,
+        groupKey: 'ikhwan-tak-ada',
+        nama: 'Yahya',
+        email: 'yahya@simahal.test',
+        nis: 'SIM-2026-0001',
+        jenis: 'ikhwan',
+    );
+
+    $plan = new ImportPlan(collect([$santri]));
+
+    expect(fn () => app(ImportExecutor::class)->execute($plan))
+        ->toThrow(RuntimeException::class, 'Halaqah untuk santri belum tersedia.');
+
+    expect(Santri::count())->toBe(0);
+    expect(User::count())->toBe(0);
+    expect(Halaqah::count())->toBe(0);
+    expect(Ustadz::count())->toBe(0);
+    expect(HalaqahMember::count())->toBe(0);
 });

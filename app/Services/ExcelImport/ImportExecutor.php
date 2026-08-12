@@ -11,10 +11,8 @@ use App\Models\Santri;
 use App\Models\User;
 use App\Models\Ustadz;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Throwable;
 
-final class ImportExecutor
+class ImportExecutor
 {
     public function execute(ImportPlan $plan): ImportResult
     {
@@ -26,12 +24,7 @@ final class ImportExecutor
 
         DB::transaction(function () use ($plan, $result, &$ustadzByNama, &$halaqahByKey): void {
             foreach ($plan->items as $item) {
-                try {
-                    $this->executeItem($item, $result, $ustadzByNama, $halaqahByKey);
-                } catch (Throwable $e) {
-                    Log::warning('Excel import row failed', ['item' => $item->toArray(), 'error' => $e->getMessage()]);
-                    $result->errors[] = ['nama' => $item->nama, 'reason' => $e->getMessage()];
-                }
+                $this->executeItem($item, $result, $ustadzByNama, $halaqahByKey);
             }
         });
 

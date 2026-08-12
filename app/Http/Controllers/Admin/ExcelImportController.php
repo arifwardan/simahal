@@ -34,10 +34,19 @@ class ExcelImportController extends Controller
 
     public function execute(ImportExcelRequest $request): RedirectResponse
     {
-        $path = $request->file('file')->getRealPath();
-        $workbook = app(ExcelReader::class)->readDataKelompok($path);
-        $plan = app(ImportPlanner::class)->plan($workbook);
-        $result = app(ImportExecutor::class)->execute($plan);
+        try {
+            $path = $request->file('file')->getRealPath();
+            $workbook = app(ExcelReader::class)->readDataKelompok($path);
+            $plan = app(ImportPlanner::class)->plan($workbook);
+            $result = app(ImportExecutor::class)->execute($plan);
+        } catch (\Throwable $e) {
+            Inertia::flash('toast', [
+                'type' => 'error',
+                'message' => __('Import gagal: :message', ['message' => $e->getMessage()]),
+            ]);
+
+            return back();
+        }
 
         Session::flash('excel_import_result', $result->toArray());
 

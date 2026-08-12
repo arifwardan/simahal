@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Link } from '@inertiajs/react';
-import { FileUp, CheckCircle2 } from 'lucide-react';
+import { FileUp, CheckCircle2, AlertCircle } from 'lucide-react';
 
 type PlanItem = {
     type: 'ustadz' | 'halaqah' | 'santri';
@@ -86,6 +86,21 @@ export default function AdminExcelImport({ plan, result }: Props) {
                                 <ul className="max-h-40 list-inside list-disc overflow-auto rounded-md bg-muted p-3 text-sm">
                                     {result.emails_created.map((email) => (
                                         <li key={email}>{email}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                        {result.errors.length > 0 && (
+                            <div className="grid gap-1">
+                                <p className="flex items-center gap-1 text-sm font-medium text-amber-700">
+                                    <AlertCircle className="size-4" />
+                                    Perlu Perhatian
+                                </p>
+                                <ul className="max-h-40 list-inside list-disc overflow-auto rounded-md bg-amber-50 p-3 text-sm text-amber-900">
+                                    {result.errors.map((err) => (
+                                        <li key={`${err.nama}-${err.reason}`}>
+                                            <span className="font-medium">{err.nama}</span> — {err.reason}
+                                        </li>
                                     ))}
                                 </ul>
                             </div>

@@ -6,6 +6,7 @@ use App\Models\HalaqahMember;
 use App\Models\Santri;
 use App\Models\User;
 use App\Models\Ustadz;
+use App\Services\ExcelImport\ImportExecutor;
 use Illuminate\Http\UploadedFile;
 use Tests\Support\ExcelFixtures;
 
@@ -83,6 +84,26 @@ test('import idempoten tidak menggandakan data', function () {
     expect(User::where('email', 'yahya@simahal.test')->count())->toBe(1);
     expect(Santri::first()->halaman_awal)->toBe(3);
     expect(Santri::first()->halaqahs()->count())->toBe(1);
+});
+
+test('admin menerima flash error saat eksekusi import gagal', function () {
+    $this->actingAs(User::factory()->create(['role' => UserRole::Admin]));
+
+    $this->mock(ImportExecutor::class)
+        ->shouldReceive('execute')
+        ->andThrow(new RuntimeException('boom'));
+
+    $this->post(route('admin.excel-import.execute'), ['file' => uploadExcel([
+        ['jenis' => 'Ikhwan', 'kelompok' => 'Kelompok 1', 'muhafidz' => 'Hammam', 'nama' => 'Yahya', 'halamanAwal' => 0],
+    ])])
+        ->assertRedirect()
+        ->assertInertiaFlash('toast.type', 'error')
+        ->assertInertiaFlash('toast.message', 'Import gagal: boom');
+
+    expect(Santri::count())->toBe(0);
+    expect(Ustadz::count())->toBe(0);
+    expect(Halaqah::count())->toBe(0);
+    expect(User::where('email', 'yahya@simahal.test')->count())->toBe(0);
 });
 
 test('non-admin tidak dapat mengakses halaman import', function () {
