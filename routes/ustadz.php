@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Ustadz\HalaqahController;
+use App\Http\Controllers\Ustadz\MutabaahBulananController;
 use App\Http\Controllers\Ustadz\MutabaahController;
 use App\Http\Controllers\Ustadz\MutabaahHistoryController;
 use App\Http\Controllers\Ustadz\TargetHafalanController;
@@ -10,6 +11,9 @@ Route::middleware(['auth', 'verified', 'role:ustadz'])->prefix('ustadz')->name('
     Route::get('halaqah-saya', [HalaqahController::class, 'index'])->name('halaqahs.index');
     Route::get('halaqah-saya/{halaqah}/santri', [HalaqahController::class, 'santris'])->name('halaqahs.santris.show');
     Route::post('mutabaah', [MutabaahController::class, 'store'])->name('mutabaahs.store');
+    Route::post('mutabaah-bulanan/{bulan}', [MutabaahBulananController::class, 'update'])
+        ->whereNumber('bulan')
+        ->name('mutabaah-bulanan.update');
     Route::get('mutabaah/riwayat', [MutabaahHistoryController::class, 'index'])->name('mutabaahs.history');
     Route::get('target-hafalan', [TargetHafalanController::class, 'index'])->name('targets.index');
     Route::post('target-hafalan', [TargetHafalanController::class, 'store'])->name('targets.store');
