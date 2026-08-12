@@ -1,7 +1,8 @@
 import { Form } from '@inertiajs/react';
 import TargetHafalanController from '@/actions/App/Http/Controllers/Ustadz/TargetHafalanController';
+import TargetForm from '@/components/forms/TargetForm';
+import type { TargetRow } from '@/components/forms/TargetForm';
 import Heading from '@/components/heading';
-import InputError from '@/components/input-error';
 import PageContainer from '@/components/page-container';
 import { index } from '@/routes/ustadz/targets';
 import { Button } from '@/components/ui/button';
@@ -11,15 +12,14 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 import { useState } from 'react';
 
 type Target = {
@@ -46,64 +46,34 @@ type PageProps = {
 };
 
 export default function UstadzTargetsIndex({ santris, statuses }: PageProps) {
-    const [targetSantriId, setTargetSantriId] = useState<string>('');
+    const [showCreate, setShowCreate] = useState(false);
+    const [editing, setEditing] = useState<TargetRow | null>(null);
 
     return (
         <PageContainer>
             <Heading title="Target Hafalan" description="Pantau dan kelola target hafalan santri halaqah Anda." />
 
             <Card>
-                <CardHeader>
-                    <CardTitle>Tambah Target</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <Form {...TargetHafalanController.store.form()} onSuccess={() => setTargetSantriId('')} className="space-y-4">
-                        {({ errors }) => (
-                            <>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="santri_id">Santri</Label>
-                                    <Select name="santri_id" required value={targetSantriId} onValueChange={setTargetSantriId}>
-                                        <SelectTrigger id="santri_id"><SelectValue placeholder="Pilih santri" /></SelectTrigger>
-                                        <SelectContent>
-                                            {santris.map((s) => (
-                                                <SelectItem key={s.id} value={String(s.id)}>{s.nama}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <InputError message={errors.santri_id} />
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="periode">Periode</Label>
-                                    <Input id="periode" name="periode" required placeholder="2027-2028" />
-                                    <InputError message={errors.periode} />
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="target">Target (ayat)</Label>
-                                    <Input id="target" name="target" type="number" min={1} required />
-                                    <InputError message={errors.target} />
-                                </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="status">Status</Label>
-                                    <Select name="status" required defaultValue="berlangsung">
-                                        <SelectTrigger id="status"><SelectValue /></SelectTrigger>
-                                        <SelectContent>
-                                            {statuses.map((o) => (
-                                                <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <InputError message={errors.status} />
-                                </div>
-                                <Button type="submit">Simpan Target</Button>
-                            </>
-                        )}
-                    </Form>
-                </CardContent>
-            </Card>
-
-            <Card className="mt-4">
-                <CardHeader>
+                <CardHeader className="flex flex-row items-center justify-between">
                     <CardTitle>Progres Santri</CardTitle>
+                    <Dialog open={showCreate} onOpenChange={setShowCreate}>
+                        <DialogTrigger asChild>
+                            <Button>Tambah Target</Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Tambah Target</DialogTitle>
+                                <DialogDescription>
+                                    Tambahkan target hafalan baru untuk santri halaqah Anda.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <TargetForm
+                                santris={santris}
+                                statuses={statuses}
+                                onSuccess={() => setShowCreate(false)}
+                            />
+                        </DialogContent>
+                    </Dialog>
                 </CardHeader>
                 <CardContent>
                     {santris.length === 0 ? (
@@ -130,54 +100,27 @@ export default function UstadzTargetsIndex({ santris, statuses }: PageProps) {
                                                     </div>
                                                     <div className="mt-2 flex items-center justify-between gap-2">
                                                         <span className="text-xs text-muted-foreground">{target.status_label}</span>
-                                                        <Form {...TargetHafalanController.destroy.form({ targetHafalan: target.id })}>
-                                                            <Button type="submit" size="sm" variant="ghost" className="text-destructive">Hapus</Button>
-                                                        </Form>
+                                                        <div className="flex items-center gap-2">
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                onClick={() =>
+                                                                    setEditing({
+                                                                        id: target.id,
+                                                                        santri_id: santri.id,
+                                                                        periode: target.periode,
+                                                                        target: target.target,
+                                                                        status: target.status,
+                                                                    })
+                                                                }
+                                                            >
+                                                                Edit
+                                                            </Button>
+                                                            <Form {...TargetHafalanController.destroy.form({ targetHafalan: target.id })}>
+                                                                <Button type="submit" size="sm" variant="ghost" className="text-destructive">Hapus</Button>
+                                                            </Form>
+                                                        </div>
                                                     </div>
-                                                    {target.status !== 'selesai' && (
-                                                        <Form {...TargetHafalanController.update.form({ targetHafalan: target.id })} className="mt-3">
-                                                            {({ errors }) => (
-                                                                <>
-                                                                    <input type="hidden" name="periode" defaultValue={target.periode} />
-                                                                    <input type="hidden" name="target" defaultValue={target.target} />
-                                                                    <input type="hidden" name="status" value="selesai" />
-                                                                    <Button type="submit" size="sm">Tandai Selesai</Button>
-                                                                    <InputError message={errors.periode ?? errors.target ?? errors.status} />
-                                                                </>
-                                                            )}
-                                                        </Form>
-                                                    )}
-                                                    <Form {...TargetHafalanController.update.form({ targetHafalan: target.id })} className="mt-3 space-y-3">
-                                                        {({ errors }) => (
-                                                            <>
-                                                                <div className="grid gap-3 sm:grid-cols-3">
-                                                                    <div className="grid gap-1">
-                                                                        <Label htmlFor={`periode-${target.id}`}>Periode</Label>
-                                                                        <Input id={`periode-${target.id}`} name="periode" maxLength={50} defaultValue={target.periode} />
-                                                                        <InputError message={errors.periode} />
-                                                                    </div>
-                                                                    <div className="grid gap-1">
-                                                                        <Label htmlFor={`target-${target.id}`}>Target (ayat)</Label>
-                                                                        <Input id={`target-${target.id}`} name="target" type="number" min={1} defaultValue={target.target} />
-                                                                        <InputError message={errors.target} />
-                                                                    </div>
-                                                                    <div className="grid gap-1">
-                                                                        <Label htmlFor={`status-${target.id}`}>Status</Label>
-                                                                        <Select name="status" defaultValue={target.status}>
-                                                                            <SelectTrigger id={`status-${target.id}`}><SelectValue /></SelectTrigger>
-                                                                            <SelectContent>
-                                                                                {statuses.map((o) => (
-                                                                                    <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
-                                                                                ))}
-                                                                            </SelectContent>
-                                                                        </Select>
-                                                                        <InputError message={errors.status} />
-                                                                    </div>
-                                                                </div>
-                                                                <Button type="submit" size="sm">Update</Button>
-                                                            </>
-                                                        )}
-                                                    </Form>
                                                 </li>
                                             ))}
                                         </ul>
@@ -188,6 +131,25 @@ export default function UstadzTargetsIndex({ santris, statuses }: PageProps) {
                     )}
                 </CardContent>
             </Card>
+
+            <Dialog open={editing !== null} onOpenChange={(open) => !open && setEditing(null)}>
+                <DialogContent key={editing?.id}>
+                    <DialogHeader>
+                        <DialogTitle>Edit Target</DialogTitle>
+                        <DialogDescription>
+                            Perbarui target hafalan santri.
+                        </DialogDescription>
+                    </DialogHeader>
+                    {editing && (
+                        <TargetForm
+                            nilaiAwal={editing}
+                            santris={santris}
+                            statuses={statuses}
+                            onSuccess={() => setEditing(null)}
+                        />
+                    )}
+                </DialogContent>
+            </Dialog>
         </PageContainer>
     );
 }
