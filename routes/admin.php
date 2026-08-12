@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ExcelImportController;
 use App\Http\Controllers\Admin\HalaqahController;
 use App\Http\Controllers\Admin\MutabaahBulananDashboardController;
 use App\Http\Controllers\Admin\MutabaahSettingController;
@@ -38,4 +39,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::get('mutabaah-bulanan', [MutabaahBulananDashboardController::class, 'index'])->name('mutabaah-bulanan.index');
     Route::get('mutabaah-settings', [MutabaahSettingController::class, 'edit'])->name('mutabaah-settings.edit');
     Route::put('mutabaah-settings', [MutabaahSettingController::class, 'update'])->name('mutabaah-settings.update');
+
+    Route::get('excel-import', [ExcelImportController::class, 'index'])->name('excel-import.index');
+    Route::post('excel-import/preview', [ExcelImportController::class, 'preview'])->name('excel-import.preview');
+    Route::post('excel-import/execute', [ExcelImportController::class, 'execute'])->name('excel-import.execute');
 });
