@@ -26,11 +26,13 @@ class DatabaseSeeder extends Seeder
         $admin = User::factory()->role(UserRole::Admin)->create([
             'name' => 'Admin SIMAHAL',
             'email' => 'admin@simahal.test',
+            'password' => 'password',
         ]);
 
         $ustadzUser = User::factory()->role(UserRole::Ustadz)->create([
             'name' => 'Ustadz Ahmad',
             'email' => 'ustadz@simahal.test',
+            'password' => 'password',
         ]);
         $ustadz = Ustadz::factory()->create([
             'user_id' => $ustadzUser->id,
@@ -41,6 +43,7 @@ class DatabaseSeeder extends Seeder
         $santriUser = User::factory()->role(UserRole::Santri)->create([
             'name' => 'Santri Budi',
             'email' => 'santri@simahal.test',
+            'password' => 'password',
         ]);
         $santri = Santri::factory()->create([
             'user_id' => $santriUser->id,
@@ -52,6 +55,7 @@ class DatabaseSeeder extends Seeder
         $orangTuaUser = User::factory()->role(UserRole::OrangTua)->create([
             'name' => 'Bapak Budi',
             'email' => 'ortu@simahal.test',
+            'password' => 'password',
         ]);
         $orangTua = OrangTua::factory()->create([
             'user_id' => $orangTuaUser->id,
