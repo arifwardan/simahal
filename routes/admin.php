@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\HalaqahController;
+use App\Http\Controllers\Admin\MutabaahBulananDashboardController;
+use App\Http\Controllers\Admin\MutabaahSettingController;
 use App\Http\Controllers\Admin\OrangTuaController;
 use App\Http\Controllers\Admin\SantriController;
 use App\Http\Controllers\Admin\UserController;
@@ -32,4 +34,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::post('halaqahs', [HalaqahController::class, 'store'])->name('halaqahs.store');
     Route::patch('halaqahs/{halaqah}', [HalaqahController::class, 'update'])->name('halaqahs.update');
     Route::delete('halaqahs/{halaqah}', [HalaqahController::class, 'destroy'])->name('halaqahs.destroy');
+
+    Route::get('mutabaah-bulanan', [MutabaahBulananDashboardController::class, 'index'])->name('mutabaah-bulanan.index');
+    Route::get('mutabaah-settings', [MutabaahSettingController::class, 'edit'])->name('mutabaah-settings.edit');
+    Route::put('mutabaah-settings', [MutabaahSettingController::class, 'update'])->name('mutabaah-settings.update');
 });

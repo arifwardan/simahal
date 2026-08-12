@@ -2,12 +2,14 @@ import { Link, usePage } from '@inertiajs/react';
 import {
     BookMarked,
     BookOpen,
+    CalendarCheck,
     FolderGit2,
     GraduationCap,
     HeartHandshake,
     History,
     LayoutGrid,
     Library,
+    Settings,
     Target,
     Users,
 } from 'lucide-react';
@@ -26,6 +28,8 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import { index as halaqahsIndex } from '@/routes/admin/halaqahs';
+import { index as mutabaahBulananIndex } from '@/routes/admin/mutabaah-bulanan';
+import { edit as mutabaahSettingsEdit } from '@/routes/admin/mutabaah-settings';
 import { index as orangTuasIndex } from '@/routes/admin/orang-tuas';
 import { index as santrisIndex } from '@/routes/admin/santris';
 import { index as ustadzsIndex } from '@/routes/admin/ustadzs';
@@ -41,6 +45,8 @@ const adminNavItems: NavItem[] = [
     { title: 'Manajemen Ustadz', href: ustadzsIndex(), icon: BookMarked },
     { title: 'Manajemen Orang Tua', href: orangTuasIndex(), icon: HeartHandshake },
     { title: 'Manajemen Halaqah', href: halaqahsIndex(), icon: FolderGit2 },
+    { title: 'Mutabaah Bulanan', href: mutabaahBulananIndex(), icon: CalendarCheck },
+    { title: 'Pengaturan Mutabaah', href: mutabaahSettingsEdit(), icon: Settings },
 ];
 
 const ustadzNavItems: NavItem[] = [
