@@ -5,6 +5,7 @@ import MutabaahForm from '@/components/forms/MutabaahForm';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import PageContainer from '@/components/page-container';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -30,6 +31,15 @@ type SantriRow = {
     id: number;
     nama: string;
     nis?: string | null;
+    mutabaah_hari_ini?: {
+        id: number;
+        tanggal: string;
+        jenis: string;
+        surah: string;
+        ayat_mulai: number;
+        ayat_selesai: number;
+        status: string;
+    } | null;
 };
 
 type Option = { value: string; label: string };
@@ -449,6 +459,8 @@ export default function UstadzHalaqahSantris({
 }: PageProps) {
     const [catatSantri, setCatatSantri] = useState<SantriRow | null>(null);
     const [showRekap, setShowRekap] = useState(false);
+    const [highlightId, setHighlightId] = useState<number | null>(null);
+    const [processingSantri, setProcessingSantri] = useState<number | null>(null);
 
     return (
         <PageContainer>
@@ -469,27 +481,49 @@ export default function UstadzHalaqahSantris({
                 </CardHeader>
                 <CardContent>
                     <ul className="divide-y rounded-lg border">
-                        {santris.data.map((santri) => (
-                            <li
-                                key={santri.id}
-                                className="flex items-center justify-between gap-4 p-4"
-                            >
-                                <div>
-                                    <p className="font-medium">{santri.nama}</p>
-                                    {santri.nis && (
-                                        <p className="text-sm text-muted-foreground">
-                                            {santri.nis}
-                                        </p>
-                                    )}
-                                </div>
-                                <Button
-                                    size="sm"
-                                    onClick={() => setCatatSantri(santri)}
+                        {santris.data.map((santri) => {
+                            const recorded = santri.mutabaah_hari_ini;
+                            const isHighlighted = highlightId === santri.id;
+
+                            return (
+                                <li
+                                    key={santri.id}
+                                    className={`flex items-center justify-between gap-4 p-4 transition-colors ${
+                                        isHighlighted ? 'bg-emerald-50 ring-1 ring-emerald-300 dark:bg-emerald-500/10 dark:ring-emerald-500/40' : ''
+                                    }`}
                                 >
-                                    Catat Mutabaah
-                                </Button>
-                            </li>
-                        ))}
+                                    <div>
+                                        <p className="font-medium">{santri.nama}</p>
+                                        {santri.nis && (
+                                            <p className="text-sm text-muted-foreground">
+                                                {santri.nis}
+                                            </p>
+                                        )}
+                                        {recorded && (
+                                            <p className="mt-1 text-xs text-muted-foreground">
+                                                {recorded.jenis} · {recorded.surah} {recorded.ayat_mulai}-{recorded.ayat_selesai}
+                                            </p>
+                                        )}
+                                    </div>
+                                    {recorded ? (
+                                        <Badge variant="secondary" className="shrink-0">
+                                            Sudah dicatat ✓
+                                        </Badge>
+                                    ) : (
+                                        <Button
+                                            size="sm"
+                                            onClick={() => {
+                                                setProcessingSantri(santri.id);
+                                                setCatatSantri(santri);
+                                            }}
+                                            disabled={processingSantri !== null}
+                                        >
+                                            Catat
+                                        </Button>
+                                    )}
+                                </li>
+                            );
+                        })}
                     </ul>
                 </CardContent>
             </Card>
@@ -512,7 +546,16 @@ export default function UstadzHalaqahSantris({
                             santri={catatSantri}
                             jenisOptions={jenisOptions}
                             statusOptions={statusOptions}
-                            onSuccess={() => setCatatSantri(null)}
+                            onSuccess={() => {
+                                setProcessingSantri(null);
+                                setCatatSantri(null);
+                                const next = santris.data.find(
+                                    (s) =>
+                                        s.id !== catatSantri?.id &&
+                                        !s.mutabaah_hari_ini,
+                                );
+                                setHighlightId(next?.id ?? null);
+                            }}
                         />
                     )}
                 </DialogContent>
