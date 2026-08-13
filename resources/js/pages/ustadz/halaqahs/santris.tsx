@@ -530,7 +530,12 @@ export default function UstadzHalaqahSantris({
 
             <Dialog
                 open={catatSantri !== null}
-                onOpenChange={(open) => !open && setCatatSantri(null)}
+                onOpenChange={(open) => {
+                    if (!open) {
+                        setCatatSantri(null);
+                        setProcessingSantri(null);
+                    }
+                }}
             >
                 <DialogContent key={catatSantri?.id}>
                     <DialogHeader>
