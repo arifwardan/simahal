@@ -1,4 +1,4 @@
-import { Form } from '@inertiajs/react';
+import { Form, router } from '@inertiajs/react';
 import { useState } from 'react';
 import MutabaahBulananController from '@/actions/App/Http/Controllers/Ustadz/MutabaahBulananController';
 import MutabaahForm from '@/components/forms/MutabaahForm';
@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/select';
 import { keterangan, tambahHalaman, tambahJuz } from '@/lib/mutabaah-bulanan';
 import { index as halaqahIndex } from '@/routes/ustadz/halaqahs';
+import { show as santrisShow } from '@/routes/ustadz/halaqahs/santris';
 
 type SantriRow = {
     id: number;
@@ -256,18 +257,19 @@ function RekapSantriForm({
 
 function RekapBulananDialog({
     halaqahNama,
+    halaqahId,
     bulan,
     settings,
     bulanan,
     onClose,
 }: {
     halaqahNama: string;
+    halaqahId: number;
     bulan: number;
     settings: Settings;
     bulanan: BulananRow[];
     onClose: () => void;
 }) {
-    const [rekapBulan, setRekapBulan] = useState(bulan);
     const [selected, setSelected] = useState<BulananRow | null>(null);
 
     return (
@@ -290,7 +292,7 @@ function RekapBulananDialog({
                     <RekapSantriForm
                         key={selected.santri_id}
                         row={selected}
-                        bulan={rekapBulan}
+                        bulan={bulan}
                         settings={settings}
                         onBack={() => setSelected(null)}
                         onSuccess={() => setSelected(null)}
@@ -300,10 +302,23 @@ function RekapBulananDialog({
                         <div className="flex items-center gap-2">
                             <Label className="shrink-0">Bulan</Label>
                             <Select
-                                value={String(rekapBulan)}
-                                onValueChange={(value) =>
-                                    setRekapBulan(Number(value))
-                                }
+                                value={String(bulan)}
+                                onValueChange={(value) => {
+                                    const next = Number(value);
+                                    if (next !== bulan) {
+                                        router.get(
+                                            santrisShow(
+                                                { halaqah: halaqahId },
+                                                { query: { bulan: next } },
+                                            ),
+                                            {},
+                                            {
+                                                preserveState: true,
+                                                replace: true,
+                                            },
+                                        );
+                                    }
+                                }}
                             >
                                 <SelectTrigger className="w-44">
                                     <SelectValue />
@@ -486,6 +501,7 @@ export default function UstadzHalaqahSantris({
             {showRekap && (
                 <RekapBulananDialog
                     halaqahNama={halaqah.nama}
+                    halaqahId={halaqah.id}
                     bulan={bulan}
                     settings={settings}
                     bulanan={bulanan}
