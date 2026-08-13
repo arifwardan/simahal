@@ -3,7 +3,7 @@ import type { LucideIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
-type Tone = 'violet' | 'indigo' | 'fuchsia' | 'teal' | 'amber' | 'emerald' | 'sky' | 'rose';
+type Tone = 'violet' | 'indigo' | 'fuchsia' | 'teal' | 'amber';
 
 type Delta = {
     direction: 'up' | 'down';
@@ -27,9 +27,6 @@ const toneClasses: Record<Tone, string> = {
         'bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-500/15 dark:text-fuchsia-300',
     teal: 'bg-teal-100 text-teal-700 dark:bg-teal-500/15 dark:text-teal-300',
     amber: 'bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300',
-    emerald: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300',
-    sky: 'bg-sky-100 text-sky-700 dark:bg-sky-500/15 dark:text-sky-300',
-    rose: 'bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300',
 };
 
 export default function StatCard({
