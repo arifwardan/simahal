@@ -135,3 +135,42 @@ test('halaman is required to store a mutabaah', function () {
         'status' => MutabaahStatus::Lulus->value,
     ])->assertSessionHasErrors('halaman');
 });
+
+test('santri shows mutabaah_hari_ini null when no record today', function () {
+    $ustadz = makeActingUstadz($this);
+    $halaqah = Halaqah::factory()->create(['ustadz_id' => $ustadz->id]);
+    $santri = Santri::factory()->create();
+    $halaqah->santris()->attach($santri->id);
+
+    $this->get(route('ustadz.halaqahs.santris.show', $halaqah))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('ustadz/halaqahs/santris')
+            ->has('santris.data.0.mutabaah_hari_ini')
+            ->where('santris.data.0.mutabaah_hari_ini', null));
+});
+
+test('santri shows latest mutabaah_hari_ini when recorded today', function () {
+    $ustadz = makeActingUstadz($this);
+    $halaqah = Halaqah::factory()->create(['ustadz_id' => $ustadz->id]);
+    $santri = Santri::factory()->create();
+    $halaqah->santris()->attach($santri->id);
+
+    Mutabaah::factory()->create([
+        'santri_id' => $santri->id,
+        'tanggal' => now()->toDateString(),
+        'surah' => 'Al-Fatihah',
+        'ayat_mulai' => 1,
+        'ayat_selesai' => 7,
+        'status' => 'lulus',
+    ]);
+
+    $this->get(route('ustadz.halaqahs.santris.show', $halaqah))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('ustadz/halaqahs/santris')
+            ->has('santris.data.0.mutabaah_hari_ini', fn ($m) => $m
+                ->where('surah', 'Al-Fatihah')
+                ->where('status', 'lulus')
+                ->etc()));
+});

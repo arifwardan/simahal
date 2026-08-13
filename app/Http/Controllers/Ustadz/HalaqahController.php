@@ -7,6 +7,7 @@ use App\Enums\MutabaahJenis;
 use App\Enums\MutabaahStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Halaqah;
+use App\Models\Mutabaah;
 use App\Models\MutabaahBulanan;
 use App\Models\MutabaahSetting;
 use App\Models\Santri;
@@ -38,9 +39,35 @@ class HalaqahController extends Controller
 
         abort_unless($ustadz?->id === $halaqah->ustadz_id, 403, __('You do not manage this halaqah.'));
 
+        $santriIds = $halaqah->santris()->pluck('santris.id');
+
+        $todayMutabaahs = Mutabaah::query()
+            ->whereIn('santri_id', $santriIds)
+            ->whereDate('tanggal', now()->toDateString())
+            ->get()
+            ->groupBy('santri_id');
+
         $santris = $halaqah->santris()
             ->orderBy('nama')
-            ->paginate(15);
+            ->paginate(15)
+            ->through(function (Santri $santri) use ($todayMutabaahs) {
+                $latest = $todayMutabaahs->get($santri->id)?->last();
+
+                return [
+                    'id' => $santri->id,
+                    'nama' => $santri->nama,
+                    'nis' => $santri->nis,
+                    'mutabaah_hari_ini' => $latest ? [
+                        'id' => $latest->id,
+                        'tanggal' => $latest->tanggal?->toDateString(),
+                        'jenis' => $latest->jenis->value,
+                        'surah' => $latest->surah,
+                        'ayat_mulai' => $latest->ayat_mulai,
+                        'ayat_selesai' => $latest->ayat_selesai,
+                        'status' => $latest->status->value,
+                    ] : null,
+                ];
+            });
 
         $settings = MutabaahSetting::setting();
         $bulan = $request->integer('bulan', now()->month);
