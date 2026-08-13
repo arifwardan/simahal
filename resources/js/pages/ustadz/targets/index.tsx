@@ -1,10 +1,10 @@
 import { Form } from '@inertiajs/react';
+import { useState } from 'react';
 import TargetHafalanController from '@/actions/App/Http/Controllers/Ustadz/TargetHafalanController';
 import TargetForm from '@/components/forms/TargetForm';
 import type { TargetRow } from '@/components/forms/TargetForm';
 import Heading from '@/components/heading';
 import PageContainer from '@/components/page-container';
-import { index } from '@/routes/ustadz/targets';
 import { Button } from '@/components/ui/button';
 import {
     Card,
@@ -20,7 +20,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import { useState } from 'react';
+import { index } from '@/routes/ustadz/targets';
 
 type Target = {
     id: number;

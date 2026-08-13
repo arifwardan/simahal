@@ -1,15 +1,15 @@
 import { useForm } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
+import { FileUp, CheckCircle2, AlertCircle } from 'lucide-react';
 import ExcelImportController from '@/actions/App/Http/Controllers/Admin/ExcelImportController';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import PageContainer from '@/components/page-container';
-import { index as excelImportIndex } from '@/routes/admin/excel-import';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Link } from '@inertiajs/react';
-import { FileUp, CheckCircle2, AlertCircle } from 'lucide-react';
+import { index as excelImportIndex } from '@/routes/admin/excel-import';
 
 type PlanItem = {
     type: 'ustadz' | 'halaqah' | 'santri';

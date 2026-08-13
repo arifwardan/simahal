@@ -2,8 +2,6 @@ import { Link } from '@inertiajs/react';
 import { ChevronRight } from 'lucide-react';
 import Heading from '@/components/heading';
 import PageContainer from '@/components/page-container';
-import { index } from '@/routes/ustadz/halaqahs';
-import { show as santrisShow } from '@/routes/ustadz/halaqahs/santris';
 import { Badge } from '@/components/ui/badge';
 import {
     Card,
@@ -11,6 +9,8 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
+import { index } from '@/routes/ustadz/halaqahs';
+import { show as santrisShow } from '@/routes/ustadz/halaqahs/santris';
 
 type HalaqahRow = {
     id: number;

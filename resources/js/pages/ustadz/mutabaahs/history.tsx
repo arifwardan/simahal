@@ -1,9 +1,8 @@
-import { Link } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
+import { useState } from 'react';
 import Heading from '@/components/heading';
 import PageContainer from '@/components/page-container';
-import { history } from '@/routes/ustadz/mutabaahs';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import {
     Card,
     CardContent,
@@ -17,8 +16,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { router } from '@inertiajs/react';
-import { useState } from 'react';
+import { history } from '@/routes/ustadz/mutabaahs';
 
 type MutabaahRow = {
     id: number;

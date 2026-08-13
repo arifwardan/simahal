@@ -6,16 +6,16 @@ import {
     GraduationCap,
     HeartHandshake,
 } from 'lucide-react';
-import StatCard from '@/components/dashboard/stat-card';
-import DashboardHero from '@/components/dashboard/dashboard-hero';
-import SectionHeading from '@/components/dashboard/section-heading';
 import MutabaahStatusDonut from '@/components/dashboard/charts/mutabaah-status-donut';
 import SantriJenisDonut from '@/components/dashboard/charts/santri-jenis-donut';
+import DashboardHero from '@/components/dashboard/dashboard-hero';
+import SectionHeading from '@/components/dashboard/section-heading';
+import StatCard from '@/components/dashboard/stat-card';
 import PageContainer from '@/components/page-container';
-import { dashboard } from '@/routes';
-import { index as santrisIndex } from '@/routes/admin/santris';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { dashboard } from '@/routes';
+import { index as santrisIndex } from '@/routes/admin/santris';
 
 type ChartSlice = {
     key: string;

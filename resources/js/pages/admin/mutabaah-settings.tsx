@@ -3,7 +3,6 @@ import MutabaahSettingController from '@/actions/App/Http/Controllers/Admin/Muta
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import PageContainer from '@/components/page-container';
-import { edit } from '@/routes/admin/mutabaah-settings';
 import { Button } from '@/components/ui/button';
 import {
     Card,
@@ -14,6 +13,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { edit } from '@/routes/admin/mutabaah-settings';
 
 type MutabaahSettings = {
     konversi_juz_halaman: number;

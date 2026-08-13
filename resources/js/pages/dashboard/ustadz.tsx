@@ -1,14 +1,14 @@
 import { Head, Link } from '@inertiajs/react';
 import { ClipboardCheck, FolderGit2, GraduationCap } from 'lucide-react';
-import StatCard from '@/components/dashboard/stat-card';
+import MutabaahStatusDonut from '@/components/dashboard/charts/mutabaah-status-donut';
 import DashboardHero from '@/components/dashboard/dashboard-hero';
 import SectionHeading from '@/components/dashboard/section-heading';
-import MutabaahStatusDonut from '@/components/dashboard/charts/mutabaah-status-donut';
+import StatCard from '@/components/dashboard/stat-card';
 import PageContainer from '@/components/page-container';
-import { dashboard } from '@/routes';
-import { index as halaqahsIndex } from '@/routes/ustadz/halaqahs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { dashboard } from '@/routes';
+import { index as halaqahsIndex } from '@/routes/ustadz/halaqahs';
 
 type ChartSlice = {
     key: string;

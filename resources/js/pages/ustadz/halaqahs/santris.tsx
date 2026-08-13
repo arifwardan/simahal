@@ -305,6 +305,7 @@ function RekapBulananDialog({
                                 value={String(bulan)}
                                 onValueChange={(value) => {
                                     const next = Number(value);
+
                                     if (next !== bulan) {
                                         router.get(
                                             santrisShow(

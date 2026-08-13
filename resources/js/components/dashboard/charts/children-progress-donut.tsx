@@ -1,7 +1,6 @@
+import DistributionDonut from '@/components/dashboard/charts/distribution-donut';
+import type {ChartSlice} from '@/components/dashboard/charts/distribution-donut';
 import type { ChartConfig } from '@/components/ui/chart';
-import DistributionDonut, {
-    type ChartSlice,
-} from '@/components/dashboard/charts/distribution-donut';
 
 const config = {
     berlangsung: { label: 'Berlangsung', color: 'var(--chart-1)' },

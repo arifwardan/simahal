@@ -1,7 +1,7 @@
 import { router } from '@inertiajs/react';
+import { useState } from 'react';
 import Heading from '@/components/heading';
 import PageContainer from '@/components/page-container';
-import { index } from '@/routes/admin/mutabaah-bulanan';
 import {
     Card,
     CardContent,
@@ -16,7 +16,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { useState } from 'react';
+import { index } from '@/routes/admin/mutabaah-bulanan';
 
 type MutabaahRow = {
     jenis: string;

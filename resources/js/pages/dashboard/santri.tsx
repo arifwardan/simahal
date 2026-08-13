@@ -1,7 +1,7 @@
 import { Head } from '@inertiajs/react';
+import MutabaahStatusDonut from '@/components/dashboard/charts/mutabaah-status-donut';
 import DashboardHero from '@/components/dashboard/dashboard-hero';
 import SectionHeading from '@/components/dashboard/section-heading';
-import MutabaahStatusDonut from '@/components/dashboard/charts/mutabaah-status-donut';
 import PageContainer from '@/components/page-container';
 import SantriProgressView from '@/components/santri-progress-view';
 import { dashboard } from '@/routes';
