@@ -71,24 +71,6 @@ type BulananRow = {
     } | null;
 };
 
-type BatchRow = {
-    santri_id: number;
-    nama: string;
-    halaman_awal_bulan: number | null;
-    halaman_kumulatif: number | string;
-    juz_dihafal: string;
-    tasmi_pekan_1: number | string;
-    tasmi_pekan_2: number | string;
-    tasmi_pekan_3: number | string;
-    tasmi_pekan_4: number | string;
-    tasmi_pekan_5: number | string;
-    ujian_soal_1: number | string;
-    ujian_soal_2: number | string;
-    ujian_soal_3: number | string;
-    ujian_soal_4: number | string;
-    ujian_soal_5: number | string;
-};
-
 type Halaqah = { id: number; nama: string };
 
 type PageProps = {
@@ -133,30 +115,6 @@ const UJIAN_KEYS = [
     'ujian_soal_5',
 ] as const;
 
-function buildRows(bulanan: BulananRow[]): BatchRow[] {
-    return bulanan.map((b) => ({
-        santri_id: b.santri_id,
-        nama: b.nama,
-        halaman_awal_bulan: b.halaman_awal_bulan,
-        halaman_kumulatif:
-            b.existing?.halaman_kumulatif ?? b.prefill_kumulatif ?? '',
-        juz_dihafal:
-            b.existing?.juz_dihafal != null
-                ? String(b.existing.juz_dihafal)
-                : '',
-        tasmi_pekan_1: b.existing?.tasmi_pekan_1 ?? '',
-        tasmi_pekan_2: b.existing?.tasmi_pekan_2 ?? '',
-        tasmi_pekan_3: b.existing?.tasmi_pekan_3 ?? '',
-        tasmi_pekan_4: b.existing?.tasmi_pekan_4 ?? '',
-        tasmi_pekan_5: b.existing?.tasmi_pekan_5 ?? '',
-        ujian_soal_1: b.existing?.ujian_soal_1 ?? '',
-        ujian_soal_2: b.existing?.ujian_soal_2 ?? '',
-        ujian_soal_3: b.existing?.ujian_soal_3 ?? '',
-        ujian_soal_4: b.existing?.ujian_soal_4 ?? '',
-        ujian_soal_5: b.existing?.ujian_soal_5 ?? '',
-    }));
-}
-
 function toNumber(value: number | string | null | undefined): number | null {
     if (value === null || value === undefined || value === '') {
         return null;
@@ -165,6 +123,135 @@ function toNumber(value: number | string | null | undefined): number | null {
     const parsed = Number(value);
 
     return Number.isNaN(parsed) ? null : parsed;
+}
+
+function RekapSantriForm({
+    row,
+    bulan,
+    settings,
+    onBack,
+    onSuccess,
+}: {
+    row: BulananRow;
+    bulan: number;
+    settings: Settings;
+    onBack: () => void;
+    onSuccess: () => void;
+}) {
+    const [halamanKumulatif, setHalamanKumulatif] = useState<string | number>(
+        row.existing?.halaman_kumulatif ?? row.prefill_kumulatif ?? '',
+    );
+
+    const initial = {
+        juz_dihafal: row.existing?.juz_dihafal ?? '',
+        tasmi_pekan_1: row.existing?.tasmi_pekan_1 ?? '',
+        tasmi_pekan_2: row.existing?.tasmi_pekan_2 ?? '',
+        tasmi_pekan_3: row.existing?.tasmi_pekan_3 ?? '',
+        tasmi_pekan_4: row.existing?.tasmi_pekan_4 ?? '',
+        tasmi_pekan_5: row.existing?.tasmi_pekan_5 ?? '',
+        ujian_soal_1: row.existing?.ujian_soal_1 ?? '',
+        ujian_soal_2: row.existing?.ujian_soal_2 ?? '',
+        ujian_soal_3: row.existing?.ujian_soal_3 ?? '',
+        ujian_soal_4: row.existing?.ujian_soal_4 ?? '',
+        ujian_soal_5: row.existing?.ujian_soal_5 ?? '',
+    };
+
+    const kumulatif = toNumber(halamanKumulatif);
+
+    return (
+        <Form
+            {...MutabaahBulananController.update.form({ bulan })}
+            onSuccess={onSuccess}
+        >
+            {({ errors, processing }) => (
+                <div className="space-y-4">
+                    <input type="hidden" name="santri_id" value={row.santri_id} />
+
+                    <div className="grid gap-2">
+                        <Label>Halaman Kumulatif</Label>
+                        <Input
+                            type="number"
+                            name="halaman_kumulatif"
+                            min={row.halaman_awal_bulan ?? 0}
+                            value={halamanKumulatif}
+                            onChange={(e) => setHalamanKumulatif(e.target.value)}
+                        />
+                        <InputError message={errors.halaman_kumulatif} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label>Juz Dihafal</Label>
+                        <Input
+                            type="text"
+                            name="juz_dihafal"
+                            defaultValue={initial.juz_dihafal}
+                        />
+                        <InputError message={errors.juz_dihafal} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label>Tasmi (Pekan 1-5)</Label>
+                        <div className="grid grid-cols-5 gap-1">
+                            {TASMI_KEYS.map((key) => (
+                                <Input
+                                    key={key}
+                                    type="number"
+                                    min={10}
+                                    max={100}
+                                    name={key}
+                                    defaultValue={initial[key]}
+                                />
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label>Ujian (Soal 1-5)</Label>
+                        <div className="grid grid-cols-5 gap-1">
+                            {UJIAN_KEYS.map((key) => (
+                                <Input
+                                    key={key}
+                                    type="number"
+                                    min={10}
+                                    max={100}
+                                    name={key}
+                                    defaultValue={initial[key]}
+                                />
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="space-y-0.5 rounded-lg border bg-muted/40 p-3 text-sm">
+                        <p>
+                            +{tambahHalaman(kumulatif, row.halaman_awal_bulan)}{' '}
+                            hal
+                        </p>
+                        <p>
+                            +
+                            {tambahJuz(
+                                kumulatif,
+                                row.halaman_awal_bulan,
+                                settings.konversi_juz_halaman,
+                            )}{' '}
+                            juz
+                        </p>
+                        <p className="font-medium">
+                            {keterangan(kumulatif, row.halaman_awal_bulan, settings)}
+                        </p>
+                    </div>
+
+                    <div className="flex justify-between">
+                        <Button type="button" variant="outline" onClick={onBack}>
+                            Kembali
+                        </Button>
+                        <Button type="submit" disabled={processing}>
+                            {processing ? 'Menyimpan...' : 'Simpan Rekap'}
+                        </Button>
+                    </div>
+                </div>
+            )}
+        </Form>
+    );
 }
 
 function RekapBulananDialog({
@@ -181,268 +268,98 @@ function RekapBulananDialog({
     onClose: () => void;
 }) {
     const [rekapBulan, setRekapBulan] = useState(bulan);
-    const [rows, setRows] = useState<BatchRow[]>(() => buildRows(bulanan));
-
-    function updateRow(
-        i: number,
-        field: keyof BatchRow,
-        value: number | string,
-    ): void {
-        setRows((prev) =>
-            prev.map((row, idx) =>
-                idx === i ? { ...row, [field]: value } : row,
-            ),
-        );
-    }
+    const [selected, setSelected] = useState<BulananRow | null>(null);
 
     return (
         <Dialog open onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="max-w-5xl">
+            <DialogContent className="max-w-3xl">
                 <DialogHeader>
-                    <DialogTitle>Rekap Bulanan</DialogTitle>
+                    <DialogTitle>
+                        {selected
+                            ? `Rekap Bulanan — ${selected.nama}`
+                            : 'Rekap Bulanan'}
+                    </DialogTitle>
                     <DialogDescription>
-                        Input mutabaah bulanan untuk semua santri dalam halaqah{' '}
-                        {halaqahNama}.
+                        {selected
+                            ? `Input mutabaah bulanan untuk ${selected.nama} (halaqah ${halaqahNama}).`
+                            : `Pilih santri untuk mengisi mutabaah bulanan halaqah ${halaqahNama}.`}
                     </DialogDescription>
                 </DialogHeader>
 
-                <Form
-                    {...MutabaahBulananController.update.form({
-                        bulan: rekapBulan,
-                    })}
-                    onSuccess={onClose}
-                >
-                    {({ errors, processing }) => (
-                        <div className="space-y-4">
-                            <div className="flex items-center gap-2">
-                                <Label className="shrink-0">Bulan</Label>
-                                <Select
-                                    value={String(rekapBulan)}
-                                    onValueChange={(value) =>
-                                        setRekapBulan(Number(value))
-                                    }
-                                >
-                                    <SelectTrigger className="w-44">
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {NAMA_BULAN.map((label, i) => (
-                                            <SelectItem
-                                                key={label}
-                                                value={String(i + 1)}
-                                            >
-                                                {label}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            <div className="max-h-[calc(100%-2rem)] overflow-auto rounded-lg border">
-                                <table className="w-full text-sm">
-                                    <thead className="bg-muted/50">
-                                        <tr className="border-b text-left text-muted-foreground">
-                                            <th className="sticky top-0 bg-muted/50 py-2 pr-4">
-                                                Santri
-                                            </th>
-                                            <th className="py-2 pr-4">
-                                                Halaman Awal
-                                            </th>
-                                            <th className="py-2 pr-4">
-                                                Halaman Kumulatif
-                                            </th>
-                                            <th className="py-2 pr-4">
-                                                Juz Dihafal
-                                            </th>
-                                            <th className="py-2 pr-4">
-                                                Tasmi (Pekan 1-5)
-                                            </th>
-                                            <th className="py-2 pr-4">
-                                                Ujian (Soal 1-5)
-                                            </th>
-                                            <th className="py-2">Preview</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {rows.map((row, i) => {
-                                            const kumulatif = toNumber(
-                                                row.halaman_kumulatif,
-                                            );
-
-                                            return (
-                                                <tr
-                                                    key={row.santri_id}
-                                                    className="border-b align-top last:border-0"
-                                                >
-                                                    <td className="py-2 pr-4 font-medium">
-                                                        {row.nama}
-                                                    </td>
-                                                    <td className="py-2 pr-4">
-                                                        {row.halaman_awal_bulan ??
-                                                            '—'}
-                                                    </td>
-                                                    <td className="py-2 pr-4">
-                                                        <input
-                                                            type="hidden"
-                                                            name={`records[${i}][santri_id]`}
-                                                            value={
-                                                                row.santri_id
-                                                            }
-                                                        />
-                                                        <Input
-                                                            type="number"
-                                                            name={`records[${i}][halaman_kumulatif]`}
-                                                            min={
-                                                                row.halaman_awal_bulan ??
-                                                                0
-                                                            }
-                                                            value={
-                                                                row.halaman_kumulatif
-                                                            }
-                                                            onChange={(e) =>
-                                                                updateRow(
-                                                                    i,
-                                                                    'halaman_kumulatif',
-                                                                    e.target
-                                                                        .value,
-                                                                )
-                                                            }
-                                                        />
-                                                    </td>
-                                                    <td className="py-2 pr-4">
-                                                        <Input
-                                                            type="text"
-                                                            name={`records[${i}][juz_dihafal]`}
-                                                            value={
-                                                                row.juz_dihafal
-                                                            }
-                                                            onChange={(e) =>
-                                                                updateRow(
-                                                                    i,
-                                                                    'juz_dihafal',
-                                                                    e.target
-                                                                        .value,
-                                                                )
-                                                            }
-                                                        />
-                                                    </td>
-                                                    <td className="py-2 pr-4">
-                                                        <div className="grid grid-cols-5 gap-1">
-                                                            {TASMI_KEYS.map(
-                                                                (key) => (
-                                                                    <Input
-                                                                        key={
-                                                                            key
-                                                                        }
-                                                                        type="number"
-                                                                        name={`records[${i}][${key}]`}
-                                                                        min={10}
-                                                                        max={
-                                                                            100
-                                                                        }
-                                                                        value={
-                                                                            row[
-                                                                                key
-                                                                            ]
-                                                                        }
-                                                                        onChange={(
-                                                                            e,
-                                                                        ) =>
-                                                                            updateRow(
-                                                                                i,
-                                                                                key,
-                                                                                e
-                                                                                    .target
-                                                                                    .value,
-                                                                            )
-                                                                        }
-                                                                    />
-                                                                ),
-                                                            )}
-                                                        </div>
-                                                    </td>
-                                                    <td className="py-2 pr-4">
-                                                        <div className="grid grid-cols-5 gap-1">
-                                                            {UJIAN_KEYS.map(
-                                                                (key) => (
-                                                                    <Input
-                                                                        key={
-                                                                            key
-                                                                        }
-                                                                        type="number"
-                                                                        name={`records[${i}][${key}]`}
-                                                                        min={10}
-                                                                        max={
-                                                                            100
-                                                                        }
-                                                                        value={
-                                                                            row[
-                                                                                key
-                                                                            ]
-                                                                        }
-                                                                        onChange={(
-                                                                            e,
-                                                                        ) =>
-                                                                            updateRow(
-                                                                                i,
-                                                                                key,
-                                                                                e
-                                                                                    .target
-                                                                                    .value,
-                                                                            )
-                                                                        }
-                                                                    />
-                                                                ),
-                                                            )}
-                                                        </div>
-                                                    </td>
-                                                    <td className="py-2">
-                                                        <div className="space-y-0.5 text-xs text-muted-foreground">
-                                                            <p>
-                                                                +
-                                                                {tambahHalaman(
-                                                                    kumulatif,
-                                                                    row.halaman_awal_bulan,
-                                                                )}{' '}
-                                                                hal
-                                                            </p>
-                                                            <p>
-                                                                +
-                                                                {tambahJuz(
-                                                                    kumulatif,
-                                                                    row.halaman_awal_bulan,
-                                                                    settings.konversi_juz_halaman,
-                                                                )}{' '}
-                                                                juz
-                                                            </p>
-                                                            <p className="font-medium text-foreground">
-                                                                {keterangan(
-                                                                    kumulatif,
-                                                                    row.halaman_awal_bulan,
-                                                                    settings,
-                                                                )}
-                                                            </p>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })}
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <InputError message={errors.records} />
-
-                            <div className="flex justify-end">
-                                <Button type="submit" disabled={processing}>
-                                    {processing
-                                        ? 'Menyimpan...'
-                                        : 'Simpan Rekap Bulanan'}
-                                </Button>
-                            </div>
+                {selected ? (
+                    <RekapSantriForm
+                        key={selected.santri_id}
+                        row={selected}
+                        bulan={rekapBulan}
+                        settings={settings}
+                        onBack={() => setSelected(null)}
+                        onSuccess={() => setSelected(null)}
+                    />
+                ) : (
+                    <>
+                        <div className="flex items-center gap-2">
+                            <Label className="shrink-0">Bulan</Label>
+                            <Select
+                                value={String(rekapBulan)}
+                                onValueChange={(value) =>
+                                    setRekapBulan(Number(value))
+                                }
+                            >
+                                <SelectTrigger className="w-44">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {NAMA_BULAN.map((label, i) => (
+                                        <SelectItem
+                                            key={label}
+                                            value={String(i + 1)}
+                                        >
+                                            {label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
-                    )}
-                </Form>
+
+                        <ul className="max-h-[60vh] divide-y overflow-auto rounded-lg border">
+                            {bulanan.map((row) => {
+                                const kumulatif =
+                                    row.existing?.halaman_kumulatif ?? null;
+                                const terisi = row.existing !== null;
+
+                                return (
+                                    <li key={row.santri_id}>
+                                        <button
+                                            type="button"
+                                            onClick={() => setSelected(row)}
+                                            className="flex w-full items-center justify-between gap-4 p-4 text-left transition-colors hover:bg-muted/50"
+                                        >
+                                            <div>
+                                                <p className="font-medium">
+                                                    {row.nama}
+                                                </p>
+                                                <p className="text-sm text-muted-foreground">
+                                                    {terisi
+                                                        ? `Kumulatif ${row.existing?.halaman_kumulatif} hal · +${tambahHalaman(kumulatif, row.halaman_awal_bulan)} hal · +${tambahJuz(kumulatif, row.halaman_awal_bulan, settings.konversi_juz_halaman)} juz · ${keterangan(kumulatif, row.halaman_awal_bulan, settings)}`
+                                                        : 'Belum diisi bulan ini'}
+                                                </p>
+                                            </div>
+                                            {terisi ? (
+                                                <Badge variant="secondary">
+                                                    Sudah diisi ✓
+                                                </Badge>
+                                            ) : (
+                                                <span className="text-sm font-medium text-primary">
+                                                    Isi Rekap
+                                                </span>
+                                            )}
+                                        </button>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </>
+                )}
             </DialogContent>
         </Dialog>
     );
