@@ -15,15 +15,18 @@ final class ExcelFixtures
         $spreadsheet = new Spreadsheet;
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Data Kelompok');
-        $sheet->setCellValue('A3', 'No');
-        $sheet->setCellValue('B3', 'Jenis');
-        $sheet->setCellValue('C3', 'Kelompok');
-        $sheet->setCellValue('D3', 'Muhafidz/Muhafidzah');
-        $sheet->setCellValue('E3', 'Nama Santri');
-        $sheet->setCellValue('F3', 'Halaman Awal');
+        // Meniru struktur file asli Mutabaah_Hafalan_Santri.xlsx: judul & statistik
+        // di baris 1-3, header di baris 4, data mulai baris 5.
+        $sheet->setCellValue('A1', 'DATA KELOMPOK MUHAFIDZ & SANTRI');
+        $sheet->setCellValue('A4', 'No');
+        $sheet->setCellValue('B4', 'Jenis');
+        $sheet->setCellValue('C4', 'Kelompok');
+        $sheet->setCellValue('D4', 'Muhafidz/Muhafidzah');
+        $sheet->setCellValue('E4', 'Nama Santri');
+        $sheet->setCellValue('F4', 'Halaman Awal (Sebelum Program)');
 
         foreach ($rows as $i => $row) {
-            $no = $i + 4;
+            $no = $i + 5;
             $sheet->setCellValue("A{$no}", $i + 1);
             $sheet->setCellValue("B{$no}", $row['jenis']);
             $sheet->setCellValue("C{$no}", $row['kelompok']);

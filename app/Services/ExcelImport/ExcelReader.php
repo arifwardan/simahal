@@ -3,6 +3,7 @@
 namespace App\Services\ExcelImport;
 
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use RuntimeException;
 
 final class ExcelReader
@@ -19,7 +20,9 @@ final class ExcelReader
         $groups = [];
         $santris = [];
 
-        for ($row = 4; $row <= $sheet->getHighestDataRow(); $row++) {
+        $headerRow = $this->locateHeaderRow($sheet);
+
+        for ($row = $headerRow + 1; $row <= $sheet->getHighestDataRow(); $row++) {
             $no = trim((string) $sheet->getCell("A{$row}")->getValue());
             $jenis = trim((string) $sheet->getCell("B{$row}")->getValue());
             $kelompok = trim((string) $sheet->getCell("C{$row}")->getValue());
@@ -62,6 +65,42 @@ final class ExcelReader
         $name = preg_replace('/\s+/u', ' ', $name) ?? $name;
 
         return mb_strtolower(trim($name), 'UTF-8');
+    }
+
+    private function locateHeaderRow(Worksheet $sheet): int
+    {
+        $highest = $sheet->getHighestDataRow();
+
+        for ($row = 1; $row <= $highest; $row++) {
+            $e = mb_strtolower(trim((string) $sheet->getCell("E{$row}")->getValue()), 'UTF-8');
+            $b = mb_strtolower(trim((string) $sheet->getCell("B{$row}")->getValue()), 'UTF-8');
+
+            if (str_contains($e, 'nama santri')) {
+                return $row;
+            }
+            if ($this->isPlausibleHeaderRow($e, $b)) {
+                return $row;
+            }
+        }
+
+        throw new RuntimeException('Baris header sheet "Data Kelompok" tidak ditemukan.');
+    }
+
+    private function isPlausibleHeaderRow(string $cellE, string $cellB): bool
+    {
+        $known = ['no', 'jenis', 'kelompok', 'muhafidz', 'nama santri', 'halaman awal'];
+
+        $hits = 0;
+        foreach ([$cellE, $cellB] as $cell) {
+            foreach ($known as $label) {
+                if (str_contains($cell, $label)) {
+                    $hits++;
+                    break;
+                }
+            }
+        }
+
+        return $hits >= 2;
     }
 
     public function isPlaceholderSantri(string $normalizedNama): bool

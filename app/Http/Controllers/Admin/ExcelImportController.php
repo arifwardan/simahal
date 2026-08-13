@@ -18,18 +18,19 @@ class ExcelImportController extends Controller
     {
         return Inertia::render('admin/excel-import', [
             'result' => Session::pull('excel_import_result'),
+            'plan' => Session::pull('excel_import_plan'),
         ]);
     }
 
-    public function preview(ImportExcelRequest $request): Response
+    public function preview(ImportExcelRequest $request): RedirectResponse
     {
         $path = $request->file('file')->getRealPath();
         $workbook = app(ExcelReader::class)->readDataKelompok($path);
         $plan = app(ImportPlanner::class)->plan($workbook);
 
-        return Inertia::render('admin/excel-import', [
-            'plan' => $plan->toArray(),
-        ]);
+        Session::flash('excel_import_plan', $plan->toArray());
+
+        return to_route('admin.excel-import.index');
     }
 
     public function execute(ImportExcelRequest $request): RedirectResponse
@@ -45,7 +46,7 @@ class ExcelImportController extends Controller
                 'message' => __('Import gagal: :message', ['message' => $e->getMessage()]),
             ]);
 
-            return back();
+            return to_route('admin.excel-import.index');
         }
 
         Session::flash('excel_import_result', $result->toArray());
@@ -58,6 +59,6 @@ class ExcelImportController extends Controller
             ]),
         ]);
 
-        return back();
+        return to_route('admin.excel-import.index');
     }
 }

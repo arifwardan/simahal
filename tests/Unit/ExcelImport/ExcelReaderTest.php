@@ -41,6 +41,37 @@ test('reader menormalisasi nama dengan unicode tak terlihat dan kutip', function
     expect($wb->santris[0]->nama)->toBe("\u{2060}Putra Rizky Pratomo");
 });
 
+test('reader mengabaikan baris judul di atas baris header yang berbeda posisi', function () {
+    $spreadsheet = new Spreadsheet;
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setTitle('Data Kelompok');
+    $sheet->setCellValue('A1', 'DATA KELOMPOK MUHAFIDZ & SANTRI');
+    $sheet->setCellValue('A3', 'Total Santri:');
+    // Header baru saja di baris 6.
+    $sheet->setCellValue('A6', 'No');
+    $sheet->setCellValue('B6', 'Jenis');
+    $sheet->setCellValue('C6', 'Kelompok');
+    $sheet->setCellValue('D6', 'Muhafidz/Muhafidzah');
+    $sheet->setCellValue('E6', 'Nama Santri');
+    $sheet->setCellValue('F6', 'Halaman Awal (Sebelum Program)');
+    $sheet->setCellValue('A7', '1');
+    $sheet->setCellValue('B7', 'Ikhwan');
+    $sheet->setCellValue('C7', 'Kelompok 1');
+    $sheet->setCellValue('D7', 'Hammam');
+    $sheet->setCellValue('E7', 'Yahya');
+    $sheet->setCellValue('F7', '4');
+    $dir = sys_get_temp_dir().'/simahal-excel-fixtures';
+    $path = $dir.'/'.uniqid('vary-', true).'.xlsx';
+    (new Xlsx($spreadsheet))->save($path);
+
+    $wb = app(ExcelReader::class)->readDataKelompok($path);
+
+    expect($wb->santris)->toHaveCount(1);
+    expect($wb->santris[0]->nama)->toBe('Yahya');
+    expect($wb->santris[0]->halamanAwal)->toBe(4);
+    expect($wb->santris[0]->normalizedNama)->toBe('yahya');
+});
+
 test('reader melempar exception saat sheet data kelompok hilang', function () {
     $spreadsheet = new Spreadsheet;
     $spreadsheet->getActiveSheet()->setTitle('Lain');

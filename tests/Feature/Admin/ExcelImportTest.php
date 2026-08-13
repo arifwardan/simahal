@@ -38,6 +38,9 @@ test('admin melihat pratinjau rencana import', function () {
         ['jenis' => 'Ikhwan', 'kelompok' => 'Kelompok 1', 'muhafidz' => 'Hammam', 'nama' => 'Yahya', 'halamanAwal' => 0],
         ['jenis' => 'Ikhwan', 'kelompok' => 'Kelompok 1', 'muhafidz' => 'Hammam', 'nama' => 'Nama 2', 'halamanAwal' => 0],
     ])])
+        ->assertRedirect(route('admin.excel-import.index'));
+
+    $this->get(route('admin.excel-import.index'))
         ->assertOk()
         ->assertInertia(fn ($page) => $page
             ->component('admin/excel-import')
@@ -45,6 +48,24 @@ test('admin melihat pratinjau rencana import', function () {
             ->where('plan.summary.santri.placeholder', 1)
             ->where('plan.summary.ustadz.create', 1)
             ->where('plan.summary.halaqah.create', 1));
+});
+
+test('redirect setelah preview/execute tidak menuju URL metode POST sehingga tidak 405', function () {
+    $this->actingAs(User::factory()->create(['role' => UserRole::Admin]));
+    $file = uploadExcel([
+        ['jenis' => 'Ikhwan', 'kelompok' => 'Kelompok 1', 'muhafidz' => 'Hammam', 'nama' => 'Yahya', 'halamanAwal' => 0],
+    ]);
+
+    $preview = $this->post(route('admin.excel-import.preview'), ['file' => $file]);
+
+    $preview->assertRedirect(route('admin.excel-import.index'));
+    $this->get($preview->headers->get('Location'))->assertOk();
+
+    $execute = $this->withHeader('referer', $preview->headers->get('Location'))
+        ->post(route('admin.excel-import.execute'), ['file' => $file]);
+
+    $execute->assertRedirect(route('admin.excel-import.index'));
+    $this->get($execute->headers->get('Location'))->assertOk();
 });
 
 test('preview menolak file non-excel', function () {
