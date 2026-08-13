@@ -17,20 +17,19 @@ class StoreMutabaahBulananRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'records' => ['required', 'array', 'min:1'],
-            'records.*.santri_id' => ['required', 'exists:santris,id'],
-            'records.*.halaman_kumulatif' => ['required', 'integer', 'min:0'],
-            'records.*.juz_dihafal' => ['nullable', 'string', 'max:100'],
-            'records.*.tasmi_pekan_1' => ['nullable', 'integer', 'between:10,100'],
-            'records.*.tasmi_pekan_2' => ['nullable', 'integer', 'between:10,100'],
-            'records.*.tasmi_pekan_3' => ['nullable', 'integer', 'between:10,100'],
-            'records.*.tasmi_pekan_4' => ['nullable', 'integer', 'between:10,100'],
-            'records.*.tasmi_pekan_5' => ['nullable', 'integer', 'between:10,100'],
-            'records.*.ujian_soal_1' => ['nullable', 'integer', 'between:10,100'],
-            'records.*.ujian_soal_2' => ['nullable', 'integer', 'between:10,100'],
-            'records.*.ujian_soal_3' => ['nullable', 'integer', 'between:10,100'],
-            'records.*.ujian_soal_4' => ['nullable', 'integer', 'between:10,100'],
-            'records.*.ujian_soal_5' => ['nullable', 'integer', 'between:10,100'],
+            'santri_id' => ['required', 'exists:santris,id'],
+            'halaman_kumulatif' => ['required', 'integer', 'min:0'],
+            'juz_dihafal' => ['nullable', 'string', 'max:100'],
+            'tasmi_pekan_1' => ['nullable', 'integer', 'between:10,100'],
+            'tasmi_pekan_2' => ['nullable', 'integer', 'between:10,100'],
+            'tasmi_pekan_3' => ['nullable', 'integer', 'between:10,100'],
+            'tasmi_pekan_4' => ['nullable', 'integer', 'between:10,100'],
+            'tasmi_pekan_5' => ['nullable', 'integer', 'between:10,100'],
+            'ujian_soal_1' => ['nullable', 'integer', 'between:10,100'],
+            'ujian_soal_2' => ['nullable', 'integer', 'between:10,100'],
+            'ujian_soal_3' => ['nullable', 'integer', 'between:10,100'],
+            'ujian_soal_4' => ['nullable', 'integer', 'between:10,100'],
+            'ujian_soal_5' => ['nullable', 'integer', 'between:10,100'],
         ];
     }
 }

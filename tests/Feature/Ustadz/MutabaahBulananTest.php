@@ -17,19 +17,17 @@ function actingUstadz(TestCase $test): Ustadz
     return $ustadz;
 }
 
-test('ustadz can batch upsert mutabaah bulanan for halaqah santri', function () {
+test('ustadz can upsert mutabaah bulanan for a halaqah santri', function () {
     $ustadz = actingUstadz($this);
     $halaqah = Halaqah::factory()->create(['ustadz_id' => $ustadz->id]);
     $santri = Santri::factory()->create();
     $halaqah->santris()->attach($santri->id);
 
     $this->post(route('ustadz.mutabaah-bulanan.update', 1), [
-        'records' => [[
-            'santri_id' => $santri->id,
-            'halaman_kumulatif' => 25,
-            'tasmi_pekan_1' => 80,
-            'ujian_soal_1' => 90,
-        ]],
+        'santri_id' => $santri->id,
+        'halaman_kumulatif' => 25,
+        'tasmi_pekan_1' => 80,
+        'ujian_soal_1' => 90,
     ])->assertRedirect();
 
     $this->assertDatabaseHas('mutabaah_bulanans', [
@@ -41,10 +39,8 @@ test('ustadz can batch upsert mutabaah bulanan for halaqah santri', function () 
 
     // upsert: post lagi dengan nilai baru
     $this->post(route('ustadz.mutabaah-bulanan.update', 1), [
-        'records' => [[
-            'santri_id' => $santri->id,
-            'halaman_kumulatif' => 30,
-        ]],
+        'santri_id' => $santri->id,
+        'halaman_kumulatif' => 30,
     ])->assertRedirect();
 
     $this->assertDatabaseCount('mutabaah_bulanans', 1);
@@ -59,10 +55,8 @@ test('ustadz cannot submit a santri outside their halaqah', function () {
     $stranger = Santri::factory()->create();
 
     $this->post(route('ustadz.mutabaah-bulanan.update', 1), [
-        'records' => [
-            ['santri_id' => $member->id, 'halaman_kumulatif' => 10],
-            ['santri_id' => $stranger->id, 'halaman_kumulatif' => 20],
-        ],
+        'santri_id' => $stranger->id,
+        'halaman_kumulatif' => 20,
     ])->assertForbidden();
 });
 
@@ -73,7 +67,8 @@ test('bulan must be between 1 and 12', function () {
     $halaqah->santris()->attach($santri->id);
 
     $this->post(route('ustadz.mutabaah-bulanan.update', 13), [
-        'records' => [['santri_id' => $santri->id, 'halaman_kumulatif' => 10]],
+        'santri_id' => $santri->id,
+        'halaman_kumulatif' => 10,
     ])->assertStatus(422);
 });
 
@@ -84,7 +79,8 @@ test('halaman kumulatif cannot be below halaman awal bulan', function () {
     $halaqah->santris()->attach($santri->id);
 
     $this->post(route('ustadz.mutabaah-bulanan.update', 1), [
-        'records' => [['santri_id' => $santri->id, 'halaman_kumulatif' => 9]],
+        'santri_id' => $santri->id,
+        'halaman_kumulatif' => 9,
     ])->assertStatus(422);
 });
 
