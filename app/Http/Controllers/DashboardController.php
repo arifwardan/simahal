@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\MutabaahStatus;
+use App\Enums\SantriJenis;
+use App\Enums\TargetHafalanStatus;
 use App\Enums\UserRole;
 use App\Models\Halaqah;
 use App\Models\Mutabaah;
@@ -9,7 +12,11 @@ use App\Models\OrangTua;
 use App\Models\Santri;
 use App\Models\User;
 use App\Models\Ustadz;
+use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -29,6 +36,8 @@ class DashboardController extends Controller
 
     private function admin(): Response
     {
+        $now = now();
+
         return Inertia::render('dashboard/admin', [
             'counts' => [
                 'santris' => Santri::count(),
@@ -42,6 +51,14 @@ class DashboardController extends Controller
                 ->orderBy('tanggal', 'desc')
                 ->limit(5)
                 ->get(),
+            'mutabaahByStatus' => $this->mutabaahStatusDistribution(Mutabaah::query()),
+            'santriByJenis' => $this->santriJenisDistribution(),
+            'mutabaahsThisMonth' => $this->mutabaahCountInMonth(Mutabaah::query(), $now),
+            'mutabaahsLastMonth' => $this->mutabaahCountInMonth(Mutabaah::query(), $now->copy()->subMonth()),
+            'santrisThisMonth' => Santri::query()
+                ->whereYear('created_at', $now->year)
+                ->whereMonth('created_at', $now->month)
+                ->count(),
         ]);
     }
 
@@ -62,10 +79,15 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
+        $now = now();
+
         return Inertia::render('dashboard/ustadz', [
             'halaqahs' => $halaqahs,
             'recentMutabaahs' => $recentMutabaahs,
             'totalMutabaahs' => $ustadz->mutabaahs()->count(),
+            'mutabaahByStatus' => $this->mutabaahStatusDistribution($ustadz->mutabaahs()),
+            'mutabaahsThisMonth' => $this->mutabaahCountInMonth($ustadz->mutabaahs(), $now),
+            'mutabaahsLastMonth' => $this->mutabaahCountInMonth($ustadz->mutabaahs(), $now->copy()->subMonth()),
         ]);
     }
 
@@ -78,6 +100,7 @@ class DashboardController extends Controller
             'progress' => $this->progressData($santri),
             'riwayat' => $santri->mutabaahs()->orderBy('tanggal', 'desc')->limit(10)->get(),
             'halaqahs' => $santri->halaqahs()->get(['halaqahs.id', 'halaqahs.nama']),
+            'mutabaahByStatus' => $this->mutabaahStatusDistribution($santri->mutabaahs()),
         ]);
     }
 
@@ -97,7 +120,78 @@ class DashboardController extends Controller
 
         return Inertia::render('dashboard/orang-tua', [
             'children' => $children,
+            'childrenProgress' => $this->childrenProgressDistribution($children),
         ]);
+    }
+
+    /**
+     * @param  Builder<mixed>|Relation  $query
+     * @return list<array{key: string, label: string, count: int}>
+     */
+    private function mutabaahStatusDistribution(Builder|Relation $query): array
+    {
+        return $query->selectRaw('status, count(*) as total')
+            ->groupBy('status')
+            ->orderByDesc('total')
+            ->pluck('total', 'status')
+            ->map(fn (int $count, string $status) => [
+                'key' => $status,
+                'label' => MutabaahStatus::tryFrom($status)?->label() ?? $status,
+                'count' => $count,
+            ])
+            ->values()
+            ->all();
+    }
+
+    /**
+     * @return list<array{key: string, label: string, count: int}>
+     */
+    private function santriJenisDistribution(): array
+    {
+        return Santri::query()
+            ->whereNotNull('jenis')
+            ->selectRaw('jenis, count(*) as total')
+            ->groupBy('jenis')
+            ->orderByDesc('total')
+            ->pluck('total', 'jenis')
+            ->map(fn (int $count, string $jenis) => [
+                'key' => $jenis,
+                'label' => SantriJenis::tryFrom($jenis)?->label() ?? $jenis,
+                'count' => $count,
+            ])
+            ->values()
+            ->all();
+    }
+
+    /**
+     * @param  Collection<int, array{progress: array{status: string}}>  $children
+     * @return list<array{key: string, label: string, count: int}>
+     */
+    private function childrenProgressDistribution(Collection $children): array
+    {
+        return $children
+            ->map(fn (array $child) => $child['progress']['status'] ?? '')
+            ->filter()
+            ->countBy()
+            ->sortKeys()
+            ->map(fn (int $count, string $status) => [
+                'key' => $status,
+                'label' => TargetHafalanStatus::tryFrom($status)?->label() ?? $status,
+                'count' => $count,
+            ])
+            ->values()
+            ->all();
+    }
+
+    /**
+     * @param  Builder<mixed>|Relation  $query
+     */
+    private function mutabaahCountInMonth(Builder|Relation $query, CarbonInterface $month): int
+    {
+        return (clone $query)
+            ->whereYear('tanggal', $month->year)
+            ->whereMonth('tanggal', $month->month)
+            ->count();
     }
 
     /**
