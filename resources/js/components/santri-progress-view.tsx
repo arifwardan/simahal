@@ -1,10 +1,5 @@
 import { Badge } from '@/components/ui/badge';
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 type RiwayatRow = {
     id: number;
@@ -31,32 +26,42 @@ export default function SantriProgressView({
     riwayat,
     halaqahs,
 }: {
-    headline: string;
+    headline?: string;
     progress: Progress;
     riwayat: RiwayatRow[];
     halaqahs: { id: number; nama: string }[];
 }) {
     return (
         <>
-            <h1 className="text-lg font-semibold">{headline}</h1>
+            {headline && <h1 className="text-lg font-semibold">{headline}</h1>}
 
             <Card className="mt-4">
                 <CardHeader>
-                    <CardTitle>Target Hafalan {progress.periode ? `· Periode ${progress.periode}` : ''}</CardTitle>
+                    <CardTitle>
+                        Target Hafalan{' '}
+                        {progress.periode
+                            ? `· Periode ${progress.periode}`
+                            : ''}
+                    </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                     <div className="flex items-center justify-between">
                         <p className="text-sm font-medium">
-                            {progress.progress}/{progress.target} ayat · {progress.percent}%
+                            {progress.progress}/{progress.target} ayat ·{' '}
+                            {progress.percent}%
                         </p>
                         {progress.status && (
-                            <Badge variant="secondary">{progress.status_label}</Badge>
+                            <Badge variant="secondary">
+                                {progress.status_label}
+                            </Badge>
                         )}
                     </div>
                     <div className="h-3 w-full overflow-hidden rounded-full bg-muted">
                         <div
                             className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600"
-                            style={{ width: `${Math.min(100, progress.percent)}%` }}
+                            style={{
+                                width: `${Math.min(100, progress.percent)}%`,
+                            }}
                         />
                     </div>
                 </CardContent>
@@ -69,11 +74,15 @@ export default function SantriProgressView({
                     </CardHeader>
                     <CardContent>
                         {halaqahs.length === 0 ? (
-                            <p className="text-sm text-muted-foreground">Belum terdaftar di halaqah.</p>
+                            <p className="text-sm text-muted-foreground">
+                                Belum terdaftar di halaqah.
+                            </p>
                         ) : (
                             <ul className="space-y-1">
                                 {halaqahs.map((h) => (
-                                    <li key={h.id} className="text-sm">{h.nama}</li>
+                                    <li key={h.id} className="text-sm">
+                                        {h.nama}
+                                    </li>
                                 ))}
                             </ul>
                         )}
@@ -86,15 +95,23 @@ export default function SantriProgressView({
                     </CardHeader>
                     <CardContent>
                         {riwayat.length === 0 ? (
-                            <p className="text-sm text-muted-foreground">Belum ada mutabaah.</p>
+                            <p className="text-sm text-muted-foreground">
+                                Belum ada mutabaah.
+                            </p>
                         ) : (
                             <ul className="divide-y rounded-lg border">
                                 {riwayat.map((m) => (
-                                    <li key={m.id} className="flex items-center justify-between gap-4 p-3">
+                                    <li
+                                        key={m.id}
+                                        className="flex items-center justify-between gap-4 p-3"
+                                    >
                                         <p className="text-sm">
-                                            {m.tanggal} · {m.jenis} · {m.surah} {m.ayat_mulai}-{m.ayat_selesai}
+                                            {m.tanggal} · {m.jenis} · {m.surah}{' '}
+                                            {m.ayat_mulai}-{m.ayat_selesai}
                                         </p>
-                                        <Badge variant="secondary">{m.status}</Badge>
+                                        <Badge variant="secondary">
+                                            {m.status}
+                                        </Badge>
                                     </li>
                                 ))}
                             </ul>
