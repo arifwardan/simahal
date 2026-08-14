@@ -4,9 +4,11 @@ Before planning or editing, find the row whose globs match the file's path and r
 
 | Applies to | Rule file |
 | --- | --- |
+| resources/js/actions/** | .ai/rules/actions.md |
 | app/Http/Controllers/Admin/** | .ai/rules/admin.md |
 | app/Http/Controllers/** | .ai/rules/controllers.md |
 | app/Services/ExcelImport/** | .ai/rules/excel-import.md |
+| resources/js/pages/ustadz/halaqahs/santris.tsx | .ai/rules/halaqahs.md |
 | resources/js/** | .ai/rules/js.md |
 | routes/ustadz.php | .ai/rules/routes.md |
 | app/Http/Controllers/Ustadz/** | .ai/rules/ustadz.md |
