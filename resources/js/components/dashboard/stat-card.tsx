@@ -41,13 +41,13 @@ export default function StatCard({
     const content = (
         <div
             className={cn(
-                'relative flex flex-col gap-3 border-[3px] border-black p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]',
+                'relative flex h-full min-h-[172px] w-full flex-col justify-between gap-3 border-[3px] border-black p-4 pt-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]',
                 t.bg,
                 href && 'cursor-pointer'
             )}
         >
             <div className="flex items-start justify-between gap-3">
-                <div className="flex flex-col gap-1">
+                <div className="flex min-w-0 flex-col gap-1">
                     <span className="font-head text-[11px] font-black uppercase tracking-[0.14em] text-black/70">
                         {label}
                     </span>
@@ -61,21 +61,25 @@ export default function StatCard({
                     </span>
                 )}
             </div>
-            {(subtitle || delta) && (
-                <div className="flex flex-col gap-1 border-t-[3px] border-black pt-3">
-                    {subtitle && <span className="text-xs font-bold leading-none text-black">{subtitle}</span>}
-                    {delta && (
-                        <span
-                            className={cn(
-                                'inline-flex w-fit items-center gap-1 border-2 border-black px-2 py-0.5 text-[11px] font-black uppercase',
-                                delta.direction === 'up' ? 'bg-white text-black' : 'bg-black text-white'
-                            )}
-                        >
-                            {delta.direction === 'up' ? '↗' : '↘'} {delta.value}
-                        </span>
-                    )}
-                </div>
-            )}
+            <div className="flex min-h-[48px] flex-col justify-end gap-1 border-t-[3px] border-black pt-3">
+                {subtitle ? (
+                    <span className="line-clamp-1 text-xs font-bold leading-none text-black">{subtitle}</span>
+                ) : (
+                    <span className="text-xs leading-none opacity-0 select-none">-</span>
+                )}
+                {delta ? (
+                    <span
+                        className={cn(
+                            'inline-flex w-fit items-center gap-1 border-2 border-black px-2 py-0.5 text-[11px] font-black uppercase',
+                            delta.direction === 'up' ? 'bg-white text-black' : 'bg-black text-white'
+                        )}
+                    >
+                        {delta.direction === 'up' ? '↗' : '↘'} {delta.value}
+                    </span>
+                ) : (
+                    <span className="inline-flex h-[22px] opacity-0 select-none">-</span>
+                )}
+            </div>
             {/* accent stripe */}
             <div className={cn('absolute left-0 top-0 h-2 w-full border-b-[3px] border-black', t.accent)} />
         </div>
@@ -83,7 +87,7 @@ export default function StatCard({
 
     if (href) {
         return (
-            <Link href={href} className="block">
+            <Link href={href} className="block h-full w-full">
                 {content}
             </Link>
         );

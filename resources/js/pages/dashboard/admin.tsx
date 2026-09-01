@@ -217,10 +217,10 @@ export default function AdminDashboard({
                     description="Status mutabaah dan jenis santri di pesantren"
                 />
                 <div className="mt-4 grid gap-4 lg:grid-cols-2 lg:items-stretch">
-                    <div className="flex">
+                    <div className="flex w-full">
                         <MutabaahStatusDonut data={mutabaahByStatus} />
                     </div>
-                    <div className="flex">
+                    <div className="flex w-full">
                         <SantriJenisDonut data={santriByJenis} />
                     </div>
                 </div>

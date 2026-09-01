@@ -75,7 +75,7 @@ export default function MuhafidzDashboard({
             <Head title="Dashboard Muhafidz" />
             <DashboardHero subtitle="Pantau halaqah, mutabaah harian & santri berprestasi Anda." />
 
-            <div className="grid gap-4 sm:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-3 auto-rows-fr items-stretch">
                 <StatCard
                     label="Halaqah"
                     value={halaqahs.length}

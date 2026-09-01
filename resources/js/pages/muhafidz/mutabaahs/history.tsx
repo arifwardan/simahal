@@ -73,7 +73,7 @@ export default function MuhafidzMutabaahHistory({ mutabaahs, santriOptions, filt
 
                     <ul className="divide-y-[3px] divide-black border-[3px] border-black">
                         {mutabaahs.data.map((m) => (
-                            <li key={m.id} className="space-y-1 bg-white p-4">
+                            <li key={m.id} className="space-y-1 bg-[#FFF7E8] p-4">
                                 <div className="flex items-center justify-between gap-4">
                                     <p className="font-head font-black uppercase">{m.santri.nama}</p>
                                     <Badge>{m.status}</Badge>
@@ -88,7 +88,7 @@ export default function MuhafidzMutabaahHistory({ mutabaahs, santriOptions, filt
                     </ul>
 
                     {mutabaahs.last_page > 1 && (
-                        <div className="flex flex-wrap items-center justify-between gap-2 border-[3px] border-black bg-white p-2">
+                        <div className="flex flex-wrap items-center justify-between gap-2 border-[3px] border-black bg-[#FFF7E8] p-2">
                             <span className="px-2 text-xs font-black uppercase">
                                 Hal {mutabaahs.current_page} dari {mutabaahs.last_page} · {mutabaahs.total} data
                             </span>
@@ -98,7 +98,7 @@ export default function MuhafidzMutabaahHistory({ mutabaahs, santriOptions, filt
                                         return (
                                             <span
                                                 key={i}
-                                                className="border-2 border-black bg-white px-3 py-1 text-xs font-black opacity-40"
+                                                className="border-2 border-black bg-[#FFF7E8] px-3 py-1 text-xs font-black opacity-40"
                                                 dangerouslySetInnerHTML={{ __html: link.label }}
                                             />
                                         );
@@ -108,7 +108,8 @@ export default function MuhafidzMutabaahHistory({ mutabaahs, santriOptions, filt
                                             key={i}
                                             href={link.url}
                                             preserveState
-                                            className={`border-[3px] border-black px-3 py-1 text-xs font-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] ${link.active ? 'bg-primary text-black' : 'bg-white text-black hover:bg-accent'}`}
+                                            preserveScroll
+                                            className={`border-[3px] border-black px-3 py-1 text-xs font-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] ${link.active ? 'bg-primary text-black' : 'bg-[#FFF7E8] text-black hover:bg-accent'}`}
                                             dangerouslySetInnerHTML={{ __html: link.label }}
                                         />
                                     );

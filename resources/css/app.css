@@ -57,8 +57,10 @@
     --radius: 0;
     --background: #fff7e8;
     --foreground: #000;
-    --card: #fff;
+    --card: #fff7e8;
     --card-foreground: #000;
+    --popover: #fff7e8;
+    --popover-foreground: #000;
     --primary: #ffdc58;
     --primary-hover: #ffd12e;
     --primary-foreground: #000;
@@ -71,7 +73,7 @@
     --destructive: #e63946;
     --destructive-foreground: #fff;
     --border: #000;
-    --input: #fff;
+    --input: #fff7e8;
     --ring: #000;
     --chart-1: #ffdc58;
     --chart-2: #000;

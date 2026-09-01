@@ -15,6 +15,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::post('users', [UserController::class, 'store'])->name('users.store');
     Route::patch('users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::patch('santris/{santri}/orang-tua', [UserController::class, 'assignOrangTua'])->name('santris.assign-orang-tua');
 
     Route::get('santris', [SantriController::class, 'index'])->name('santris.index');
     Route::post('santris', [SantriController::class, 'store'])->name('santris.store');
