@@ -27,7 +27,7 @@ const roles = [
     },
     {
         icon: <GraduationCap className="size-5" />,
-        name: 'Ustadz / Musyrif',
+        name: 'Muhafidz / Musyrif',
         description: 'Mencatat mutabaah dan membimbing santri secara langsung.',
     },
     {
@@ -75,7 +75,7 @@ const features: Feature[] = [
     {
         icon: <ShieldCheck className="size-5" />,
         title: 'Evaluasi Bermakna',
-        description: 'Nilai, status, dan catatan ustadz tersimpan dalam satu riwayat.',
+        description: 'Nilai, status, dan catatan muhafidz tersimpan dalam satu riwayat.',
     },
     {
         icon: <Bell className="size-5" />,
@@ -168,7 +168,7 @@ export default function Welcome() {
                                     <span className="text-emerald-700 dark:text-emerald-400">bermakna</span>.
                                 </h1>
                                 <p className="mt-6 max-w-lg text-base leading-relaxed text-muted-foreground">
-                                    SIMAHAL menghubungkan Admin, Ustadz, Santri, dan Orang Tua dalam
+                                    SIMAHAL menghubungkan Admin, Muhafidz, Santri, dan Orang Tua dalam
                                     satu ekosistem digital — dari pencatatan mutabaah hingga
                                     pemantauan perkembangan hafalan.
                                 </p>
@@ -347,7 +347,7 @@ export default function Welcome() {
                             Sederhana namun bermakna
                         </h2>
                         <p className="mt-4 text-muted-foreground">
-                            Setiap fitur dirancang dengan satu tujuan: membantu ustadz membimbing
+                            Setiap fitur dirancang dengan satu tujuan: membantu muhafidz membimbing
                             santri dengan lebih baik.
                         </p>
                     </div>

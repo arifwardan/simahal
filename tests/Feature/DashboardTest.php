@@ -5,12 +5,12 @@ use App\Enums\SantriJenis;
 use App\Enums\TargetHafalanStatus;
 use App\Enums\UserRole;
 use App\Models\Halaqah;
+use App\Models\Muhafidz;
 use App\Models\Mutabaah;
 use App\Models\OrangTua;
 use App\Models\Santri;
 use App\Models\TargetHafalan;
 use App\Models\User;
-use App\Models\Ustadz;
 
 test('guests are redirected to the login page', function () {
     $response = $this->get(route('dashboard'));
@@ -32,8 +32,8 @@ test('santri without a profile gets a clean 403', function () {
     $this->actingAs($user)->get(route('dashboard'))->assertForbidden();
 });
 
-test('ustadz without a profile gets a clean 403', function () {
-    $user = User::factory()->create(['role' => UserRole::Ustadz]);
+test('muhafidz without a profile gets a clean 403', function () {
+    $user = User::factory()->create(['role' => UserRole::Muhafidz]);
 
     $this->actingAs($user)->get(route('dashboard'))->assertForbidden();
 });
@@ -52,18 +52,18 @@ test('admin dashboard renders the admin component', function () {
         ->assertInertia(fn ($page) => $page->component('dashboard/admin'));
 });
 
-test('ustadz dashboard renders the ustadz component with their halaqah', function () {
-    $user = User::factory()->create(['role' => UserRole::Ustadz]);
-    $ustadz = Ustadz::factory()->create(['user_id' => $user->id]);
-    Halaqah::factory()->count(2)->create(['ustadz_id' => $ustadz->id]);
-    $own = Mutabaah::factory()->count(6)->create(['ustadz_id' => $ustadz->id]);
-    $other = Ustadz::factory()->create();
-    Mutabaah::factory()->count(2)->create(['ustadz_id' => $other->id]);
+test('muhafidz dashboard renders the muhafidz component with their halaqah', function () {
+    $user = User::factory()->create(['role' => UserRole::Muhafidz]);
+    $muhafidz = Muhafidz::factory()->create(['user_id' => $user->id]);
+    Halaqah::factory()->count(2)->create(['muhafidz_id' => $muhafidz->id]);
+    $own = Mutabaah::factory()->count(6)->create(['muhafidz_id' => $muhafidz->id]);
+    $other = Muhafidz::factory()->create();
+    Mutabaah::factory()->count(2)->create(['muhafidz_id' => $other->id]);
 
     $this->actingAs($user)->get(route('dashboard'))
         ->assertOk()
         ->assertInertia(fn ($page) => $page
-            ->component('dashboard/ustadz')
+            ->component('dashboard/muhafidz')
             ->has('halaqahs', 2)
             ->has('recentMutabaahs', 5)
             ->where('totalMutabaahs', 6));
@@ -103,15 +103,15 @@ test('orang tua dashboard renders only their own children', function () {
 test('admin dashboard shows global counts', function () {
     $admin = User::factory()->create(['role' => UserRole::Admin]);
     Santri::factory()->count(4)->create();
-    $ustadzs = Ustadz::factory()->count(2)->create();
+    $muhafidzs = Muhafidz::factory()->count(2)->create();
     OrangTua::factory()->count(1)->create();
-    Halaqah::factory()->count(3)->create(['ustadz_id' => $ustadzs->first()->id]);
+    Halaqah::factory()->count(3)->create(['muhafidz_id' => $muhafidzs->first()->id]);
 
     $this->actingAs($admin)->get(route('dashboard'))
         ->assertOk()
         ->assertInertia(fn ($page) => $page
             ->where('counts.santris', 4)
-            ->where('counts.ustadzs', 2)
+            ->where('counts.muhafidzs', 2)
             ->where('counts.halaqahs', 3));
 });
 
@@ -169,15 +169,15 @@ test('admin dashboard includes santris created this month', function () {
         ->assertInertia(fn ($page) => $page->where('santrisThisMonth', 3));
 });
 
-test('ustadz dashboard includes only their mutabaah status distribution', function () {
-    $user = User::factory()->create(['role' => UserRole::Ustadz]);
-    $ustadz = Ustadz::factory()->create(['user_id' => $user->id]);
+test('muhafidz dashboard includes only their mutabaah status distribution', function () {
+    $user = User::factory()->create(['role' => UserRole::Muhafidz]);
+    $muhafidz = Muhafidz::factory()->create(['user_id' => $user->id]);
 
-    Mutabaah::factory()->count(2)->create(['ustadz_id' => $ustadz->id, 'status' => MutabaahStatus::Lulus]);
-    Mutabaah::factory()->count(1)->create(['ustadz_id' => $ustadz->id, 'status' => MutabaahStatus::Mengulang]);
+    Mutabaah::factory()->count(2)->create(['muhafidz_id' => $muhafidz->id, 'status' => MutabaahStatus::Lulus]);
+    Mutabaah::factory()->count(1)->create(['muhafidz_id' => $muhafidz->id, 'status' => MutabaahStatus::Mengulang]);
 
-    $other = Ustadz::factory()->create();
-    Mutabaah::factory()->count(5)->create(['ustadz_id' => $other->id, 'status' => MutabaahStatus::Lulus]);
+    $other = Muhafidz::factory()->create();
+    Mutabaah::factory()->count(5)->create(['muhafidz_id' => $other->id, 'status' => MutabaahStatus::Lulus]);
 
     $this->actingAs($user)->get(route('dashboard'))
         ->assertOk()

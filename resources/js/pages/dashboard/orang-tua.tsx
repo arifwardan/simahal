@@ -36,9 +36,9 @@ export default function OrangTuaDashboard({
     childrenProgress,
 }: PageProps) {
     return (
-        <PageContainer className="space-y-6">
+        <PageContainer className="space-y-8">
             <Head title="Dashboard Orang Tua" />
-            <DashboardHero subtitle="Progres anak Anda" />
+            <DashboardHero subtitle="Pantau hafalan & mutabaah anak Anda setiap hari." />
 
             {children.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
@@ -51,8 +51,19 @@ export default function OrangTuaDashboard({
                             title="Ringkasan Progress Anak"
                             description="Status target hafalan anak Anda"
                         />
-                        <div className="mt-4 max-w-md">
-                            <ChildrenProgressDonut data={childrenProgress} />
+                        <div className="mt-4 grid gap-4 lg:grid-cols-2 lg:items-stretch">
+                            <div className="flex">
+                                <ChildrenProgressDonut data={childrenProgress} />
+                            </div>
+                            <div className="flex flex-col gap-4">
+                                <div className="border-[3px] border-black bg-[#FFD600] p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+                                    <p className="font-head text-lg font-black uppercase">Ayah/Bunda Hebat!</p>
+                                    <p className="mt-1 text-sm font-bold">Dukung ananda murajaah 15 menit tiap ba'da Maghrib — konsisten itu kunci.</p>
+                                </div>
+                                <div className="flex flex-1 items-center justify-center border-[3px] border-dashed border-black bg-white p-6 text-center">
+                                    <p className="font-head text-sm font-black uppercase">{children.length} Anak Terhubung</p>
+                                </div>
+                            </div>
                         </div>
                     </section>
 

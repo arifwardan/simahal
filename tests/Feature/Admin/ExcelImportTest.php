@@ -3,9 +3,9 @@
 use App\Enums\UserRole;
 use App\Models\Halaqah;
 use App\Models\HalaqahMember;
+use App\Models\Muhafidz;
 use App\Models\Santri;
 use App\Models\User;
-use App\Models\Ustadz;
 use App\Services\ExcelImport\ImportExecutor;
 use Illuminate\Http\UploadedFile;
 use Tests\Support\ExcelFixtures;
@@ -46,7 +46,7 @@ test('admin melihat pratinjau rencana import', function () {
             ->component('admin/excel-import')
             ->where('plan.summary.santri.create', 1)
             ->where('plan.summary.santri.placeholder', 1)
-            ->where('plan.summary.ustadz.create', 1)
+            ->where('plan.summary.muhafidz.create', 1)
             ->where('plan.summary.halaqah.create', 1));
 });
 
@@ -85,7 +85,7 @@ test('admin mengeksekusi import dan db tersimpan', function () {
     ])]);
 
     expect(Santri::count())->toBe(2);
-    expect(Ustadz::count())->toBe(2);
+    expect(Muhafidz::count())->toBe(2);
     expect(Halaqah::count())->toBe(2);
     expect(HalaqahMember::count())->toBe(2);
     expect(User::where('email', 'yahya@simahal.test')->exists())->toBeTrue();
@@ -122,13 +122,13 @@ test('admin menerima flash error saat eksekusi import gagal', function () {
         ->assertInertiaFlash('toast.message', 'Import gagal: boom');
 
     expect(Santri::count())->toBe(0);
-    expect(Ustadz::count())->toBe(0);
+    expect(Muhafidz::count())->toBe(0);
     expect(Halaqah::count())->toBe(0);
     expect(User::where('email', 'yahya@simahal.test')->count())->toBe(0);
 });
 
 test('non-admin tidak dapat mengakses halaman import', function () {
-    $this->actingAs(User::factory()->create(['role' => UserRole::Ustadz]));
+    $this->actingAs(User::factory()->create(['role' => UserRole::Muhafidz]));
 
     $this->get(route('admin.excel-import.index'))->assertForbidden();
     $this->post(route('admin.excel-import.preview'))->assertForbidden();

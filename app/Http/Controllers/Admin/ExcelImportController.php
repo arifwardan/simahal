@@ -53,9 +53,9 @@ class ExcelImportController extends Controller
 
         Inertia::flash('toast', [
             'type' => 'success',
-            'message' => __('Import selesai: :santri santri, :ustadz ustadz.', [
+            'message' => __('Import selesai: :santri santri, :muhafidz muhafidz.', [
                 'santri' => $result->santriCreated,
-                'ustadz' => $result->ustadzCreated,
+                'muhafidz' => $result->muhafidzCreated,
             ]),
         ]);
 

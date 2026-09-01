@@ -4,6 +4,7 @@ import DashboardHero from '@/components/dashboard/dashboard-hero';
 import SectionHeading from '@/components/dashboard/section-heading';
 import PageContainer from '@/components/page-container';
 import SantriProgressView from '@/components/santri-progress-view';
+import { Card, CardContent } from '@/components/ui/card';
 import { dashboard } from '@/routes';
 
 type ChartSlice = {
@@ -44,9 +45,9 @@ export default function SantriDashboard({
     mutabaahByStatus,
 }: PageProps) {
     return (
-        <PageContainer className="space-y-6">
+        <PageContainer className="space-y-8">
             <Head title="Dashboard Santri" />
-            <DashboardHero subtitle="Progres hafalan Anda" />
+            <DashboardHero subtitle="Progres hafalan Anda — semangat mengejar target!" />
             <SantriProgressView
                 progress={progress}
                 riwayat={riwayat}
@@ -57,8 +58,14 @@ export default function SantriDashboard({
                     title="Distribusi Mutabaah"
                     description="Status setoran mutabaah Anda"
                 />
-                <div className="mt-4 max-w-md">
+                <div className="mt-4 grid gap-4 lg:grid-cols-2">
                     <MutabaahStatusDonut data={mutabaahByStatus} />
+                    <Card className="flex flex-col justify-center border-dashed bg-accent p-6">
+                        <p className="font-head text-lg font-black uppercase">Tips Murajaah</p>
+                        <p className="mt-2 text-sm font-bold leading-relaxed">
+                            Konsisten 1 halaman per hari lebih baik daripada 10 halaman sekaligus lalu lupa. — Tetap semangat!
+                        </p>
+                    </Card>
                 </div>
             </section>
         </PageContainer>

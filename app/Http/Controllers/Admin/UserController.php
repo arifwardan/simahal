@@ -17,7 +17,7 @@ class UserController extends Controller
     public function index(Request $request): Response
     {
         $users = User::query()
-            ->with(['santri', 'ustadz', 'orangTua'])
+            ->with(['santri', 'muhafidz', 'orangTua'])
             ->orderBy('name')
             ->paginate(15)
             ->through(fn (User $user) => [

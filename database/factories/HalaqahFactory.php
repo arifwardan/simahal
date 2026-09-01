@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use App\Enums\HalaqahStatus;
 use App\Models\Halaqah;
-use App\Models\Ustadz;
+use App\Models\Muhafidz;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,8 +19,10 @@ class HalaqahFactory extends Factory
     {
         return [
             'nama' => 'Halaqah '.fake()->word(),
-            'ustadz_id' => Ustadz::factory(),
+            'muhafidz_id' => Muhafidz::factory(),
             'jadwal' => fake()->sentence(3),
+            'jam_mulai' => '07:00',
+            'jam_selesai' => '08:00',
             'status' => HalaqahStatus::Aktif,
         ];
     }

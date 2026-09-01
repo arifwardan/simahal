@@ -4,10 +4,10 @@ use App\Enums\SantriJenis;
 use App\Enums\UserRole;
 use App\Models\Halaqah;
 use App\Models\HalaqahMember;
+use App\Models\Muhafidz;
 use App\Models\MutabaahSetting;
 use App\Models\Santri;
 use App\Models\User;
-use App\Models\Ustadz;
 use App\Services\ExcelImport\ExcelReader;
 use App\Services\ExcelImport\ImportAction;
 use App\Services\ExcelImport\ImportExecutor;
@@ -30,14 +30,14 @@ function jalankanImport(array $rows): ImportResult
     return app(ImportExecutor::class)->execute($plan);
 }
 
-test('executor membuat santri, ustadz, halaqah, dan keanggotaan', function () {
+test('executor membuat santri, muhafidz, halaqah, dan keanggotaan', function () {
     $result = jalankanImport([
         ['jenis' => 'Ikhwan', 'kelompok' => 'Kelompok 1', 'muhafidz' => 'Hammam', 'nama' => 'Yahya', 'halamanAwal' => 0],
         ['jenis' => 'Akhwat', 'kelompok' => 'Kelompok 1', 'muhafidz' => 'Asma Alhikmah', 'nama' => 'Roona Humairoh', 'halamanAwal' => 2],
     ]);
 
     expect(Santri::count())->toBe(2);
-    expect(Ustadz::count())->toBe(2);
+    expect(Muhafidz::count())->toBe(2);
     expect(Halaqah::count())->toBe(2);
     expect(HalaqahMember::count())->toBe(2);
 
@@ -70,7 +70,7 @@ test('executor memperbarui halaman awal santri existing dan idempoten', function
     expect(Santri::first()->halaqahs()->count())->toBe(1);
 });
 
-test('executor membuat akun user ustadz dan mencetak nis unik', function () {
+test('executor membuat akun user muhafidz dan mencetak nis unik', function () {
     MutabaahSetting::setting()->update(['tahun_aktif' => 2027, 'konversi_juz_halaman' => 20, 'ambang_hadiah_juz' => 1.5]);
 
     jalankanImport([
@@ -78,8 +78,8 @@ test('executor membuat akun user ustadz dan mencetak nis unik', function () {
         ['jenis' => 'Ikhwan', 'kelompok' => 'Kelompok 1', 'muhafidz' => 'Hammam', 'nama' => 'Zuhdan Sahl Hunaif', 'halamanAwal' => 0],
     ]);
 
-    $ustadz = Ustadz::where('nama', 'Hammam')->first();
-    expect($ustadz->user->role)->toBe(UserRole::Ustadz);
+    $muhafidz = Muhafidz::where('nama', 'Hammam')->first();
+    expect($muhafidz->user->role)->toBe(UserRole::Muhafidz);
     expect(Santri::pluck('nis')->all())->toBe(['SIM-2027-0001', 'SIM-2027-0002']);
 });
 
@@ -102,6 +102,6 @@ test('executor membatalkan seluruh transaksi saat satu item gagal', function () 
     expect(Santri::count())->toBe(0);
     expect(User::count())->toBe(0);
     expect(Halaqah::count())->toBe(0);
-    expect(Ustadz::count())->toBe(0);
+    expect(Muhafidz::count())->toBe(0);
     expect(HalaqahMember::count())->toBe(0);
 });

@@ -33,8 +33,8 @@ test('admin can view mutabaah bulanan dashboard', function () {
 });
 
 test('non-admin cannot access mutabaah bulanan dashboard', function () {
-    $ustadz = User::factory()->create(['role' => UserRole::Ustadz]);
-    $this->actingAs($ustadz);
+    $muhafidz = User::factory()->create(['role' => UserRole::Muhafidz]);
+    $this->actingAs($muhafidz);
 
     $this->get(route('admin.mutabaah-bulanan.index'))->assertForbidden();
 });

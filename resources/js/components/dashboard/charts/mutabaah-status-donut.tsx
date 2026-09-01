@@ -3,9 +3,12 @@ import type {ChartSlice} from '@/components/dashboard/charts/distribution-donut'
 import type { ChartConfig } from '@/components/ui/chart';
 
 const config = {
-    lulus: { label: 'Lulus', color: 'var(--chart-1)' },
-    perlu_murajaah: { label: 'Perlu Murajaah', color: 'var(--chart-2)' },
-    mengulang: { label: 'Mengulang', color: 'var(--chart-3)' },
+    lulus: { label: 'Lulus', color: '#22c55e' },
+    perlu_murajaah: { label: 'Perlu Murajaah', color: '#FF90E8' },
+    mengulang: { label: 'Mengulang', color: '#FFD600' },
+    // fallback for other statuses
+    lulus_2: { label: 'Lulus', color: '#5CE1E6' },
+    belum: { label: 'Belum', color: '#a3a3a3' },
 } satisfies ChartConfig;
 
 export default function MutabaahStatusDonut({ data }: { data: ChartSlice[] }) {

@@ -28,7 +28,7 @@ test('admin can update mutabaah settings', function () {
 });
 
 test('non-admin cannot update mutabaah settings', function () {
-    $this->actingAs(User::factory()->create(['role' => UserRole::Ustadz]));
+    $this->actingAs(User::factory()->create(['role' => UserRole::Muhafidz]));
 
     $this->put(route('admin.mutabaah-settings.update'), [
         'konversi_juz_halaman' => 25,

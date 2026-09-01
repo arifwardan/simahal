@@ -2,28 +2,28 @@
 
 use App\Enums\UserRole;
 use App\Models\Halaqah;
+use App\Models\Muhafidz;
 use App\Models\Mutabaah;
 use App\Models\Santri;
 use App\Models\User;
-use App\Models\Ustadz;
 use Tests\TestCase;
 
-function actingUstadz(TestCase $test): Ustadz
+function actingMuhafidz(TestCase $test): Muhafidz
 {
-    $user = User::factory()->create(['role' => UserRole::Ustadz]);
-    $ustadz = Ustadz::factory()->create(['user_id' => $user->id]);
+    $user = User::factory()->create(['role' => UserRole::Muhafidz]);
+    $muhafidz = Muhafidz::factory()->create(['user_id' => $user->id]);
     $test->actingAs($user);
 
-    return $ustadz;
+    return $muhafidz;
 }
 
-test('ustadz can upsert mutabaah bulanan for a halaqah santri', function () {
-    $ustadz = actingUstadz($this);
-    $halaqah = Halaqah::factory()->create(['ustadz_id' => $ustadz->id]);
+test('muhafidz can upsert mutabaah bulanan for a halaqah santri', function () {
+    $muhafidz = actingMuhafidz($this);
+    $halaqah = Halaqah::factory()->create(['muhafidz_id' => $muhafidz->id]);
     $santri = Santri::factory()->create();
     $halaqah->santris()->attach($santri->id);
 
-    $this->post(route('ustadz.mutabaah-bulanan.update', 1), [
+    $this->post(route('muhafidz.mutabaah-bulanan.update', 1), [
         'santri_id' => $santri->id,
         'halaman_kumulatif' => 25,
         'tasmi_pekan_1' => 80,
@@ -38,7 +38,7 @@ test('ustadz can upsert mutabaah bulanan for a halaqah santri', function () {
     ]);
 
     // upsert: post lagi dengan nilai baru
-    $this->post(route('ustadz.mutabaah-bulanan.update', 1), [
+    $this->post(route('muhafidz.mutabaah-bulanan.update', 1), [
         'santri_id' => $santri->id,
         'halaman_kumulatif' => 30,
     ])->assertRedirect();
@@ -47,46 +47,51 @@ test('ustadz can upsert mutabaah bulanan for a halaqah santri', function () {
     $this->assertDatabaseHas('mutabaah_bulanans', ['santri_id' => $santri->id, 'halaman_kumulatif' => 30]);
 });
 
-test('ustadz cannot submit a santri outside their halaqah', function () {
-    $ustadz = actingUstadz($this);
-    $halaqah = Halaqah::factory()->create(['ustadz_id' => $ustadz->id]);
+test('muhafidz cannot submit a santri outside their halaqah', function () {
+    $muhafidz = actingMuhafidz($this);
+    $halaqah = Halaqah::factory()->create(['muhafidz_id' => $muhafidz->id]);
     $member = Santri::factory()->create();
     $halaqah->santris()->attach($member->id);
     $stranger = Santri::factory()->create();
 
-    $this->post(route('ustadz.mutabaah-bulanan.update', 1), [
+    $this->post(route('muhafidz.mutabaah-bulanan.update', 1), [
         'santri_id' => $stranger->id,
         'halaman_kumulatif' => 20,
     ])->assertForbidden();
 });
 
 test('bulan must be between 1 and 12', function () {
-    $ustadz = actingUstadz($this);
-    $halaqah = Halaqah::factory()->create(['ustadz_id' => $ustadz->id]);
+    $muhafidz = actingMuhafidz($this);
+    $halaqah = Halaqah::factory()->create(['muhafidz_id' => $muhafidz->id]);
     $santri = Santri::factory()->create();
     $halaqah->santris()->attach($santri->id);
 
-    $this->post(route('ustadz.mutabaah-bulanan.update', 13), [
+    $this->post(route('muhafidz.mutabaah-bulanan.update', 13), [
         'santri_id' => $santri->id,
         'halaman_kumulatif' => 10,
     ])->assertStatus(422);
 });
 
-test('halaman kumulatif cannot be below halaman awal bulan', function () {
-    $ustadz = actingUstadz($this);
-    $halaqah = Halaqah::factory()->create(['ustadz_id' => $ustadz->id]);
+test('halaman kumulatif can be below halaman awal bulan (bypass sesuai kemampuan santri)', function () {
+    $muhafidz = actingMuhafidz($this);
+    $halaqah = Halaqah::factory()->create(['muhafidz_id' => $muhafidz->id]);
     $santri = Santri::factory()->create(['halaman_awal' => 10]);
     $halaqah->santris()->attach($santri->id);
 
-    $this->post(route('ustadz.mutabaah-bulanan.update', 1), [
+    $this->post(route('muhafidz.mutabaah-bulanan.update', 1), [
         'santri_id' => $santri->id,
         'halaman_kumulatif' => 9,
-    ])->assertStatus(422);
+    ])->assertRedirect();
+
+    $this->assertDatabaseHas('mutabaah_bulanans', [
+        'santri_id' => $santri->id,
+        'halaman_kumulatif' => 9,
+    ]);
 });
 
 test('halaqah santri page exposes prefill for given month', function () {
-    $ustadz = actingUstadz($this);
-    $halaqah = Halaqah::factory()->create(['ustadz_id' => $ustadz->id]);
+    $muhafidz = actingMuhafidz($this);
+    $halaqah = Halaqah::factory()->create(['muhafidz_id' => $muhafidz->id]);
     $santri = Santri::factory()->create(['halaman_awal' => 5]);
     $halaqah->santris()->attach($santri->id);
 
@@ -96,10 +101,10 @@ test('halaqah santri page exposes prefill for given month', function () {
         'halaman' => 7,
     ]);
 
-    $this->get(route('ustadz.halaqahs.santris.show', ['halaqah' => $halaqah, 'bulan' => 1]))
+    $this->get(route('muhafidz.halaqahs.santris.show', ['halaqah' => $halaqah, 'bulan' => 1]))
         ->assertOk()
         ->assertInertia(fn ($page) => $page
-            ->component('ustadz/halaqahs/santris')
+            ->component('muhafidz/halaqahs/santris')
             ->where('bulan', 1)
             ->has('bulanan.0', fn ($row) => $row
                 ->where('santri_id', $santri->id)

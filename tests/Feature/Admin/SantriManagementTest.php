@@ -79,8 +79,8 @@ test('admin can delete a santri and its user account', function () {
 });
 
 test('non-admin cannot access santri management', function () {
-    $ustadz = User::factory()->create(['role' => UserRole::Ustadz]);
-    $this->actingAs($ustadz);
+    $muhafidz = User::factory()->create(['role' => UserRole::Muhafidz]);
+    $this->actingAs($muhafidz);
 
     $this->get(route('admin.santris.index'))->assertForbidden();
 });

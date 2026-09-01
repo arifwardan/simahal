@@ -2,11 +2,11 @@
 
 use App\Enums\UserRole;
 use App\Models\Halaqah;
+use App\Models\Muhafidz;
 use App\Models\Mutabaah;
 use App\Models\OrangTua;
 use App\Models\Santri;
 use App\Models\User;
-use App\Models\Ustadz;
 
 test('seeder creates one account of each role', function () {
     $this->seed();
@@ -19,7 +19,7 @@ test('seeder creates one account of each role', function () {
 test('seeder creates interconnected demo data', function () {
     $this->seed();
 
-    expect(Ustadz::count())->toBeGreaterThanOrEqual(1)
+    expect(Muhafidz::count())->toBeGreaterThanOrEqual(1)
         ->and(Santri::count())->toBeGreaterThanOrEqual(1)
         ->and(OrangTua::count())->toBeGreaterThanOrEqual(1)
         ->and(Halaqah::count())->toBeGreaterThanOrEqual(1)

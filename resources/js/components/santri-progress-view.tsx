@@ -33,55 +33,57 @@ export default function SantriProgressView({
 }) {
     return (
         <>
-            {headline && <h1 className="text-lg font-semibold">{headline}</h1>}
+            {headline && (
+                <div className="flex items-center gap-3 border-l-[6px] border-black pl-3">
+                    <h2 className="font-head text-lg font-black uppercase tracking-tight">{headline}</h2>
+                </div>
+            )}
 
-            <Card className="mt-4">
-                <CardHeader>
-                    <CardTitle>
-                        Target Hafalan{' '}
-                        {progress.periode
-                            ? `· Periode ${progress.periode}`
-                            : ''}
+            <Card className="mt-4 overflow-hidden">
+                <CardHeader className="bg-primary">
+                    <CardTitle className="font-head font-black uppercase">
+                        Target Hafalan {progress.periode ? `· Periode ${progress.periode}` : ''}
                     </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                    <div className="flex items-center justify-between">
-                        <p className="text-sm font-medium">
-                            {progress.progress}/{progress.target} ayat ·{' '}
-                            {progress.percent}%
+                <CardContent className="space-y-4 pt-6">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                        <p className="border-2 border-black bg-black px-3 py-1 text-sm font-black text-white">
+                            {progress.progress}/{progress.target} ayat · {progress.percent}%
                         </p>
                         {progress.status && (
-                            <Badge variant="secondary">
+                            <Badge className="border-2 border-black bg-white text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                                 {progress.status_label}
                             </Badge>
                         )}
                     </div>
-                    <div className="h-3 w-full overflow-hidden rounded-full bg-muted">
+                    <div className="h-4 w-full border-[3px] border-black bg-white p-1">
                         <div
-                            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600"
-                            style={{
-                                width: `${Math.min(100, progress.percent)}%`,
-                            }}
+                            className="h-full bg-black transition-all"
+                            style={{ width: `${Math.min(100, progress.percent)}%` }}
                         />
                     </div>
+                    <p className="text-xs font-bold">
+                        {progress.percent >= 100 ? 'Alhamdulillah target tercapai!' : `${100 - progress.percent}% lagi menuju target`}
+                    </p>
                 </CardContent>
             </Card>
 
-            <div className="mt-6 grid gap-6 lg:grid-cols-2">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Halaqah</CardTitle>
+            <div className="mt-6 grid gap-4 lg:grid-cols-2 lg:items-stretch">
+                <Card className="flex flex-col">
+                    <CardHeader className="bg-[#5CE1E6]">
+                        <CardTitle className="font-head font-black uppercase text-black">Halaqah</CardTitle>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="flex flex-1 flex-col p-0">
                         {halaqahs.length === 0 ? (
-                            <p className="text-sm text-muted-foreground">
-                                Belum terdaftar di halaqah.
-                            </p>
+                            <p className="p-6 text-sm font-bold">Belum terdaftar di halaqah.</p>
                         ) : (
-                            <ul className="space-y-1">
-                                {halaqahs.map((h) => (
-                                    <li key={h.id} className="text-sm">
-                                        {h.nama}
+                            <ul className="flex-1 divide-y-[3px] divide-black border-t-[3px] border-black">
+                                {halaqahs.map((h, idx) => (
+                                    <li
+                                        key={h.id}
+                                        className={`p-4 text-sm font-black uppercase ${idx % 2 === 0 ? 'bg-white' : 'bg-accent'}`}
+                                    >
+                                        <span className="border-2 border-black bg-primary px-2 py-1">{h.nama}</span>
                                     </li>
                                 ))}
                             </ul>
@@ -89,32 +91,33 @@ export default function SantriProgressView({
                     </CardContent>
                 </Card>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Riwayat Mutabaah</CardTitle>
+                <Card className="flex flex-col">
+                    <CardHeader className="bg-[#FF90E8]">
+                        <CardTitle className="font-head font-black uppercase text-black">Riwayat Mutabaah</CardTitle>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="flex flex-1 flex-col p-0">
                         {riwayat.length === 0 ? (
-                            <p className="text-sm text-muted-foreground">
-                                Belum ada mutabaah.
-                            </p>
+                            <p className="p-6 text-sm font-bold">Belum ada mutabaah.</p>
                         ) : (
-                            <ul className="divide-y rounded-lg border">
-                                {riwayat.map((m) => (
+                            <ul className="flex-1 divide-y-[3px] divide-black border-t-[3px] border-black">
+                                {riwayat.slice(0, 6).map((m) => (
                                     <li
                                         key={m.id}
-                                        className="flex items-center justify-between gap-4 p-3"
+                                        className="flex items-center justify-between gap-4 bg-white p-3 font-bold hover:bg-accent"
                                     >
-                                        <p className="text-sm">
-                                            {m.tanggal} · {m.jenis} · {m.surah}{' '}
-                                            {m.ayat_mulai}-{m.ayat_selesai}
+                                        <p className="text-xs leading-tight">
+                                            <span className="bg-black px-1.5 py-0.5 text-white">{m.tanggal}</span>{' '}
+                                            {m.jenis} · {m.surah} {m.ayat_mulai}-{m.ayat_selesai}
                                         </p>
-                                        <Badge variant="secondary">
-                                            {m.status}
-                                        </Badge>
+                                        <Badge className="shrink-0 border-2 border-black bg-black text-white">{m.status}</Badge>
                                     </li>
                                 ))}
                             </ul>
+                        )}
+                        {riwayat.length > 6 && (
+                            <p className="border-t-[3px] border-black bg-muted p-3 text-center text-xs font-black uppercase">
+                                + {riwayat.length - 6} lagi — lihat pagination
+                            </p>
                         )}
                     </CardContent>
                 </Card>

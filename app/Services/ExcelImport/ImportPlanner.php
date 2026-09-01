@@ -3,10 +3,10 @@
 namespace App\Services\ExcelImport;
 
 use App\Models\Halaqah;
+use App\Models\Muhafidz;
 use App\Models\MutabaahSetting;
 use App\Models\Santri;
 use App\Models\User;
-use App\Models\Ustadz;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -23,7 +23,7 @@ final class ImportPlanner
         // Indeks data existing (skala kecil, aman dimuat penuh).
         $existingUsers = User::query()->pluck('email');
         $usedEmails = $existingUsers->map(fn (string $e) => strtolower($e))->flip();
-        $existingUstadzs = Ustadz::query()->get()->keyBy(fn (Ustadz $u) => (new ExcelReader)->normalizeName($u->nama));
+        $existingMuhafidzs = Muhafidz::query()->get()->keyBy(fn (Muhafidz $u) => (new ExcelReader)->normalizeName($u->nama));
         $existingHalaqahs = Halaqah::query()->get()->keyBy(fn (Halaqah $h) => (new ExcelReader)->normalizeName($h->nama));
         $existingSantris = Santri::query()->get()->keyBy(fn (Santri $s) => (new ExcelReader)->normalizeName($s->nama).'|'.($s->jenis?->value ?? ''));
 
@@ -37,21 +37,21 @@ final class ImportPlanner
         }
         $nisSeq = $maxSeq;
 
-        // 1) Ustadz unik per muhafidz asli.
-        $ustadzForNama = [];
+        // 1) Muhafidz unik per muhafidz asli.
+        $muhafidzForNama = [];
         foreach ($wb->groups as $group) {
             if (! $group->isRealMuhafidz) {
                 continue;
             }
             $normalized = (new ExcelReader)->normalizeName($group->muhafidz);
-            if (isset($ustadzForNama[$normalized])) {
+            if (isset($muhafidzForNama[$normalized])) {
                 continue;
             }
-            $ustadzForNama[$normalized] = $normalized;
-            $existing = $existingUstadzs->get($normalized);
+            $muhafidzForNama[$normalized] = $normalized;
+            $existing = $existingMuhafidzs->get($normalized);
             $email = $this->uniqueEmail($normalized, $usedEmails);
             $items->push(new ImportPlanItem(
-                type: 'ustadz',
+                type: 'muhafidz',
                 action: $existing ? ImportAction::Update : ImportAction::Create,
                 groupKey: $group->jenis.'-'.$group->kelompok,
                 nama: trim($group->muhafidz),

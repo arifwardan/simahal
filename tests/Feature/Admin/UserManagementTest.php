@@ -9,8 +9,8 @@ test('only admins can access the user list', function () {
 });
 
 test('non-admin cannot access the user list', function () {
-    $ustadz = User::factory()->create(['role' => UserRole::Ustadz]);
-    $this->actingAs($ustadz)->get(route('admin.users.index'))->assertForbidden();
+    $muhafidz = User::factory()->create(['role' => UserRole::Muhafidz]);
+    $this->actingAs($muhafidz)->get(route('admin.users.index'))->assertForbidden();
 });
 
 test('admin can create a user with a role', function () {
@@ -20,12 +20,12 @@ test('admin can create a user with a role', function () {
         'name' => 'New User',
         'email' => 'new@simahal.test',
         'password' => 'password',
-        'role' => UserRole::Ustadz->value,
+        'role' => UserRole::Muhafidz->value,
     ])->assertRedirect(route('admin.users.index'));
 
     $this->assertDatabaseHas('users', [
         'email' => 'new@simahal.test',
-        'role' => UserRole::Ustadz->value,
+        'role' => UserRole::Muhafidz->value,
     ]);
 });
 

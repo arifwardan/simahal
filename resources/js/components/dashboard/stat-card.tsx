@@ -1,6 +1,5 @@
 import { Link } from '@inertiajs/react';
 import type { LucideIcon } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 type Tone = 'violet' | 'indigo' | 'fuchsia' | 'teal' | 'amber';
@@ -20,13 +19,12 @@ type StatCardProps = {
     href?: string;
 };
 
-const toneClasses: Record<Tone, string> = {
-    violet: 'bg-violet-100 text-violet-700 dark:bg-violet-500/15 dark:text-violet-300',
-    indigo: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-300',
-    fuchsia:
-        'bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-500/15 dark:text-fuchsia-300',
-    teal: 'bg-teal-100 text-teal-700 dark:bg-teal-500/15 dark:text-teal-300',
-    amber: 'bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300',
+const toneMap: Record<Tone, { bg: string; accent: string }> = {
+    violet: { bg: 'bg-[#FF90E8]', accent: 'bg-[#FFD600]' },
+    indigo: { bg: 'bg-[#5CE1E6]', accent: 'bg-[#FFD600]' },
+    fuchsia: { bg: 'bg-[#FF6B6B]', accent: 'bg-white' },
+    teal: { bg: 'bg-[#7DF9FF]', accent: 'bg-black text-white' },
+    amber: { bg: 'bg-[#FFD600]', accent: 'bg-black text-white' },
 };
 
 export default function StatCard({
@@ -38,53 +36,58 @@ export default function StatCard({
     delta,
     href,
 }: StatCardProps) {
+    const t = toneMap[tone];
+
     const content = (
-        <>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                    {label}
-                </CardTitle>
+        <div
+            className={cn(
+                'relative flex flex-col gap-3 border-[3px] border-black p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]',
+                t.bg,
+                href && 'cursor-pointer'
+            )}
+        >
+            <div className="flex items-start justify-between gap-3">
+                <div className="flex flex-col gap-1">
+                    <span className="font-head text-[11px] font-black uppercase tracking-[0.14em] text-black/70">
+                        {label}
+                    </span>
+                    <span className="font-head text-3xl font-black leading-none tracking-tighter text-black">
+                        {value}
+                    </span>
+                </div>
                 {Icon && (
-                    <span
-                        className={cn(
-                            'flex size-9 items-center justify-center rounded-lg',
-                            toneClasses[tone],
-                        )}
-                    >
-                        <Icon className="size-4.5" />
+                    <span className="flex size-11 shrink-0 items-center justify-center border-[3px] border-black bg-white shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+                        <Icon className="size-5 stroke-[2.5]" />
                     </span>
                 )}
-            </CardHeader>
-            <CardContent>
-                <p className="text-2xl font-semibold">{value}</p>
-                {subtitle && (
-                    <p className="text-xs text-muted-foreground">{subtitle}</p>
-                )}
-                {delta && (
-                    <p
-                        className={cn(
-                            'text-xs font-medium',
-                            delta.direction === 'up'
-                                ? 'text-emerald-600 dark:text-emerald-400'
-                                : 'text-rose-600 dark:text-rose-400',
-                        )}
-                    >
-                        {delta.direction === 'up' ? '↑' : '↓'} {delta.value}
-                    </p>
-                )}
-            </CardContent>
-        </>
+            </div>
+            {(subtitle || delta) && (
+                <div className="flex flex-col gap-1 border-t-[3px] border-black pt-3">
+                    {subtitle && <span className="text-xs font-bold leading-none text-black">{subtitle}</span>}
+                    {delta && (
+                        <span
+                            className={cn(
+                                'inline-flex w-fit items-center gap-1 border-2 border-black px-2 py-0.5 text-[11px] font-black uppercase',
+                                delta.direction === 'up' ? 'bg-white text-black' : 'bg-black text-white'
+                            )}
+                        >
+                            {delta.direction === 'up' ? '↗' : '↘'} {delta.value}
+                        </span>
+                    )}
+                </div>
+            )}
+            {/* accent stripe */}
+            <div className={cn('absolute left-0 top-0 h-2 w-full border-b-[3px] border-black', t.accent)} />
+        </div>
     );
 
     if (href) {
         return (
             <Link href={href} className="block">
-                <Card className="transition-colors hover:border-foreground/20">
-                    {content}
-                </Card>
+                {content}
             </Link>
         );
     }
 
-    return <Card>{content}</Card>;
+    return content;
 }

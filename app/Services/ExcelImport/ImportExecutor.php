@@ -7,9 +7,9 @@ use App\Enums\HalaqahStatus;
 use App\Enums\SantriStatus;
 use App\Enums\UserRole;
 use App\Models\Halaqah;
+use App\Models\Muhafidz;
 use App\Models\Santri;
 use App\Models\User;
-use App\Models\Ustadz;
 use Illuminate\Support\Facades\DB;
 
 class ImportExecutor
@@ -17,61 +17,61 @@ class ImportExecutor
     public function execute(ImportPlan $plan): ImportResult
     {
         $result = new ImportResult;
-        /** @var array<string, Ustadz> $ustadzByNama */
-        $ustadzByNama = [];
+        /** @var array<string, Muhafidz> $muhafidzByNama */
+        $muhafidzByNama = [];
         /** @var array<string, Halaqah> $halaqahByKey */
         $halaqahByKey = [];
 
-        DB::transaction(function () use ($plan, $result, &$ustadzByNama, &$halaqahByKey): void {
+        DB::transaction(function () use ($plan, $result, &$muhafidzByNama, &$halaqahByKey): void {
             foreach ($plan->items as $item) {
-                $this->executeItem($item, $result, $ustadzByNama, $halaqahByKey);
+                $this->executeItem($item, $result, $muhafidzByNama, $halaqahByKey);
             }
         });
 
         return $result;
     }
 
-    /** @param  array<string, Ustadz>  $ustadzByNama */
+    /** @param  array<string, Muhafidz>  $muhafidzByNama */
     /** @param  array<string, Halaqah>  $halaqahByKey */
-    private function executeItem(ImportPlanItem $item, ImportResult $result, array &$ustadzByNama, array &$halaqahByKey): void
+    private function executeItem(ImportPlanItem $item, ImportResult $result, array &$muhafidzByNama, array &$halaqahByKey): void
     {
         if ($item->action === ImportAction::Placeholder || $item->action === ImportAction::Error) {
             return;
         }
 
-        if ($item->type === 'ustadz') {
+        if ($item->type === 'muhafidz') {
             $normalized = $item->extra['muhafidz_normalized'];
             if ($item->action === ImportAction::Create) {
-                $user = $this->createUser($item->nama, $item->email, UserRole::Ustadz);
-                $ustadz = Ustadz::create(['user_id' => $user->id, 'nama' => $item->nama]);
-                $ustadzByNama[$normalized] = $ustadz;
-                $result->ustadzCreated++;
+                $user = $this->createUser($item->nama, $item->email, UserRole::Muhafidz);
+                $muhafidz = Muhafidz::create(['user_id' => $user->id, 'nama' => $item->nama]);
+                $muhafidzByNama[$normalized] = $muhafidz;
+                $result->muhafidzCreated++;
                 $result->emailsCreated[] = $item->email;
             } else {
-                $ustadz = Ustadz::findOrFail($item->existingId);
-                $ustadz->update(['nama' => $item->nama]);
-                $ustadzByNama[$normalized] = $ustadz;
-                $result->ustadzUpdated++;
+                $muhafidz = Muhafidz::findOrFail($item->existingId);
+                $muhafidz->update(['nama' => $item->nama]);
+                $muhafidzByNama[$normalized] = $muhafidz;
+                $result->muhafidzUpdated++;
             }
 
             return;
         }
 
         if ($item->type === 'halaqah') {
-            $ustadz = $ustadzByNama[$item->extra['muhafidz_normalized']] ?? null;
-            if ($ustadz === null) {
-                throw new \RuntimeException('Ustadz untuk halaqah belum tersedia.');
+            $muhafidz = $muhafidzByNama[$item->extra['muhafidz_normalized']] ?? null;
+            if ($muhafidz === null) {
+                throw new \RuntimeException('Muhafidz untuk halaqah belum tersedia.');
             }
             if ($item->action === ImportAction::Create) {
                 $halaqah = Halaqah::create([
                     'nama' => $item->nama,
-                    'ustadz_id' => $ustadz->id,
+                    'muhafidz_id' => $muhafidz->id,
                     'status' => HalaqahStatus::Aktif->value,
                 ]);
                 $result->halaqahCreated++;
             } else {
                 $halaqah = Halaqah::findOrFail($item->existingId);
-                $halaqah->update(['nama' => $item->nama, 'ustadz_id' => $ustadz->id]);
+                $halaqah->update(['nama' => $item->nama, 'muhafidz_id' => $muhafidz->id]);
                 $result->halaqahUpdated++;
             }
             $halaqahByKey[$item->groupKey] = $halaqah;

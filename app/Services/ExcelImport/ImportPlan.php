@@ -15,7 +15,7 @@ final class ImportPlan
         $byAction = fn (string $type) => $this->items->where('type', $type)->countBy(fn ($i) => $i->action->value)->all();
 
         return [
-            'ustadz' => $byAction('ustadz'),
+            'muhafidz' => $byAction('muhafidz'),
             'halaqah' => $byAction('halaqah'),
             'santri' => $byAction('santri'),
         ];

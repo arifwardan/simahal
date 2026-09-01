@@ -25,13 +25,13 @@ class MutabaahBulananDashboardController extends Controller
         $calculator = app(MutabaahBulananCalculator::class);
 
         $bulanans = MutabaahBulanan::query()
-            ->with(['santri.halaqahs.ustadz'])
+            ->with(['santri.halaqahs.muhafidz'])
             ->where('tahun', $tahun)
             ->where('bulan', $bulan)
             ->get();
 
         $halaqahs = Halaqah::query()
-            ->with(['ustadz:id,nama', 'santris:id,jenis'])
+            ->with(['muhafidz:id,nama', 'santris:id,jenis'])
             ->withCount('santris')
             ->orderBy('nama')
             ->get();
@@ -48,7 +48,7 @@ class MutabaahBulananDashboardController extends Controller
             return [
                 'jenis' => $this->jenisLabel($halaqah->santris->first()?->jenis),
                 'kelompok' => $halaqah->nama,
-                'muhafidz' => $halaqah->ustadz?->nama,
+                'muhafidz' => $halaqah->muhafidz?->nama,
                 'jumlah_santri' => $halaqah->santris_count,
                 'terisi' => $owned->count(),
                 'rata_halaman_kumulatif' => $this->avg($owned->pluck('halaman_kumulatif')),

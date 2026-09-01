@@ -11,9 +11,9 @@ final class ImportResult
 
     public int $santriUpdated = 0;
 
-    public int $ustadzCreated = 0;
+    public int $muhafidzCreated = 0;
 
-    public int $ustadzUpdated = 0;
+    public int $muhafidzUpdated = 0;
 
     public int $halaqahCreated = 0;
 
@@ -29,8 +29,8 @@ final class ImportResult
             'emails_created' => $this->emailsCreated,
             'santri_created' => $this->santriCreated,
             'santri_updated' => $this->santriUpdated,
-            'ustadz_created' => $this->ustadzCreated,
-            'ustadz_updated' => $this->ustadzUpdated,
+            'muhafidz_created' => $this->muhafidzCreated,
+            'muhafidz_updated' => $this->muhafidzUpdated,
             'halaqah_created' => $this->halaqahCreated,
             'halaqah_updated' => $this->halaqahUpdated,
             'errors' => $this->errors,

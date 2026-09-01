@@ -8,7 +8,7 @@ final readonly class ImportPlanItem
      * @param  array<string, mixed>  $extra
      */
     public function __construct(
-        public string $type, // 'ustadz' | 'halaqah' | 'santri'
+        public string $type, // 'muhafidz' | 'halaqah' | 'santri'
         public ImportAction $action,
         public string $groupKey,
         public string $nama,

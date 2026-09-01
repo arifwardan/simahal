@@ -8,18 +8,16 @@ use Illuminate\Validation\Rules\Enum;
 
 class StoreHalaqahRequest extends FormRequest
 {
-    /**
-     * @return array<string, array<int, mixed>>
-     */
     public function rules(): array
     {
         return [
             'nama' => ['required', 'string', 'max:255'],
-            'ustadz_id' => ['required', 'exists:ustadzs,id'],
-            'jadwal' => ['nullable', 'string', 'max:255'],
+            'muhafidz_id' => ['nullable', 'required_without:muhafidz_ids', 'exists:muhafidzs,id'],
+            'muhafidz_ids' => ['nullable', 'required_without:muhafidz_id', 'array', 'min:1'],
+            'muhafidz_ids.*' => ['integer', 'exists:muhafidzs,id'],
+            'jam_mulai' => ['required', 'string', 'date_format:H:i'],
+            'jam_selesai' => ['required', 'string', 'date_format:H:i', 'after:jam_mulai'],
             'status' => ['required', new Enum(HalaqahStatus::class)],
-            'santri_ids' => ['nullable', 'array'],
-            'santri_ids.*' => ['integer', 'exists:santris,id'],
         ];
     }
 }

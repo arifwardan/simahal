@@ -14,7 +14,7 @@ use Illuminate\Support\Carbon;
 /**
  * @property int $id
  * @property int $santri_id
- * @property int $ustadz_id
+ * @property int $muhafidz_id
  * @property Carbon $tanggal
  * @property MutabaahJenis $jenis
  * @property string $surah
@@ -25,7 +25,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $catatan
  * @property int|null $halaman
  */
-#[Fillable(['santri_id', 'ustadz_id', 'tanggal', 'jenis', 'surah', 'ayat_mulai', 'ayat_selesai', 'nilai', 'status', 'catatan', 'halaman'])]
+#[Fillable(['santri_id', 'muhafidz_id', 'tanggal', 'jenis', 'surah', 'ayat_mulai', 'ayat_selesai', 'nilai', 'status', 'catatan', 'halaman'])]
 class Mutabaah extends Model
 {
     /** @use HasFactory<MutabaahFactory> */
@@ -53,10 +53,10 @@ class Mutabaah extends Model
     }
 
     /**
-     * @return BelongsTo<Ustadz, $this>
+     * @return BelongsTo<Muhafidz, $this>
      */
-    public function ustadz(): BelongsTo
+    public function muhafidz(): BelongsTo
     {
-        return $this->belongsTo(Ustadz::class);
+        return $this->belongsTo(Muhafidz::class);
     }
 }

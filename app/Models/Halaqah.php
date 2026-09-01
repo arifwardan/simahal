@@ -14,11 +14,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @property int $id
  * @property string $nama
- * @property int $ustadz_id
+ * @property int $muhafidz_id
  * @property string|null $jadwal
+ * @property string|null $jam_mulai
+ * @property string|null $jam_selesai
  * @property HalaqahStatus $status
  */
-#[Fillable(['nama', 'ustadz_id', 'jadwal', 'status'])]
+#[Fillable(['nama', 'muhafidz_id', 'jadwal', 'jam_mulai', 'jam_selesai', 'status'])]
 class Halaqah extends Model
 {
     /** @use HasFactory<HalaqahFactory> */
@@ -35,11 +37,11 @@ class Halaqah extends Model
     }
 
     /**
-     * @return BelongsTo<Ustadz, $this>
+     * @return BelongsTo<Muhafidz, $this>
      */
-    public function ustadz(): BelongsTo
+    public function muhafidz(): BelongsTo
     {
-        return $this->belongsTo(Ustadz::class);
+        return $this->belongsTo(Muhafidz::class);
     }
 
     /**
@@ -59,5 +61,13 @@ class Halaqah extends Model
             ->using(HalaqahMember::class)
             ->withPivot('joined_at', 'status')
             ->withTimestamps();
+    }
+
+    /**
+     * @return HasMany<HalaqahSchedule, $this>
+     */
+    public function schedules(): HasMany
+    {
+        return $this->hasMany(HalaqahSchedule::class, 'halaqah_id');
     }
 }

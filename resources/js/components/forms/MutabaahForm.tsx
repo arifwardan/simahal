@@ -1,5 +1,5 @@
 import { Form } from '@inertiajs/react';
-import MutabaahController from '@/actions/App/Http/Controllers/Ustadz/MutabaahController';
+import MutabaahController from '@/actions/App/Http/Controllers/Muhafidz/MutabaahController';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

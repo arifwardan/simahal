@@ -12,9 +12,16 @@ export default defineConfig({
             input: ['resources/css/app.css', 'resources/js/app.tsx'],
             refresh: true,
             fonts: [
-                bunny('Instrument Sans', {
-                    weights: [400, 500, 600],
-                }),
+                // @ts-ignore - variable option forwarded to bunny
+                bunny('Archivo Black', {
+                    weights: [400],
+                    variable: '--font-head',
+                } as any),
+                // @ts-ignore
+                bunny('Space Grotesk', {
+                    weights: [400, 500, 600, 700],
+                    variable: '--font-sans',
+                } as any),
             ],
         }),
         inertia(),

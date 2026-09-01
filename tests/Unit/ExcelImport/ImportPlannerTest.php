@@ -2,10 +2,10 @@
 
 use App\Enums\UserRole;
 use App\Models\Halaqah;
+use App\Models\Muhafidz;
 use App\Models\MutabaahSetting;
 use App\Models\Santri;
 use App\Models\User;
-use App\Models\Ustadz;
 use App\Services\ExcelImport\ExcelReader;
 use App\Services\ExcelImport\ImportPlan;
 use App\Services\ExcelImport\ImportPlanner;
@@ -77,18 +77,18 @@ test('planner menghasilkan nis urut dan grup dengan muhafidz placeholder diabaik
     expect($plan->items->where('type', 'halaqah')->pluck('nama'))->not->toContain('Kelompok 5 Ikhwan');
 });
 
-test('planner mencocokkan ustadz dan halaqah existing', function () {
-    $ustadz = Ustadz::create(['user_id' => User::factory()->role(UserRole::Ustadz)->create()->id, 'nama' => 'Hammam']);
-    $halaqah = Halaqah::create(['nama' => 'Kelompok 1 Ikhwan', 'ustadz_id' => $ustadz->id, 'status' => 'aktif']);
+test('planner mencocokkan muhafidz dan halaqah existing', function () {
+    $muhafidz = Muhafidz::create(['user_id' => User::factory()->role(UserRole::Muhafidz)->create()->id, 'nama' => 'Hammam']);
+    $halaqah = Halaqah::create(['nama' => 'Kelompok 1 Ikhwan', 'muhafidz_id' => $muhafidz->id, 'status' => 'aktif']);
 
     $plan = planDariWorkbook([
         ['jenis' => 'Ikhwan', 'kelompok' => 'Kelompok 1', 'muhafidz' => 'Hammam', 'nama' => 'Yahya', 'halamanAwal' => 0],
     ]);
 
-    $ustadzItem = $plan->items->first(fn ($i) => $i->type === 'ustadz');
+    $muhafidzItem = $plan->items->first(fn ($i) => $i->type === 'muhafidz');
     $halaqahItem = $plan->items->first(fn ($i) => $i->type === 'halaqah');
-    expect($ustadzItem->action->value)->toBe('update');
-    expect($ustadzItem->existingId)->toBe($ustadz->id);
+    expect($muhafidzItem->action->value)->toBe('update');
+    expect($muhafidzItem->existingId)->toBe($muhafidz->id);
     expect($halaqahItem->action->value)->toBe('update');
     expect($halaqahItem->existingId)->toBe($halaqah->id);
 });

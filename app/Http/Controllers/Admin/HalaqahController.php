@@ -7,8 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Halaqah\StoreHalaqahRequest;
 use App\Http\Requests\Admin\Halaqah\UpdateHalaqahRequest;
 use App\Models\Halaqah;
-use App\Models\Santri;
-use App\Models\Ustadz;
+use App\Models\Muhafidz;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,24 +19,23 @@ class HalaqahController extends Controller
     public function index(Request $request): Response
     {
         $halaqahs = Halaqah::query()
-            ->with(['ustadz', 'santris:id'])
+            ->with(['muhafidz'])
             ->withCount('santris')
             ->orderBy('nama')
             ->paginate(15)
             ->through(fn (Halaqah $halaqah) => [
                 'id' => $halaqah->id,
                 'nama' => $halaqah->nama,
-                'jadwal' => $halaqah->jadwal,
+                'jam_mulai' => $halaqah->jam_mulai ? substr($halaqah->jam_mulai, 0, 5) : null,
+                'jam_selesai' => $halaqah->jam_selesai ? substr($halaqah->jam_selesai, 0, 5) : null,
                 'status' => $halaqah->status->value,
                 'santris_count' => $halaqah->santris_count,
-                'ustadz' => $halaqah->ustadz ? ['id' => $halaqah->ustadz->id, 'nama' => $halaqah->ustadz->nama] : null,
-                'santri_ids' => $halaqah->santris->pluck('id')->toArray(),
+                'muhafidz' => $halaqah->muhafidz ? ['id' => $halaqah->muhafidz->id, 'nama' => $halaqah->muhafidz->nama] : null,
             ]);
 
         return Inertia::render('admin/halaqahs/index', [
             'halaqahs' => $halaqahs,
-            'ustadzs' => Ustadz::query()->orderBy('nama')->get(['id', 'nama']),
-            'santris' => Santri::query()->orderBy('nama')->get(['id', 'nama']),
+            'muhafidzs' => Muhafidz::query()->orderBy('nama')->get(['id', 'nama']),
             'statuses' => collect(HalaqahStatus::cases())->map(fn (HalaqahStatus $status) => [
                 'value' => $status->value,
                 'label' => $status->label(),
@@ -49,18 +47,25 @@ class HalaqahController extends Controller
     {
         $validated = $request->validated();
 
-        DB::transaction(function () use ($validated): void {
-            $halaqah = Halaqah::create([
-                'nama' => $validated['nama'],
-                'ustadz_id' => $validated['ustadz_id'],
-                'jadwal' => $validated['jadwal'] ?? null,
-                'status' => $validated['status'],
-            ]);
+        $muhafidzIds = $validated['muhafidz_ids'] ?? (isset($validated['muhafidz_id']) ? [$validated['muhafidz_id']] : []);
 
-            $halaqah->santris()->sync($validated['santri_ids'] ?? []);
+        DB::transaction(function () use ($validated, $muhafidzIds): void {
+            foreach ($muhafidzIds as $muhafidzId) {
+                Halaqah::create([
+                    'nama' => $validated['nama'],
+                    'muhafidz_id' => $muhafidzId,
+                    'jam_mulai' => $validated['jam_mulai'],
+                    'jam_selesai' => $validated['jam_selesai'],
+                    'status' => $validated['status'],
+                ]);
+            }
         });
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => __('Halaqah created.')]);
+        $message = count($muhafidzIds) > 1
+            ? __('Halaqah created for :count muhafidz.', ['count' => count($muhafidzIds)])
+            : __('Halaqah created.');
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => $message]);
 
         return to_route('admin.halaqahs.index');
     }
@@ -69,16 +74,13 @@ class HalaqahController extends Controller
     {
         $validated = $request->validated();
 
-        DB::transaction(function () use ($validated, $halaqah): void {
-            $halaqah->update([
-                'nama' => $validated['nama'],
-                'ustadz_id' => $validated['ustadz_id'],
-                'jadwal' => $validated['jadwal'] ?? null,
-                'status' => $validated['status'],
-            ]);
-
-            $halaqah->santris()->sync($validated['santri_ids'] ?? []);
-        });
+        $halaqah->update([
+            'nama' => $validated['nama'],
+            'muhafidz_id' => $validated['muhafidz_id'],
+            'jam_mulai' => $validated['jam_mulai'],
+            'jam_selesai' => $validated['jam_selesai'],
+            'status' => $validated['status'],
+        ]);
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Halaqah updated.')]);
 

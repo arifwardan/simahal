@@ -17,9 +17,9 @@ test('admin can access admin-only route', function () {
 });
 
 test('non-admin is forbidden from admin-only route', function () {
-    $ustadz = User::factory()->create(['role' => UserRole::Ustadz]);
+    $muhafidz = User::factory()->create(['role' => UserRole::Muhafidz]);
 
-    $this->actingAs($ustadz)->get('/_admin-only')
+    $this->actingAs($muhafidz)->get('/_admin-only')
         ->assertForbidden();
 });
 

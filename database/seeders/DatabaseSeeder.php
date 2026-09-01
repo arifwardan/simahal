@@ -8,12 +8,12 @@ use App\Enums\MutabaahStatus;
 use App\Enums\TargetHafalanStatus;
 use App\Enums\UserRole;
 use App\Models\Halaqah;
+use App\Models\Muhafidz;
 use App\Models\Mutabaah;
 use App\Models\OrangTua;
 use App\Models\Santri;
 use App\Models\TargetHafalan;
 use App\Models\User;
-use App\Models\Ustadz;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -29,14 +29,14 @@ class DatabaseSeeder extends Seeder
             'password' => 'password',
         ]);
 
-        $ustadzUser = User::factory()->role(UserRole::Ustadz)->create([
-            'name' => 'Ustadz Ahmad',
-            'email' => 'ustadz@simahal.test',
+        $muhafidzUser = User::factory()->role(UserRole::Muhafidz)->create([
+            'name' => 'Muhafidz Ahmad',
+            'email' => 'muhafidz@simahal.test',
             'password' => 'password',
         ]);
-        $ustadz = Ustadz::factory()->create([
-            'user_id' => $ustadzUser->id,
-            'nama' => 'Ustadz Ahmad',
+        $muhafidz = Muhafidz::factory()->create([
+            'user_id' => $muhafidzUser->id,
+            'nama' => 'Muhafidz Ahmad',
             'kontak' => '081234567890',
         ]);
 
@@ -67,7 +67,7 @@ class DatabaseSeeder extends Seeder
 
         $halaqah = Halaqah::factory()->create([
             'nama' => 'Halaqah Fajar',
-            'ustadz_id' => $ustadz->id,
+            'muhafidz_id' => $muhafidz->id,
             'jadwal' => 'Setiap pagi setelah Subuh, Masjid PondokIT',
             'status' => HalaqahStatus::Aktif,
         ]);
@@ -84,7 +84,7 @@ class DatabaseSeeder extends Seeder
 
         Mutabaah::factory()->create([
             'santri_id' => $santri->id,
-            'ustadz_id' => $ustadz->id,
+            'muhafidz_id' => $muhafidz->id,
             'tanggal' => now(),
             'jenis' => MutabaahJenis::Setoran,
             'surah' => 'Al-Fatihah',
@@ -94,5 +94,7 @@ class DatabaseSeeder extends Seeder
             'status' => MutabaahStatus::Lulus,
             'catatan' => 'Lancar, tajwid baik.',
         ]);
+
+        $this->call(DemoDataSeeder::class);
     }
 }

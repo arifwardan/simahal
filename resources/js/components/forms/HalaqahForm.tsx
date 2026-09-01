@@ -16,42 +16,43 @@ import {
 export type HalaqahRow = {
     id: number;
     nama: string;
-    jadwal: string | null;
+    jam_mulai: string | null;
+    jam_selesai: string | null;
     status: string;
     santris_count: number;
-    ustadz: { id: number; nama: string } | null;
-    santri_ids: number[];
+    muhafidz: { id: number; nama: string } | null;
 };
 
 type Option = { value: string; label: string };
 
 type Props = {
     nilaiAwal?: HalaqahRow | null;
-    ustadzs: { id: number; nama: string }[];
-    santris: { id: number; nama: string }[];
+    muhafidzs: { id: number; nama: string }[];
     statuses: Option[];
     onSuccess?: () => void;
 };
 
 export default function HalaqahForm({
     nilaiAwal,
-    ustadzs,
-    santris,
+    muhafidzs,
     statuses,
     onSuccess,
 }: Props) {
     const isEdit = nilaiAwal !== null && nilaiAwal !== undefined;
     const fieldKey = isEdit ? nilaiAwal!.id : 'new';
-    const [selectedSantris, setSelectedSantris] = useState<number[]>(
-        nilaiAwal?.santri_ids ?? [],
+
+    const [selectedMuhafidzs, setSelectedMuhafidzs] = useState<number[]>(
+        nilaiAwal?.muhafidz ? [nilaiAwal.muhafidz.id] : [],
     );
 
-    const toggleSantri = (santriId: number, checked: boolean): void => {
-        setSelectedSantris((prev) =>
-            checked
-                ? [...prev, santriId]
-                : prev.filter((id) => id !== santriId),
+    const toggleMuhafidz = (id: number, checked: boolean): void => {
+        setSelectedMuhafidzs((prev) =>
+            checked ? [...prev, id] : prev.filter((v) => v !== id),
         );
+    };
+
+    const toggleAll = (checked: boolean): void => {
+        setSelectedMuhafidzs(checked ? muhafidzs.map((m) => m.id) : []);
     };
 
     return (
@@ -76,60 +77,111 @@ export default function HalaqahForm({
                         <InputError message={errors.nama} />
                     </div>
 
-                    <div className="grid gap-2">
-                        <Label htmlFor={`ustadz-${fieldKey}`}>Ustadz</Label>
-                        <Select
-                            name="ustadz_id"
-                            defaultValue={
-                                nilaiAwal?.ustadz
-                                    ? String(nilaiAwal.ustadz.id)
-                                    : undefined
-                            }
-                        >
-                            <SelectTrigger id={`ustadz-${fieldKey}`}>
-                                <SelectValue placeholder="Pilih ustadz" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {ustadzs.map((ustadz) => (
-                                    <SelectItem
-                                        key={ustadz.id}
-                                        value={String(ustadz.id)}
-                                    >
-                                        {ustadz.nama}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                        <InputError message={errors.ustadz_id} />
-                    </div>
+                    {isEdit ? (
+                        <div className="grid gap-2">
+                            <Label htmlFor={`muhafidz-${fieldKey}`}>Muhafidz / Pembimbing</Label>
+                            <Select
+                                name="muhafidz_id"
+                                defaultValue={
+                                    nilaiAwal?.muhafidz ? String(nilaiAwal.muhafidz.id) : undefined
+                                }
+                            >
+                                <SelectTrigger id={`muhafidz-${fieldKey}`}>
+                                    <SelectValue placeholder="Pilih muhafidz" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {muhafidzs.map((m) => (
+                                        <SelectItem key={m.id} value={String(m.id)}>
+                                            {m.nama}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <InputError message={errors.muhafidz_id} />
+                        </div>
+                    ) : (
+                        <div className="grid gap-2">
+                            <div className="flex items-center justify-between">
+                                <Label>Muhafidz / Pembimbing</Label>
+                                <label className="flex items-center gap-1.5 text-xs font-medium">
+                                    <input
+                                        type="checkbox"
+                                        checked={
+                                            muhafidzs.length > 0 &&
+                                            selectedMuhafidzs.length === muhafidzs.length
+                                        }
+                                        onChange={(e) => toggleAll(e.target.checked)}
+                                    />
+                                    Pilih Semua
+                                </label>
+                            </div>
+                            <div className="flex max-h-40 flex-col gap-2 overflow-y-auto rounded-lg border p-2">
+                                {muhafidzs.length === 0 ? (
+                                    <p className="text-sm text-muted-foreground">Belum ada data muhafidz.</p>
+                                ) : (
+                                    muhafidzs.map((m) => (
+                                        <label key={m.id} className="flex items-center gap-2 text-sm">
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedMuhafidzs.includes(m.id)}
+                                                onChange={(e) => toggleMuhafidz(m.id, e.target.checked)}
+                                            />
+                                            {m.nama}
+                                        </label>
+                                    ))
+                                )}
+                            </div>
+                            {selectedMuhafidzs.map((id) => (
+                                <input key={id} type="hidden" name="muhafidz_ids[]" value={id} />
+                            ))}
+                            <p className="text-xs text-muted-foreground">
+                                {selectedMuhafidzs.length === 0
+                                    ? 'Pilih minimal satu muhafidz/pembimbing.'
+                                    : selectedMuhafidzs.length === muhafidzs.length
+                                      ? `Semua muhafidz terpilih (${selectedMuhafidzs.length})`
+                                      : `${selectedMuhafidzs.length} muhafidz terpilih`}
+                            </p>
+                            <InputError
+                                message={errors.muhafidz_ids ?? errors.muhafidz_id ?? errors['muhafidz_ids.0']}
+                            />
+                        </div>
+                    )}
 
-                    <div className="grid gap-2">
-                        <Label htmlFor={`jadwal-${fieldKey}`}>Jadwal</Label>
-                        <Input
-                            id={`jadwal-${fieldKey}`}
-                            name="jadwal"
-                            placeholder="Contoh: Setiap pagi setelah Subuh"
-                            defaultValue={nilaiAwal?.jadwal ?? undefined}
-                        />
-                        <InputError message={errors.jadwal} />
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="grid gap-2">
+                            <Label htmlFor={`jam-mulai-${fieldKey}`}>Jam Mulai</Label>
+                            <Input
+                                id={`jam-mulai-${fieldKey}`}
+                                name="jam_mulai"
+                                type="time"
+                                defaultValue={nilaiAwal?.jam_mulai ?? '07:00'}
+                                required
+                            />
+                            <InputError message={errors.jam_mulai} />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor={`jam-selesai-${fieldKey}`}>Jam Selesai</Label>
+                            <Input
+                                id={`jam-selesai-${fieldKey}`}
+                                name="jam_selesai"
+                                type="time"
+                                defaultValue={nilaiAwal?.jam_selesai ?? '08:00'}
+                                required
+                            />
+                            <InputError message={errors.jam_selesai} />
+                        </div>
                     </div>
 
                     <div className="grid gap-2">
                         <Label htmlFor={`status-${fieldKey}`}>Status</Label>
-                        <Select
-                            name="status"
-                            defaultValue={nilaiAwal?.status ?? 'aktif'}
-                        >
+                        <Select name="status" defaultValue={nilaiAwal?.status ?? 'aktif'}>
                             <SelectTrigger id={`status-${fieldKey}`}>
                                 <SelectValue placeholder="Pilih status" />
                             </SelectTrigger>
                             <SelectContent>
-                                {statuses.map((status) => (
-                                    <SelectItem
-                                        key={status.value}
-                                        value={status.value}
-                                    >
-                                        {status.label}
+                                {statuses.map((s) => (
+                                    <SelectItem key={s.value} value={s.value}>
+                                        {s.label}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
@@ -137,39 +189,8 @@ export default function HalaqahForm({
                         <InputError message={errors.status} />
                     </div>
 
-                    <div className="grid gap-2">
-                        <Label>Santri</Label>
-                        <div className="flex max-h-40 flex-col gap-2 overflow-y-auto rounded-lg border p-2">
-                            {santris.map((santri) => (
-                                <label
-                                    key={santri.id}
-                                    className="flex items-center gap-2 text-sm"
-                                >
-                                    <input
-                                        type="checkbox"
-                                        name="santri_ids[]"
-                                        value={santri.id}
-                                        checked={selectedSantris.includes(
-                                            santri.id,
-                                        )}
-                                        onChange={(e) =>
-                                            toggleSantri(
-                                                santri.id,
-                                                e.target.checked,
-                                            )
-                                        }
-                                    />
-                                    {santri.nama}
-                                </label>
-                            ))}
-                        </div>
-                        <InputError message={errors['santri_ids']} />
-                    </div>
-
                     <div className="flex justify-end gap-2 pt-2">
-                        <Button type="submit">
-                            {isEdit ? 'Simpan Perubahan' : 'Simpan Halaqah'}
-                        </Button>
+                        <Button type="submit">{isEdit ? 'Simpan Perubahan' : 'Simpan Halaqah'}</Button>
                     </div>
                 </>
             )}

@@ -14,7 +14,7 @@ test('user role enum has all SIMAHAL roles', function () {
     expect(UserRole::cases())
         ->toHaveCount(4)
         ->and(UserRole::Admin->value)->toBe('admin')
-        ->and(UserRole::Ustadz->value)->toBe('ustadz')
+        ->and(UserRole::Muhafidz->value)->toBe('muhafidz')
         ->and(UserRole::Santri->value)->toBe('santri')
         ->and(UserRole::OrangTua->value)->toBe('orang_tua');
 });

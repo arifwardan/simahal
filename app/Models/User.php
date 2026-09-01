@@ -80,11 +80,11 @@ class User extends Authenticatable implements PasskeyUser
     }
 
     /**
-     * @return HasOne<Ustadz, $this>
+     * @return HasOne<Muhafidz, $this>
      */
-    public function ustadz(): HasOne
+    public function muhafidz(): HasOne
     {
-        return $this->hasOne(Ustadz::class);
+        return $this->hasOne(Muhafidz::class);
     }
 
     /**

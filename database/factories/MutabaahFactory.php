@@ -4,9 +4,9 @@ namespace Database\Factories;
 
 use App\Enums\MutabaahJenis;
 use App\Enums\MutabaahStatus;
+use App\Models\Muhafidz;
 use App\Models\Mutabaah;
 use App\Models\Santri;
-use App\Models\Ustadz;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -23,7 +23,7 @@ class MutabaahFactory extends Factory
 
         return [
             'santri_id' => Santri::factory(),
-            'ustadz_id' => Ustadz::factory(),
+            'muhafidz_id' => Muhafidz::factory(),
             'tanggal' => now(),
             'jenis' => MutabaahJenis::Setoran,
             'surah' => 'Al-Baqarah',

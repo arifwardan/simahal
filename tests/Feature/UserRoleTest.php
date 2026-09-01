@@ -13,6 +13,6 @@ test('hasRole matches the assigned role', function () {
     $admin = User::factory()->create(['role' => UserRole::Admin]);
 
     expect($admin->hasRole(UserRole::Admin))->toBeTrue()
-        ->and($admin->hasRole(UserRole::Ustadz))->toBeFalse()
+        ->and($admin->hasRole(UserRole::Muhafidz))->toBeFalse()
         ->and($admin->roleLabel())->toBe('Admin');
 });

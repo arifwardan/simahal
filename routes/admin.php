@@ -2,12 +2,12 @@
 
 use App\Http\Controllers\Admin\ExcelImportController;
 use App\Http\Controllers\Admin\HalaqahController;
+use App\Http\Controllers\Admin\MuhafidzController;
 use App\Http\Controllers\Admin\MutabaahBulananDashboardController;
 use App\Http\Controllers\Admin\MutabaahSettingController;
 use App\Http\Controllers\Admin\OrangTuaController;
 use App\Http\Controllers\Admin\SantriController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\UstadzController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -21,10 +21,10 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::patch('santris/{santri}', [SantriController::class, 'update'])->name('santris.update');
     Route::delete('santris/{santri}', [SantriController::class, 'destroy'])->name('santris.destroy');
 
-    Route::get('ustadzs', [UstadzController::class, 'index'])->name('ustadzs.index');
-    Route::post('ustadzs', [UstadzController::class, 'store'])->name('ustadzs.store');
-    Route::patch('ustadzs/{ustadz}', [UstadzController::class, 'update'])->name('ustadzs.update');
-    Route::delete('ustadzs/{ustadz}', [UstadzController::class, 'destroy'])->name('ustadzs.destroy');
+    Route::get('muhafidzs', [MuhafidzController::class, 'index'])->name('muhafidzs.index');
+    Route::post('muhafidzs', [MuhafidzController::class, 'store'])->name('muhafidzs.store');
+    Route::patch('muhafidzs/{muhafidz}', [MuhafidzController::class, 'update'])->name('muhafidzs.update');
+    Route::delete('muhafidzs/{muhafidz}', [MuhafidzController::class, 'destroy'])->name('muhafidzs.destroy');
 
     Route::get('orang-tuas', [OrangTuaController::class, 'index'])->name('orang-tuas.index');
     Route::post('orang-tuas', [OrangTuaController::class, 'store'])->name('orang-tuas.store');

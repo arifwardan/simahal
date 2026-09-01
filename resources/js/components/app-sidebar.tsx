@@ -1,7 +1,7 @@
 import { Link, usePage } from '@inertiajs/react';
+import { edit as profileEdit } from '@/routes/profile';
 import {
     BookMarked,
-    BookOpen,
     CalendarCheck,
     FileUp,
     FolderGit2,
@@ -15,7 +15,6 @@ import {
     Users,
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
-import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -35,16 +34,16 @@ import { edit as mutabaahSettingsEdit } from '@/routes/admin/mutabaah-settings';
 import { index as orangTuasIndex } from '@/routes/admin/orang-tuas';
 import { index as santrisIndex } from '@/routes/admin/santris';
 import { index as usersIndex } from '@/routes/admin/users';
-import { index as ustadzsIndex } from '@/routes/admin/ustadzs';
-import { index as ustadzHalaqahsIndex } from '@/routes/ustadz/halaqahs';
-import { history as ustadzMutabaahsHistory } from '@/routes/ustadz/mutabaahs';
-import { index as ustadzTargetsIndex } from '@/routes/ustadz/targets';
+import { index as muhafidzsIndex } from '@/routes/admin/muhafidzs';
+import { index as muhafidzHalaqahsIndex } from '@/routes/muhafidz/halaqahs';
+import { history as muhafidzMutabaahsHistory } from '@/routes/muhafidz/mutabaahs';
+import { index as muhafidzTargetsIndex } from '@/routes/muhafidz/targets';
 import type { NavItem } from '@/types';
 
 const adminNavItems: NavItem[] = [
     { title: 'Manajemen User', href: usersIndex(), icon: Users },
     { title: 'Manajemen Santri', href: santrisIndex(), icon: GraduationCap },
-    { title: 'Manajemen Ustadz', href: ustadzsIndex(), icon: BookMarked },
+    { title: 'Manajemen Muhafidz', href: muhafidzsIndex(), icon: BookMarked },
     { title: 'Manajemen Orang Tua', href: orangTuasIndex(), icon: HeartHandshake },
     { title: 'Manajemen Halaqah', href: halaqahsIndex(), icon: FolderGit2 },
     { title: 'Mutabaah Bulanan', href: mutabaahBulananIndex(), icon: CalendarCheck },
@@ -52,23 +51,10 @@ const adminNavItems: NavItem[] = [
     { title: 'Import Excel', href: excelImportIndex(), icon: FileUp },
 ];
 
-const ustadzNavItems: NavItem[] = [
-    { title: 'Halaqah Saya', href: ustadzHalaqahsIndex(), icon: Library },
-    { title: 'Riwayat Mutabaah', href: ustadzMutabaahsHistory(), icon: History },
-    { title: 'Target Hafalan', href: ustadzTargetsIndex(), icon: Target },
-];
-
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: FolderGit2,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
-    },
+const muhafidzNavItems: NavItem[] = [
+    { title: 'Halaqah Saya', href: muhafidzHalaqahsIndex(), icon: Library },
+    { title: 'Riwayat Mutabaah', href: muhafidzMutabaahsHistory(), icon: History },
+    { title: 'Target Hafalan', href: muhafidzTargetsIndex(), icon: Target },
 ];
 
 export function AppSidebar() {
@@ -81,21 +67,15 @@ export function AppSidebar() {
             icon: LayoutGrid,
         },
         ...(auth.user?.role === 'admin' ? adminNavItems : []),
-        ...(auth.user?.role === 'ustadz' ? ustadzNavItems : []),
+        ...(auth.user?.role === 'muhafidz' ? muhafidzNavItems : []),
     ];
 
     return (
-        <Sidebar collapsible="icon" variant="inset" className="overflow-hidden">
-            <div aria-hidden className="pointer-events-none absolute inset-0">
-                <div className="absolute -top-20 -right-12 size-60 rounded-full bg-violet-500/25 blur-3xl" />
-                <div className="absolute -bottom-16 -left-10 size-44 rounded-full bg-violet-400/15 blur-3xl" />
-                <div className="absolute top-1/2 left-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/10 blur-3xl" />
-            </div>
-
-            <SidebarHeader>
+        <Sidebar collapsible="icon" variant="inset" className="border-r-2 border-black">
+            <SidebarHeader className="border-b-2 border-black bg-primary">
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild>
+                        <SidebarMenuButton size="lg" asChild className="font-head font-black">
                             <Link href={dashboard()} prefetch>
                                 <AppLogo />
                             </Link>
@@ -108,8 +88,17 @@ export function AppSidebar() {
                 <NavMain items={mainNavItems} />
             </SidebarContent>
 
-            <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
+            <SidebarFooter className="gap-2">
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton asChild tooltip={{ children: 'Settings' }}>
+                            <Link href={profileEdit()} prefetch>
+                                <Settings />
+                                <span>Settings</span>
+                            </Link>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
                 <NavUser />
             </SidebarFooter>
         </Sidebar>

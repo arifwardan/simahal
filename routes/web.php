@@ -13,4 +13,4 @@ require __DIR__.'/settings.php';
 
 require __DIR__.'/admin.php';
 
-require __DIR__.'/ustadz.php';
+require __DIR__.'/muhafidz.php';

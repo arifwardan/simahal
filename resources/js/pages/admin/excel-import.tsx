@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { index as excelImportIndex } from '@/routes/admin/excel-import';
 
 type PlanItem = {
-    type: 'ustadz' | 'halaqah' | 'santri';
+    type: 'muhafidz' | 'halaqah' | 'santri';
     action: 'create' | 'update' | 'placeholder' | 'error';
     action_label: string;
     nama: string;
@@ -25,7 +25,7 @@ type PlanItem = {
 
 type Plan = {
     summary: {
-        ustadz: Record<string, number>;
+        muhafidz: Record<string, number>;
         halaqah: Record<string, number>;
         santri: Record<string, number>;
     };
@@ -35,8 +35,8 @@ type Plan = {
 type Result = {
     santri_created: number;
     santri_updated: number;
-    ustadz_created: number;
-    ustadz_updated: number;
+    muhafidz_created: number;
+    muhafidz_updated: number;
     halaqah_created: number;
     halaqah_updated: number;
     emails_created: string[];
@@ -64,7 +64,7 @@ export default function AdminExcelImport({ plan, result }: Props) {
         <PageContainer>
             <Heading
                 title="Import Excel"
-                description="Impor data master santri, ustadz, dan halaqah dari file Excel (sheet Data Kelompok)."
+                description="Impor data master santri, muhafidz, dan halaqah dari file Excel (sheet Data Kelompok)."
             />
 
             {result ? (
@@ -76,7 +76,7 @@ export default function AdminExcelImport({ plan, result }: Props) {
                         </CardTitle>
                         <CardDescription>
                             Santri baru: {result.santri_created} · Santri diperbarui: {result.santri_updated}
-                            {' · '}Ustadz baru: {result.ustadz_created} · Halaqah baru: {result.halaqah_created}
+                            {' · '}Muhafidz baru: {result.muhafidz_created} · Halaqah baru: {result.halaqah_created}
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
@@ -177,7 +177,7 @@ function PlanTable({ plan }: { plan: Plan }) {
         <Card className="mt-4">
             <CardHeader>
                 <CardTitle>Ringkasan Rencana</CardTitle>
-                <CardDescription>{counts('ustadz')} · {counts('halaqah')} · {counts('santri')}</CardDescription>
+                <CardDescription>{counts('muhafidz')} · {counts('halaqah')} · {counts('santri')}</CardDescription>
             </CardHeader>
             <CardContent>
                 <div className="overflow-x-auto rounded-md border">

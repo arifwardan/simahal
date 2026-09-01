@@ -1,5 +1,5 @@
 import { Form } from '@inertiajs/react';
-import TargetHafalanController from '@/actions/App/Http/Controllers/Ustadz/TargetHafalanController';
+import TargetHafalanController from '@/actions/App/Http/Controllers/Muhafidz/TargetHafalanController';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
