@@ -1,4 +1,4 @@
-import { Form, router } from '@inertiajs/react';
+import { Form, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import MutabaahBulananController from '@/actions/App/Http/Controllers/Muhafidz/MutabaahBulananController';
 import MutabaahForm from '@/components/forms/MutabaahForm';
@@ -27,6 +27,7 @@ import {
 import { keterangan, tambahHalaman, tambahJuz } from '@/lib/mutabaah-bulanan';
 import { index as halaqahIndex } from '@/routes/muhafidz/halaqahs';
 import { show as santrisShow } from '@/routes/muhafidz/halaqahs/santris';
+import { index as setoranIndex } from '@/routes/muhafidz/setoran';
 
 type SantriRow = {
     id: number;
@@ -446,16 +447,12 @@ export default function MuhafidzHalaqahSantris({
                                             Sudah dicatat ✓
                                         </Badge>
                                     ) : (
-                                        <Button
-                                            size="sm"
-                                            onClick={() => {
-                                                setProcessingSantri(santri.id);
-                                                setCatatSantri(santri);
-                                            }}
-                                            disabled={processingSantri !== null}
+                                        <Link
+                                            href={setoranIndex.url(halaqah.id, { query: { santri_id: santri.id } })}
+                                            className="inline-flex items-center justify-center rounded-md bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground shadow hover:bg-primary/90"
                                         >
-                                            Catat
-                                        </Button>
+                                            Input Setoran
+                                        </Link>
                                     )}
                                 </li>
                             );
