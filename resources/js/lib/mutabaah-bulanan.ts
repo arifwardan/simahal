@@ -64,3 +64,68 @@ export function keterangan(
 
     return 'Sesuai Target';
 }
+
+export function gradeLabel(n: number | null): string {
+    if (n === null || n === undefined) {
+        return '-';
+    }
+
+    if (n >= 90) {
+        return 'A';
+    }
+
+    if (n >= 80) {
+        return 'B';
+    }
+
+    if (n >= 70) {
+        return 'C';
+    }
+
+    if (n >= 60) {
+        return 'D';
+    }
+
+    return 'E';
+}
+
+export function totalSepekan(
+    h: Record<string, number | null | undefined>,
+): number {
+    return Object.values(h).reduce<number>(
+        (acc, v) => acc + (v ?? 0),
+        0,
+    );
+}
+
+export function pekanNumberInMonth(date: Date): number {
+    return Math.floor((date.getDate() - 1) / 7) + 1;
+}
+
+export function pekanCountInMonth(tahun: number, bulan: number): number {
+    const daysInMonth = new Date(tahun, bulan, 0).getDate();
+    let count = 0;
+
+    for (let day = 1; day <= daysInMonth; day++) {
+        const d = new Date(tahun, bulan - 1, day);
+
+        if (d.getDay() === 1) {
+            count++;
+        }
+    }
+
+    return count;
+}
+
+export function weekRange(date: Date): { senin: Date; ahad: Date } {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    const day = d.getDay(); // 0 Sun .. 6 Sat
+    const diffToMonday = (day + 6) % 7;
+    const senin = new Date(d);
+    senin.setDate(d.getDate() - diffToMonday);
+    const ahad = new Date(senin);
+    ahad.setDate(senin.getDate() + 6);
+
+    return { senin, ahad };
+}
