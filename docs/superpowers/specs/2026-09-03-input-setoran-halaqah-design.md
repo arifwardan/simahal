@@ -38,9 +38,7 @@ Perubahan:
 - Keep `tasmi_pekan_1..5` (INTEGER 10–100 nullable) — satu per pekan, pekan 5 nullable jika bulan hanya 4 pekan
 - Keep `halaman_kumulatif` untuk kompatibilitas (deprecated, tidak dipakai untuk total baru)
 - **Drop** `ujian_soal_1..5` → **add** `ujian_bulanan INTEGER nullable (10–100)` — 1 nilai per bulan
-- **Add** `catatan_tasmi TEXT nullable` (catatan pekanan spesifik, simpan di baris bulanan untuk pekan aktif)
-  - Alternatif lebih presisi: `catatan_tasmi_pekan_1..5` — dipilih **satu field `catatan_tasmi` per pekan** → actually perlu per pekan. Keputusan: `catatan_tasmi_pekan_1..5` TEXT nullable (mirror tasmi). **Simplify:** `catatan_tasmi` untuk pekan aktif saja disimpan di pekan tersebut (kolom `catatan_tasmi_pekan_N`). Untuk MVP, 1 kolom `catatan_tasmi` + `catatan_ujian` cukup (catatan tasmi untuk pekan yang sedang diinput, catatan ujian untuk bulan).
-  - Final: `catatan_tasmi TEXT nullable`, `catatan_ujian TEXT nullable`
+- **Add** `catatan_tasmi TEXT nullable` (catatan untuk tasmi pekan yang sedang diinput — disimpan di baris `mutabaah_bulanans` untuk bulan tersebut, overwrite per pekan aktif; untuk MVP cukup 1 kolom, tidak per pekan 1..5) dan `catatan_ujian TEXT nullable` (catatan ujian bulanan)
 
 Migrasi backfill: jika `ujian_soal_*` ada isi, `ujian_bulanan = round(avg(ujian_soal_*))`.
 
