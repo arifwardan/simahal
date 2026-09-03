@@ -4,12 +4,15 @@ use App\Http\Controllers\Muhafidz\HalaqahController;
 use App\Http\Controllers\Muhafidz\MutabaahBulananController;
 use App\Http\Controllers\Muhafidz\MutabaahController;
 use App\Http\Controllers\Muhafidz\MutabaahHistoryController;
+use App\Http\Controllers\Muhafidz\SetoranController;
 use App\Http\Controllers\Muhafidz\TargetHafalanController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified', 'role:muhafidz'])->prefix('muhafidz')->name('muhafidz.')->group(function () {
     Route::get('halaqah-saya', [HalaqahController::class, 'index'])->name('halaqahs.index');
     Route::get('halaqah-saya/{halaqah}/santri', [HalaqahController::class, 'santris'])->name('halaqahs.santris.show');
+    Route::get('halaqahs/{halaqah}/setoran', [SetoranController::class, 'index'])->name('setoran.index');
+    Route::post('setoran', [SetoranController::class, 'store'])->name('setoran.store');
     Route::post('mutabaah', [MutabaahController::class, 'store'])->name('mutabaahs.store');
     Route::post('mutabaah-bulanan/{bulan}', [MutabaahBulananController::class, 'update'])
         ->whereNumber('bulan')
