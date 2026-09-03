@@ -79,7 +79,7 @@ export default function DistributionDonut({
                             {data.map((entry) => (
                                 <span
                                     key={entry.key}
-                                    className="inline-flex items-center gap-1.5 border-[2.5px] border-black bg-white px-2.5 py-1 text-[11px] font-black uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                                    className="inline-flex items-center gap-1.5 border-[2.5px] border-black bg-[#FFF7E8] px-2.5 py-1 text-[11px] font-black uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
                                     style={{ backgroundColor: `var(--color-${entry.key})` }}
                                 >
                                     {entry.label}: {entry.count}

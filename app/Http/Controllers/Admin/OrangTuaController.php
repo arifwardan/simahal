@@ -22,7 +22,7 @@ class OrangTuaController extends Controller
             ->with('user')
             ->withCount('santris')
             ->orderBy('nama')
-            ->paginate(15);
+            ->paginate(5);
 
         return Inertia::render('admin/orang-tuas/index', [
             'orangTuas' => $orangTuas,

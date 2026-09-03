@@ -140,11 +140,11 @@ export default function AdminDashboard({
                             <div className="flex items-baseline gap-2">
                                 <span className="font-head text-4xl font-black">{hariIni.mutabaahHariIni}</span>
                                 <span className="text-sm font-bold">catatan</span>
-                                <Badge className="ml-auto border-2 border-black bg-black text-white">
+                                <Badge className="ml-auto border-2 border-black bg-black text-[#FFF7E8]">
                                     kemarin {hariIni.mutabaahKemarin}
                                 </Badge>
                             </div>
-                            <div className="h-2 w-full border-2 border-black bg-white">
+                            <div className="h-2 w-full border-2 border-black bg-[#FFF7E8]">
                                 <div
                                     className="h-full bg-black"
                                     style={{
@@ -159,19 +159,19 @@ export default function AdminDashboard({
                     </Card>
 
                     <Card className="flex flex-col">
-                        <CardHeader className="bg-[#FF3B30] text-white">
+                        <CardHeader className="bg-[#FF3B30] text-[#FFF7E8]">
                             <CardTitle className="font-head font-black uppercase">Perlu Perhatian</CardTitle>
                         </CardHeader>
                         <CardContent className="flex flex-1 flex-col gap-3 pt-6">
-                            <div className="flex items-center justify-between border-[3px] border-black bg-white p-3">
+                            <div className="flex items-center justify-between border-[3px] border-black bg-[#FFF7E8] p-3">
                                 <span className="text-sm font-black uppercase">Tanpa Halaqah</span>
-                                <span className="border-2 border-black bg-black px-2 py-1 text-sm font-black text-white">
+                                <span className="border-2 border-black bg-black px-2 py-1 text-sm font-black text-[#FFF7E8]">
                                     {perhatian.santriTanpaHalaqah}
                                 </span>
                             </div>
                             <div className="flex items-center justify-between border-[3px] border-black bg-[#FFE7A3] p-3">
                                 <span className="text-sm font-black uppercase">Target Tertunda</span>
-                                <span className="border-2 border-black bg-white px-2 py-1 text-sm font-black">
+                                <span className="border-2 border-black bg-[#FFF7E8] px-2 py-1 text-sm font-black">
                                     {perhatian.targetTertunda}
                                 </span>
                             </div>
@@ -191,7 +191,7 @@ export default function AdminDashboard({
                                     {topHalaqahs.map((h, idx) => (
                                         <li
                                             key={h.id}
-                                            className={`flex items-center justify-between gap-3 p-3 font-bold ${idx === 0 ? 'bg-[#FFD600]' : 'bg-white'}`}
+                                            className={`flex items-center justify-between gap-3 p-3 font-bold ${idx === 0 ? 'bg-[#FFD600]' : 'bg-[#FFF7E8]'}`}
                                         >
                                             <div className="min-w-0">
                                                 <p className="truncate font-head text-sm font-black uppercase">{h.nama}</p>
@@ -199,7 +199,7 @@ export default function AdminDashboard({
                                                     {h.muhafidz ?? '-'} {h.jam ? `· ${h.jam}` : ''}
                                                 </p>
                                             </div>
-                                            <span className="shrink-0 border-2 border-black bg-black px-2 py-1 text-xs font-black text-white">
+                                            <span className="shrink-0 border-2 border-black bg-black px-2 py-1 text-xs font-black text-[#FFF7E8]">
                                                 {h.santris_count} santri
                                             </span>
                                         </li>
@@ -245,10 +245,10 @@ export default function AdminDashboard({
                                 {topSantris.map((s, idx) => (
                                     <li
                                         key={s.id}
-                                        className={`flex items-center gap-4 p-4 ${idx === 0 ? 'bg-[#FFD600]' : idx === 1 ? 'bg-[#E5E5E5]' : idx === 2 ? 'bg-[#FF90E8]' : 'bg-white'} hover:bg-accent`}
+                                        className={`flex items-center gap-4 p-4 ${idx === 0 ? 'bg-[#FFD600]' : idx === 1 ? 'bg-[#E5E5E5]' : idx === 2 ? 'bg-[#FF90E8]' : 'bg-[#FFF7E8]'} hover:bg-accent`}
                                     >
                                         <span
-                                            className={`flex size-10 shrink-0 items-center justify-center border-[3px] border-black text-sm font-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] ${idx === 0 ? 'bg-yellow-400' : idx === 1 ? 'bg-zinc-300' : idx === 2 ? 'bg-amber-600 text-white' : 'bg-white'}`}
+                                            className={`flex size-10 shrink-0 items-center justify-center border-[3px] border-black text-sm font-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] ${idx === 0 ? 'bg-yellow-400' : idx === 1 ? 'bg-zinc-300' : idx === 2 ? 'bg-amber-600 text-[#FFF7E8]' : 'bg-[#FFF7E8]'}`}
                                         >
                                             #{idx + 1}
                                         </span>
@@ -257,14 +257,14 @@ export default function AdminDashboard({
                                             <p className="truncate text-xs font-bold">
                                                 {s.nis ?? '-'} {s.halaqah ? `· ${s.halaqah}` : ''} · {s.progress}/{s.target} hal ({s.percent}%)
                                             </p>
-                                            <div className="mt-1 h-2 w-full border-2 border-black bg-white">
+                                            <div className="mt-1 h-2 w-full border-2 border-black bg-[#FFF7E8]">
                                                 <div
                                                     className="h-full bg-black transition-all"
                                                     style={{ width: `${Math.min(100, s.percent)}%` }}
                                                 />
                                             </div>
                                         </div>
-                                        <Badge className="shrink-0 border-2 border-black bg-black text-white">
+                                        <Badge className="shrink-0 border-2 border-black bg-black text-[#FFF7E8]">
                                             {s.percent}%
                                         </Badge>
                                     </li>
@@ -287,10 +287,10 @@ export default function AdminDashboard({
                             {recentMutabaahs.map((m) => (
                                 <li
                                     key={m.id}
-                                    className="flex items-center justify-between gap-4 bg-white p-4 font-bold hover:bg-accent"
+                                    className="flex items-center justify-between gap-4 bg-[#FFF7E8] p-4 font-bold hover:bg-accent"
                                 >
                                     <p className="text-sm">
-                                        <span className="bg-black px-1.5 py-0.5 text-white">{m.santri?.nama ?? '-'}</span>{' '}
+                                        <span className="bg-black px-1.5 py-0.5 text-[#FFF7E8]">{m.santri?.nama ?? '-'}</span>{' '}
                                         · {m.tanggal} · {m.jenis} · {m.surah} {m.ayat_mulai}-{m.ayat_selesai}
                                     </p>
                                     <Badge>{m.status}</Badge>

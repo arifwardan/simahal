@@ -124,7 +124,7 @@ export default function Welcome() {
                             {auth.user ? (
                                 <Link
                                     href={dashboard()}
-                                    className="inline-flex h-9 items-center rounded-lg bg-emerald-600 px-4 text-sm font-medium text-white transition hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600"
+                                    className="inline-flex h-9 items-center rounded-lg bg-emerald-600 px-4 text-sm font-medium text-[#FFF7E8] transition hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600"
                                 >
                                     Dashboard
                                 </Link>
@@ -138,7 +138,7 @@ export default function Welcome() {
                                     </Link>
                                     <Link
                                         href={register()}
-                                        className="inline-flex h-9 items-center rounded-lg bg-emerald-600 px-4 text-sm font-medium text-white transition hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600"
+                                        className="inline-flex h-9 items-center rounded-lg bg-emerald-600 px-4 text-sm font-medium text-[#FFF7E8] transition hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600"
                                     >
                                         Daftar
                                     </Link>
@@ -176,7 +176,7 @@ export default function Welcome() {
                                     {auth.user ? (
                                         <Link
                                             href={dashboard()}
-                                            className="inline-flex h-11 items-center rounded-xl bg-emerald-600 px-6 text-sm font-medium text-white shadow-sm transition hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600"
+                                            className="inline-flex h-11 items-center rounded-xl bg-emerald-600 px-6 text-sm font-medium text-[#FFF7E8] shadow-sm transition hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600"
                                         >
                                             Buka Dashboard
                                         </Link>
@@ -184,7 +184,7 @@ export default function Welcome() {
                                         <>
                                             <Link
                                                 href={register()}
-                                                className="inline-flex h-11 items-center rounded-xl bg-emerald-600 px-6 text-sm font-medium text-white shadow-sm transition hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600"
+                                                className="inline-flex h-11 items-center rounded-xl bg-emerald-600 px-6 text-sm font-medium text-[#FFF7E8] shadow-sm transition hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600"
                                             >
                                                 Mulai Sekarang
                                             </Link>
@@ -240,7 +240,7 @@ export default function Welcome() {
                                         <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
                                             Status
                                         </span>
-                                        <span className="rounded-full bg-emerald-600 px-3 py-1 text-xs font-medium text-white dark:bg-emerald-500">
+                                        <span className="rounded-full bg-emerald-600 px-3 py-1 text-xs font-medium text-[#FFF7E8] dark:bg-emerald-500">
                                             PASSED
                                         </span>
                                     </div>
@@ -416,14 +416,14 @@ export default function Welcome() {
                 <section className="mx-auto max-w-6xl px-6 py-20">
                     <div className="relative overflow-hidden rounded-3xl bg-emerald-700 px-8 py-16 text-center md:py-20 dark:bg-emerald-600">
                         <div className="pointer-events-none absolute inset-0">
-                            <div className="absolute -top-20 left-1/4 size-72 rounded-full bg-white/5" />
-                            <div className="absolute -bottom-24 right-1/4 size-80 rounded-full bg-white/5" />
+                            <div className="absolute -top-20 left-1/4 size-72 rounded-full bg-[#FFF7E8]/5" />
+                            <div className="absolute -bottom-24 right-1/4 size-80 rounded-full bg-[#FFF7E8]/5" />
                         </div>
                         <div className="relative">
-                            <h2 className="mx-auto max-w-2xl text-3xl font-semibold tracking-tight text-white md:text-4xl">
+                            <h2 className="mx-auto max-w-2xl text-3xl font-semibold tracking-tight text-[#FFF7E8] md:text-4xl">
                                 Jadikan perjalanan hafalan lebih terstruktur dan bermakna
                             </h2>
-                            <p className="mx-auto mt-4 max-w-lg text-white/70">
+                            <p className="mx-auto mt-4 max-w-lg text-[#FFF7E8]/70">
                                 Mulai kelola halaqah, catat mutabaah, dan pantau perkembangan hafalan
                                 dalam satu ekosistem digital.
                             </p>
@@ -431,7 +431,7 @@ export default function Welcome() {
                                 {auth.user ? (
                                     <Link
                                         href={dashboard()}
-                                        className="inline-flex h-11 items-center rounded-xl bg-white px-6 text-sm font-medium text-emerald-700 transition hover:bg-emerald-50"
+                                        className="inline-flex h-11 items-center rounded-xl bg-[#FFF7E8] px-6 text-sm font-medium text-emerald-700 transition hover:bg-emerald-50"
                                     >
                                         Buka Dashboard
                                     </Link>
@@ -439,13 +439,13 @@ export default function Welcome() {
                                     <>
                                         <Link
                                             href={register()}
-                                            className="inline-flex h-11 items-center rounded-xl bg-white px-6 text-sm font-medium text-emerald-700 transition hover:bg-emerald-50"
+                                            className="inline-flex h-11 items-center rounded-xl bg-[#FFF7E8] px-6 text-sm font-medium text-emerald-700 transition hover:bg-emerald-50"
                                         >
                                             Daftar Sekarang
                                         </Link>
                                         <Link
                                             href={login()}
-                                            className="inline-flex h-11 items-center rounded-xl border border-white/30 px-6 text-sm font-medium text-white transition hover:border-white/50 hover:bg-white/10"
+                                            className="inline-flex h-11 items-center rounded-xl border border-[#FFF7E8]/30 px-6 text-sm font-medium text-[#FFF7E8] transition hover:border-[#FFF7E8]/50 hover:bg-[#FFF7E8]/10"
                                         >
                                             Masuk
                                         </Link>

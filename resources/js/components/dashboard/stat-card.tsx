@@ -22,9 +22,9 @@ type StatCardProps = {
 const toneMap: Record<Tone, { bg: string; accent: string }> = {
     violet: { bg: 'bg-[#FF90E8]', accent: 'bg-[#FFD600]' },
     indigo: { bg: 'bg-[#5CE1E6]', accent: 'bg-[#FFD600]' },
-    fuchsia: { bg: 'bg-[#FF6B6B]', accent: 'bg-white' },
-    teal: { bg: 'bg-[#7DF9FF]', accent: 'bg-black text-white' },
-    amber: { bg: 'bg-[#FFD600]', accent: 'bg-black text-white' },
+    fuchsia: { bg: 'bg-[#FF6B6B]', accent: 'bg-[#FFF7E8]' },
+    teal: { bg: 'bg-[#7DF9FF]', accent: 'bg-black text-[#FFF7E8]' },
+    amber: { bg: 'bg-[#FFD600]', accent: 'bg-black text-[#FFF7E8]' },
 };
 
 export default function StatCard({
@@ -56,7 +56,7 @@ export default function StatCard({
                     </span>
                 </div>
                 {Icon && (
-                    <span className="flex size-11 shrink-0 items-center justify-center border-[3px] border-black bg-white shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+                    <span className="flex size-11 shrink-0 items-center justify-center border-[3px] border-black bg-[#FFF7E8] shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
                         <Icon className="size-5 stroke-[2.5]" />
                     </span>
                 )}
@@ -71,7 +71,7 @@ export default function StatCard({
                     <span
                         className={cn(
                             'inline-flex w-fit items-center gap-1 border-2 border-black px-2 py-0.5 text-[11px] font-black uppercase',
-                            delta.direction === 'up' ? 'bg-white text-black' : 'bg-black text-white'
+                            delta.direction === 'up' ? 'bg-[#FFF7E8] text-black' : 'bg-black text-[#FFF7E8]'
                         )}
                     >
                         {delta.direction === 'up' ? '↗' : '↘'} {delta.value}

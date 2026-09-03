@@ -1,7 +1,8 @@
 import { router } from '@inertiajs/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import Heading from '@/components/heading';
 import PageContainer from '@/components/page-container';
+import { DataTable, type DataTableColumn } from '@/components/ui/data-table';
 import {
     Card,
     CardContent,
@@ -63,6 +64,108 @@ const bulanNames = [
 export default function AdminMutabaahBulananDashboard({ rows, distribusi, bulan, tahun }: Props) {
     const [selectedBulan, setSelectedBulan] = useState<string>(String(bulan));
 
+    const ringkasanColumns = useMemo<DataTableColumn<MutabaahRow>[]>(
+        () => [
+            {
+                id: 'jenis',
+                header: 'Jenis',
+                cell: (r) => <span className="font-bold text-black">{r.jenis}</span>,
+            },
+            {
+                id: 'kelompok',
+                header: 'Kelompok',
+                cell: (r) => <span className="font-black text-black">{r.kelompok}</span>,
+            },
+            {
+                id: 'muhafidz',
+                header: 'Muhafidz',
+                cell: (r) => <span className="font-bold text-black">{r.muhafidz ?? '-'}</span>,
+            },
+            {
+                id: 'jumlah_santri',
+                header: 'Jml Santri',
+                headerClassName: 'text-right',
+                className: 'text-right font-bold',
+                cell: (r) => r.jumlah_santri,
+            },
+            {
+                id: 'terisi',
+                header: 'Terisi',
+                headerClassName: 'text-right',
+                className: 'text-right font-bold',
+                cell: (r) => r.terisi,
+            },
+            {
+                id: 'rata_kumulatif',
+                header: 'Rata Kumulatif',
+                headerClassName: 'text-right',
+                className: 'text-right font-bold',
+                cell: (r) => r.rata_halaman_kumulatif ?? '-',
+            },
+            {
+                id: 'rata_juz',
+                header: 'Rata Tambah Juz',
+                headerClassName: 'text-right',
+                className: 'text-right font-bold',
+                cell: (r) => r.rata_tambah_juz ?? '-',
+            },
+            {
+                id: 'rata_tasmi',
+                header: "Rata Tasmi'",
+                headerClassName: 'text-right',
+                className: 'text-right font-bold',
+                cell: (r) => r.rata_tasmi ?? '-',
+            },
+            {
+                id: 'rata_ujian',
+                header: 'Rata Ujian',
+                headerClassName: 'text-right',
+                className: 'text-right font-bold',
+                cell: (r) => r.rata_ujian ?? '-',
+            },
+            {
+                id: 'berprestasi',
+                header: 'Berprestasi',
+                headerClassName: 'text-right',
+                className: 'text-right font-black',
+                cell: (r) => r.berprestasi,
+            },
+        ],
+        [],
+    );
+
+    const distribusiColumns = useMemo<DataTableColumn<DistribusiRow>[]>(
+        () => [
+            {
+                id: 'kategori',
+                header: 'Kategori',
+                cell: (r) => <span className="font-black text-black">{r.kategori}</span>,
+            },
+            {
+                id: 'ikhwan',
+                header: 'Ikhwan',
+                headerClassName: 'text-right',
+                className: 'text-right font-bold',
+                cell: (r) => r.ikhwan,
+            },
+            {
+                id: 'akhwat',
+                header: 'Akhwat',
+                headerClassName: 'text-right',
+                className: 'text-right font-bold',
+                cell: (r) => r.akhwat,
+            },
+            {
+                id: 'total',
+                header: 'Total',
+                headerClassName: 'text-right',
+                className: 'text-right font-black',
+                cell: (r) => r.total,
+            },
+        ],
+        [],
+    );
+
     return (
         <PageContainer>
             <Heading
@@ -70,26 +173,22 @@ export default function AdminMutabaahBulananDashboard({ rows, distribusi, bulan,
                 description={`Ringkasan mutabaah bulanan santri tahun ${tahun}.`}
             />
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Ringkasan per Kelompok</CardTitle>
-                    <CardDescription>
-                        Pilih bulan untuk melihat data mutabaah bulanan.
+            <Card className="overflow-hidden bg-[#FFE7A3]">
+                <CardHeader className="bg-primary">
+                    <CardTitle className="font-head font-black uppercase">Ringkasan per Kelompok</CardTitle>
+                    <CardDescription className="font-bold text-black">
+                        Pilih bulan untuk melihat data mutabaah bulanan — paginasi otomatis jika &gt;10 kelompok.
                     </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-4 bg-[#FFF7E8] pt-6">
                     <Select
                         value={selectedBulan}
                         onValueChange={(value) => {
                             setSelectedBulan(value);
-                            router.get(
-                                index(),
-                                { bulan: value },
-                                { preserveState: true, replace: true },
-                            );
+                            router.get(index(), { bulan: value }, { preserveState: true, replace: true });
                         }}
                     >
-                        <SelectTrigger className="w-[200px]">
+                        <SelectTrigger className="w-[200px] border-[3px] border-black font-bold">
                             <SelectValue placeholder="Pilih bulan" />
                         </SelectTrigger>
                         <SelectContent>
@@ -101,81 +200,29 @@ export default function AdminMutabaahBulananDashboard({ rows, distribusi, bulan,
                         </SelectContent>
                     </Select>
 
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
-                            <thead>
-                                <tr className="border-b text-left text-muted-foreground">
-                                    <th className="py-2 pr-4">Jenis</th>
-                                    <th className="py-2 pr-4">Kelompok</th>
-                                    <th className="py-2 pr-4">Muhafidz</th>
-                                    <th className="py-2 pr-4 text-right">Jml Santri</th>
-                                    <th className="py-2 pr-4 text-right">Terisi</th>
-                                    <th className="py-2 pr-4 text-right">Rata Kumulatif</th>
-                                    <th className="py-2 pr-4 text-right">Rata Tambah Juz</th>
-                                    <th className="py-2 pr-4 text-right">Rata Tasmi'</th>
-                                    <th className="py-2 pr-4 text-right">Rata Ujian</th>
-                                    <th className="py-2 text-right">Berprestasi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {rows.map((row) => (
-                                    <tr key={row.kelompok} className="border-b last:border-0">
-                                        <td className="py-2 pr-4">{row.jenis}</td>
-                                        <td className="py-2 pr-4 font-medium">{row.kelompok}</td>
-                                        <td className="py-2 pr-4">{row.muhafidz ?? '-'}</td>
-                                        <td className="py-2 pr-4 text-right">{row.jumlah_santri}</td>
-                                        <td className="py-2 pr-4 text-right">{row.terisi}</td>
-                                        <td className="py-2 pr-4 text-right">
-                                            {row.rata_halaman_kumulatif ?? '-'}
-                                        </td>
-                                        <td className="py-2 pr-4 text-right">
-                                            {row.rata_tambah_juz ?? '-'}
-                                        </td>
-                                        <td className="py-2 pr-4 text-right">
-                                            {row.rata_tasmi ?? '-'}
-                                        </td>
-                                        <td className="py-2 pr-4 text-right">
-                                            {row.rata_ujian ?? '-'}
-                                        </td>
-                                        <td className="py-2 text-right">{row.berprestasi}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                    <DataTable
+                        columns={ringkasanColumns}
+                        data={rows}
+                        perPage={5}
+                        emptyMessage="Belum ada data kelompok untuk bulan ini."
+                    />
                 </CardContent>
             </Card>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Distribusi Kategori Juz</CardTitle>
-                    <CardDescription>
+            <Card className="overflow-hidden bg-[#5CE1E6]">
+                <CardHeader className="bg-black text-[#FFF7E8]">
+                    <CardTitle className="font-head font-black uppercase">Distribusi Kategori Juz</CardTitle>
+                    <CardDescription className="font-bold text-[#FFF7E8]/80">
                         Jumlah santri per kategori hafalan, dibedakan ikhwan dan akhwat.
                     </CardDescription>
                 </CardHeader>
-                <CardContent>
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
-                            <thead>
-                                <tr className="border-b text-left text-muted-foreground">
-                                    <th className="py-2 pr-4">Kategori</th>
-                                    <th className="py-2 pr-4 text-right">Ikhwan</th>
-                                    <th className="py-2 pr-4 text-right">Akhwat</th>
-                                    <th className="py-2 text-right">Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {distribusi.map((row) => (
-                                    <tr key={row.kategori} className="border-b last:border-0">
-                                        <td className="py-2 pr-4">{row.kategori}</td>
-                                        <td className="py-2 pr-4 text-right">{row.ikhwan}</td>
-                                        <td className="py-2 pr-4 text-right">{row.akhwat}</td>
-                                        <td className="py-2 text-right">{row.total}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                <CardContent className="bg-[#FFF7E8] pt-6">
+                    <DataTable
+                        columns={distribusiColumns}
+                        data={distribusi}
+                        perPage={5}
+                        emptyMessage="Belum ada data distribusi."
+                    />
                 </CardContent>
             </Card>
         </PageContainer>

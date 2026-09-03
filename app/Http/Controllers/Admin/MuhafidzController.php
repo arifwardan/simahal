@@ -21,7 +21,7 @@ class MuhafidzController extends Controller
         $muhafidzs = Muhafidz::query()
             ->with('user')
             ->orderBy('nama')
-            ->paginate(15);
+            ->paginate(5);
 
         return Inertia::render('admin/muhafidzs/index', [
             'muhafidzs' => $muhafidzs,

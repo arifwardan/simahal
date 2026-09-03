@@ -24,7 +24,7 @@ class SantriController extends Controller
         $santris = Santri::query()
             ->with(['user', 'orangTua'])
             ->orderBy('nama')
-            ->paginate(15);
+            ->paginate(5);
 
         return Inertia::render('admin/santris/index', [
             'santris' => $santris,

@@ -22,7 +22,7 @@ class UserController extends Controller
         $users = User::query()
             ->with(['santri', 'muhafidz', 'orangTua'])
             ->orderBy('name')
-            ->paginate(10)
+            ->paginate(5)
             ->through(fn (User $user) => [
                 'id' => $user->id,
                 'name' => $user->name,

@@ -60,7 +60,7 @@ export default function OrangTuaDashboard({
                                     <p className="font-head text-lg font-black uppercase">Ayah/Bunda Hebat!</p>
                                     <p className="mt-1 text-sm font-bold">Dukung ananda murajaah 15 menit tiap ba'da Maghrib — konsisten itu kunci.</p>
                                 </div>
-                                <div className="flex flex-1 items-center justify-center border-[3px] border-dashed border-black bg-white p-6 text-center">
+                                <div className="flex flex-1 items-center justify-center border-[3px] border-dashed border-black bg-[#FFF7E8] p-6 text-center">
                                     <p className="font-head text-sm font-black uppercase">{children.length} Anak Terhubung</p>
                                 </div>
                             </div>

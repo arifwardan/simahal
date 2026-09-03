@@ -47,16 +47,16 @@ export default function SantriProgressView({
                 </CardHeader>
                 <CardContent className="space-y-4 pt-6">
                     <div className="flex flex-wrap items-center justify-between gap-3">
-                        <p className="border-2 border-black bg-black px-3 py-1 text-sm font-black text-white">
+                        <p className="border-2 border-black bg-black px-3 py-1 text-sm font-black text-[#FFF7E8]">
                             {progress.progress}/{progress.target} ayat · {progress.percent}%
                         </p>
                         {progress.status && (
-                            <Badge className="border-2 border-black bg-white text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                            <Badge className="border-2 border-black bg-[#FFF7E8] text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                                 {progress.status_label}
                             </Badge>
                         )}
                     </div>
-                    <div className="h-4 w-full border-[3px] border-black bg-white p-1">
+                    <div className="h-4 w-full border-[3px] border-black bg-[#FFF7E8] p-1">
                         <div
                             className="h-full bg-black transition-all"
                             style={{ width: `${Math.min(100, progress.percent)}%` }}
@@ -81,7 +81,7 @@ export default function SantriProgressView({
                                 {halaqahs.map((h, idx) => (
                                     <li
                                         key={h.id}
-                                        className={`p-4 text-sm font-black uppercase ${idx % 2 === 0 ? 'bg-white' : 'bg-accent'}`}
+                                        className={`p-4 text-sm font-black uppercase ${idx % 2 === 0 ? 'bg-[#FFF7E8]' : 'bg-accent'}`}
                                     >
                                         <span className="border-2 border-black bg-primary px-2 py-1">{h.nama}</span>
                                     </li>
@@ -103,13 +103,13 @@ export default function SantriProgressView({
                                 {riwayat.slice(0, 6).map((m) => (
                                     <li
                                         key={m.id}
-                                        className="flex items-center justify-between gap-4 bg-white p-3 font-bold hover:bg-accent"
+                                        className="flex items-center justify-between gap-4 bg-[#FFF7E8] p-3 font-bold hover:bg-accent"
                                     >
                                         <p className="text-xs leading-tight">
-                                            <span className="bg-black px-1.5 py-0.5 text-white">{m.tanggal}</span>{' '}
+                                            <span className="bg-black px-1.5 py-0.5 text-[#FFF7E8]">{m.tanggal}</span>{' '}
                                             {m.jenis} · {m.surah} {m.ayat_mulai}-{m.ayat_selesai}
                                         </p>
-                                        <Badge className="shrink-0 border-2 border-black bg-black text-white">{m.status}</Badge>
+                                        <Badge className="shrink-0 border-2 border-black bg-black text-[#FFF7E8]">{m.status}</Badge>
                                     </li>
                                 ))}
                             </ul>

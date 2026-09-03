@@ -111,11 +111,11 @@ export default function MuhafidzDashboard({
                             <div className="flex items-baseline gap-2">
                                 <span className="font-head text-4xl font-black">{hariIni.sudah}</span>
                                 <span className="text-sm font-black">/ {hariIni.total} santri</span>
-                                <span className="ml-auto border-2 border-black bg-black px-2 py-1 text-xs font-black text-white">
+                                <span className="ml-auto border-2 border-black bg-black px-2 py-1 text-xs font-black text-[#FFF7E8]">
                                     {hariIni.percent}%
                                 </span>
                             </div>
-                            <div className="h-3 w-full border-[3px] border-black bg-white p-1">
+                            <div className="h-3 w-full border-[3px] border-black bg-[#FFF7E8] p-1">
                                 <div className="h-full bg-black" style={{ width: `${hariIni.percent}%` }} />
                             </div>
                             {hariIni.belum.length > 0 ? (
@@ -132,7 +132,7 @@ export default function MuhafidzDashboard({
                     </Card>
 
                     <Card className="flex flex-col">
-                        <CardHeader className="bg-[#FF3B30] text-white">
+                        <CardHeader className="bg-[#FF3B30] text-[#FFF7E8]">
                             <CardTitle className="font-head font-black uppercase">Perlu Perhatian</CardTitle>
                         </CardHeader>
                         <CardContent className="flex flex-1 flex-col p-0">
@@ -141,7 +141,7 @@ export default function MuhafidzDashboard({
                             ) : (
                                 <ul className="flex-1 divide-y-[3px] divide-black border-t-[3px] border-black">
                                     {perhatian.map((s) => (
-                                        <li key={s.id} className="flex items-center justify-between gap-3 bg-white p-3">
+                                        <li key={s.id} className="flex items-center justify-between gap-3 bg-[#FFF7E8] p-3">
                                             <div className="min-w-0">
                                                 <p className="truncate font-head text-xs font-black uppercase">{s.nama}</p>
                                                 <p className="text-xs font-bold">
@@ -168,12 +168,12 @@ export default function MuhafidzDashboard({
                             ) : (
                                 <ul className="flex-1 divide-y-[3px] divide-black border-t-[3px] border-black">
                                     {halaqahPerf.slice(0, 3).map((h) => (
-                                        <li key={h.id} className="flex items-center justify-between gap-3 bg-white p-3">
+                                        <li key={h.id} className="flex items-center justify-between gap-3 bg-[#FFF7E8] p-3">
                                             <div className="min-w-0">
                                                 <p className="truncate font-head text-xs font-black uppercase">{h.nama}</p>
                                                 <p className="text-xs font-bold">{h.santris_count} santri</p>
                                             </div>
-                                            <span className="border-2 border-black bg-black px-2 py-1 text-xs font-black text-white">
+                                            <span className="border-2 border-black bg-black px-2 py-1 text-xs font-black text-[#FFF7E8]">
                                                 {h.avgPercent}% avg
                                             </span>
                                         </li>
@@ -207,7 +207,7 @@ export default function MuhafidzDashboard({
                                         <li
                                             key={h.id}
                                             className={`flex items-center justify-between gap-4 p-4 font-bold ${
-                                                idx % 2 === 0 ? 'bg-white' : 'bg-accent'
+                                                idx % 2 === 0 ? 'bg-[#FFF7E8]' : 'bg-accent'
                                             } hover:bg-primary/30`}
                                         >
                                             <p className="font-head font-black uppercase">{h.nama}</p>
@@ -247,10 +247,10 @@ export default function MuhafidzDashboard({
                                 {topSantris.map((s, idx) => (
                                     <li
                                         key={s.id}
-                                        className={`flex items-center gap-4 p-4 ${idx === 0 ? 'bg-[#FFD600]' : idx === 1 ? 'bg-[#E5E5E5]' : idx === 2 ? 'bg-[#FF90E8]' : 'bg-white'} hover:bg-accent`}
+                                        className={`flex items-center gap-4 p-4 ${idx === 0 ? 'bg-[#FFD600]' : idx === 1 ? 'bg-[#E5E5E5]' : idx === 2 ? 'bg-[#FF90E8]' : 'bg-[#FFF7E8]'} hover:bg-accent`}
                                     >
                                         <span
-                                            className={`flex size-10 shrink-0 items-center justify-center border-[3px] border-black text-sm font-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] ${idx === 0 ? 'bg-yellow-400' : idx === 1 ? 'bg-zinc-300' : idx === 2 ? 'bg-amber-600 text-white' : 'bg-white'}`}
+                                            className={`flex size-10 shrink-0 items-center justify-center border-[3px] border-black text-sm font-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] ${idx === 0 ? 'bg-yellow-400' : idx === 1 ? 'bg-zinc-300' : idx === 2 ? 'bg-amber-600 text-[#FFF7E8]' : 'bg-[#FFF7E8]'}`}
                                         >
                                             #{idx + 1}
                                         </span>
@@ -259,11 +259,11 @@ export default function MuhafidzDashboard({
                                             <p className="truncate text-xs font-bold">
                                                 {s.nis ?? '-'} {s.halaqah ? `· ${s.halaqah}` : ''} · {s.progress}/{s.target} hal ({s.percent}%)
                                             </p>
-                                            <div className="mt-1 h-2 w-full border-2 border-black bg-white">
+                                            <div className="mt-1 h-2 w-full border-2 border-black bg-[#FFF7E8]">
                                                 <div className="h-full bg-black" style={{ width: `${Math.min(100, s.percent)}%` }} />
                                             </div>
                                         </div>
-                                        <span className="shrink-0 border-2 border-black bg-black px-2 py-1 text-xs font-black text-white">
+                                        <span className="shrink-0 border-2 border-black bg-black px-2 py-1 text-xs font-black text-[#FFF7E8]">
                                             {s.percent}%
                                         </span>
                                     </li>
@@ -284,9 +284,9 @@ export default function MuhafidzDashboard({
                     ) : (
                         <ul className="divide-y-[3px] divide-black border-t-[3px] border-black">
                             {recentMutabaahs.map((m) => (
-                                <li key={m.id} className="flex items-center justify-between gap-4 bg-white p-4 font-bold hover:bg-accent">
+                                <li key={m.id} className="flex items-center justify-between gap-4 bg-[#FFF7E8] p-4 font-bold hover:bg-accent">
                                     <p className="text-sm">
-                                        <span className="bg-black px-1.5 py-0.5 text-white">{m.santri?.nama ?? '-'}</span> · {m.tanggal} · {m.jenis} · {m.surah}{' '}
+                                        <span className="bg-black px-1.5 py-0.5 text-[#FFF7E8]">{m.santri?.nama ?? '-'}</span> · {m.tanggal} · {m.jenis} · {m.surah}{' '}
                                         {m.ayat_mulai}-{m.ayat_selesai}
                                     </p>
                                     <Badge>{m.status}</Badge>

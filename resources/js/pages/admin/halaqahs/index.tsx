@@ -1,5 +1,5 @@
 import { Form } from '@inertiajs/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import HalaqahController from '@/actions/App/Http/Controllers/Admin/HalaqahController';
 import HalaqahForm from '@/components/forms/HalaqahForm';
 import type { HalaqahRow } from '@/components/forms/HalaqahForm';
@@ -7,6 +7,7 @@ import Heading from '@/components/heading';
 import PageContainer from '@/components/page-container';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { DataTable, type DataTableColumn, type PaginationMeta } from '@/components/ui/data-table';
 import {
     Card,
     CardContent,
@@ -27,21 +28,90 @@ import { index } from '@/routes/admin/halaqahs';
 type Option = { value: string; label: string };
 
 type Props = {
-    halaqahs: { data: HalaqahRow[]; total: number };
+    halaqahs: PaginationMeta & { data: HalaqahRow[] };
     muhafidzs: { id: number; nama: string }[];
     statuses: Option[];
 };
 
-export default function AdminHalaqahsIndex({
-    halaqahs,
-    muhafidzs,
-    statuses,
-}: Props) {
+export default function AdminHalaqahsIndex({ halaqahs, muhafidzs, statuses }: Props) {
     const [showCreate, setShowCreate] = useState(false);
     const [editing, setEditing] = useState<HalaqahRow | null>(null);
 
     const statusLabel = (value: string): string =>
         statuses.find((s) => s.value === value)?.label ?? value;
+
+    const columns = useMemo<DataTableColumn<HalaqahRow>[]>(
+        () => [
+            {
+                id: 'nama',
+                header: 'Halaqah',
+                cell: (row) => (
+                    <div>
+                        <p className="font-black text-black">{row.nama}</p>
+                        <p className="text-xs font-bold text-black/70">
+                            {row.jam_mulai && row.jam_selesai ? `${row.jam_mulai} - ${row.jam_selesai}` : '-'}
+                        </p>
+                    </div>
+                ),
+            },
+            {
+                id: 'muhafidz',
+                header: 'Muhafidz',
+                cell: (row) => (
+                    <span className="font-bold text-black">{row.muhafidz?.nama ?? '-'}</span>
+                ),
+            },
+            {
+                id: 'santri',
+                header: 'Santri',
+                headerClassName: 'text-center',
+                className: 'text-center',
+                cell: (row) => (
+                    <Badge className="border-2 border-black bg-[#FFD600] font-black text-black">
+                        {row.santris_count}
+                    </Badge>
+                ),
+            },
+            {
+                id: 'status',
+                header: 'Status',
+                cell: (row) => (
+                    <Badge className="border-2 border-black bg-black text-[#FFF7E8]">
+                        {statusLabel(row.status)}
+                    </Badge>
+                ),
+            },
+            {
+                id: 'aksi',
+                header: 'Aksi',
+                headerClassName: 'text-right',
+                className: 'text-right',
+                cell: (row) => (
+                    <div className="flex items-center justify-end gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setEditing(row)}
+                            className="cursor-pointer border-[2.5px] border-black font-black"
+                        >
+                            Edit
+                        </Button>
+                        <Form {...HalaqahController.destroy.form({ halaqah: row.id })}>
+                            <Button
+                                type="submit"
+                                variant="destructive"
+                                size="sm"
+                                className="cursor-pointer border-[2.5px] border-black font-black"
+                            >
+                                Hapus
+                            </Button>
+                        </Form>
+                    </div>
+                ),
+            },
+        ],
+        [statuses],
+    );
 
     return (
         <PageContainer>
@@ -50,15 +120,23 @@ export default function AdminHalaqahsIndex({
                 description="Kelola halaqah, penugasan muhafidz/pembimbing, dan jadwal halaqah."
             />
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Daftar Halaqah ({halaqahs.total})</CardTitle>
-                    <CardDescription>Klik "Tambah Halaqah" untuk menambah data baru.</CardDescription>
+            <Card className="overflow-hidden bg-[#FFE7A3]">
+                <CardHeader className="bg-primary">
+                    <CardTitle className="font-head font-black uppercase">
+                        Daftar Halaqah ({halaqahs.total})
+                    </CardTitle>
+                    <CardDescription className="font-bold text-black">
+                        {halaqahs.total > 10
+                            ? `${halaqahs.total} halaqah — otomatis paginasi 15/hal`
+                            : 'Klik "Tambah Halaqah" untuk menambah data baru.'}
+                    </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-4 bg-[#FFF7E8] pt-6">
                     <Dialog open={showCreate} onOpenChange={setShowCreate}>
                         <DialogTrigger asChild>
-                            <Button>Tambah Halaqah</Button>
+                            <Button className="cursor-pointer border-[3px] border-black font-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+                                Tambah Halaqah
+                            </Button>
                         </DialogTrigger>
                         <DialogContent className="max-h-[calc(100%-2rem)] overflow-y-auto">
                             <DialogHeader>
@@ -75,35 +153,13 @@ export default function AdminHalaqahsIndex({
                         </DialogContent>
                     </Dialog>
 
-                    <ul className="divide-y rounded-lg border">
-                        {halaqahs.data.map((halaqah) => (
-                            <li
-                                key={halaqah.id}
-                                className="flex items-center justify-between gap-4 p-4"
-                            >
-                                <div>
-                                    <p className="font-medium">{halaqah.nama}</p>
-                                    <p className="text-sm text-muted-foreground">
-                                        Muhafidz: {halaqah.muhafidz?.nama ?? '-'} · {halaqah.santris_count} santri
-                                        {halaqah.jam_mulai && halaqah.jam_selesai
-                                            ? ` · ${halaqah.jam_mulai} - ${halaqah.jam_selesai}`
-                                            : ''}
-                                    </p>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <Badge variant="secondary">{statusLabel(halaqah.status)}</Badge>
-                                    <Button variant="outline" size="sm" onClick={() => setEditing(halaqah)}>
-                                        Edit
-                                    </Button>
-                                    <Form {...HalaqahController.destroy.form({ halaqah: halaqah.id })}>
-                                        <Button type="submit" variant="ghost" className="text-destructive">
-                                            Hapus
-                                        </Button>
-                                    </Form>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
+                    <DataTable
+                        columns={columns}
+                        data={halaqahs.data}
+                        pagination={halaqahs}
+                        perPage={5}
+                        emptyMessage="Belum ada halaqah."
+                    />
                 </CardContent>
             </Card>
 

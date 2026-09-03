@@ -1,5 +1,5 @@
 import { Form } from '@inertiajs/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import SantriController from '@/actions/App/Http/Controllers/Admin/SantriController';
 import SantriForm from '@/components/forms/SantriForm';
 import type { SantriRow } from '@/components/forms/SantriForm';
@@ -7,6 +7,7 @@ import Heading from '@/components/heading';
 import PageContainer from '@/components/page-container';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { DataTable, type DataTableColumn, type PaginationMeta } from '@/components/ui/data-table';
 import {
     Card,
     CardContent,
@@ -27,49 +28,106 @@ import { index } from '@/routes/admin/santris';
 type Option = { value: string; label: string };
 
 type Props = {
-    santris: { data: SantriRow[]; total: number };
+    santris: PaginationMeta & { data: SantriRow[] };
     orangTuas: { id: number; nama: string }[];
     statuses: Option[];
     jenisOptions: Option[];
 };
 
-export default function AdminSantrisIndex({
-    santris,
-    orangTuas,
-    statuses,
-    jenisOptions,
-}: Props) {
+export default function AdminSantrisIndex({ santris, orangTuas, statuses, jenisOptions }: Props) {
     const [showCreate, setShowCreate] = useState(false);
     const [editing, setEditing] = useState<SantriRow | null>(null);
 
-    const statusLabel = (value: string): string =>
-        statuses.find((s) => s.value === value)?.label ?? value;
+    const statusLabel = (value: string): string => statuses.find((s) => s.value === value)?.label ?? value;
+
+    const columns = useMemo<DataTableColumn<SantriRow>[]>(
+        () => [
+            {
+                id: 'nama',
+                header: 'Santri',
+                cell: (row) => (
+                    <div>
+                        <p className="font-black text-black">
+                            {row.nama} {row.nis ? `(${row.nis})` : ''}
+                        </p>
+                        <p className="text-xs font-bold text-black/70">{row.user.email}</p>
+                    </div>
+                ),
+            },
+            {
+                id: 'nis',
+                header: 'NIS',
+                cell: (row) => (
+                    <span className="font-bold text-black">{row.nis ?? '-'}</span>
+                ),
+            },
+            {
+                id: 'status',
+                header: 'Status',
+                cell: (row) => (
+                    <Badge className="border-2 border-black bg-black text-[#FFF7E8]">
+                        {statusLabel(row.status)}
+                    </Badge>
+                ),
+            },
+            {
+                id: 'aksi',
+                header: 'Aksi',
+                headerClassName: 'text-right',
+                className: 'text-right',
+                cell: (row) => (
+                    <div className="flex items-center justify-end gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setEditing(row)}
+                            className="cursor-pointer border-[2.5px] border-black font-black"
+                        >
+                            Edit
+                        </Button>
+                        <Form {...SantriController.destroy.form({ santri: row.id })}>
+                            <Button
+                                type="submit"
+                                variant="destructive"
+                                size="sm"
+                                className="cursor-pointer border-[2.5px] border-black font-black"
+                            >
+                                Hapus
+                            </Button>
+                        </Form>
+                    </div>
+                ),
+            },
+        ],
+        [statuses],
+    );
 
     return (
         <PageContainer>
-            <Heading
-                title="Manajemen Santri"
-                description="Kelola data santri dan akun loginnya."
-            />
+            <Heading title="Manajemen Santri" description="Kelola data santri dan akun loginnya." />
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Daftar Santri ({santris.total})</CardTitle>
-                    <CardDescription>
-                        Klik "Tambah Santri" untuk menambah data baru.
+            <Card className="overflow-hidden bg-[#FFE7A3]">
+                <CardHeader className="bg-primary">
+                    <CardTitle className="font-head font-black uppercase">
+                        Daftar Santri ({santris.total})
+                    </CardTitle>
+                    <CardDescription className="font-bold text-black">
+                        {santris.total > 10
+                            ? `${santris.total} santri — otomatis paginasi 15/hal`
+                            : 'Klik "Tambah Santri" untuk menambah data baru.'}
                     </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-4 bg-[#FFF7E8] pt-6">
                     <Dialog open={showCreate} onOpenChange={setShowCreate}>
                         <DialogTrigger asChild>
-                            <Button>Tambah Santri</Button>
+                            <Button className="cursor-pointer border-[3px] border-black font-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+                                Tambah Santri
+                            </Button>
                         </DialogTrigger>
                         <DialogContent className="max-h-[calc(100%-2rem)] overflow-y-auto">
                             <DialogHeader>
                                 <DialogTitle>Tambah Santri</DialogTitle>
-                                <DialogDescription>
-                                    Tambahkan data santri dan akun loginnya.
-                                </DialogDescription>
+                                <DialogDescription>Tambahkan data santri dan akun loginnya.</DialogDescription>
                             </DialogHeader>
                             <SantriForm
                                 orangTuas={orangTuas}
@@ -80,65 +138,21 @@ export default function AdminSantrisIndex({
                         </DialogContent>
                     </Dialog>
 
-                    <ul className="divide-y rounded-lg border">
-                        {santris.data.map((santri) => (
-                            <li
-                                key={santri.id}
-                                className="flex items-center justify-between gap-4 p-4"
-                            >
-                                <div>
-                                    <p className="font-medium">
-                                        {santri.nama}{' '}
-                                        {santri.nis ? `(${santri.nis})` : ''}
-                                    </p>
-                                    <p className="text-sm text-muted-foreground">
-                                        {santri.user.email}
-                                    </p>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <Badge variant="secondary">
-                                        {statusLabel(santri.status)}
-                                    </Badge>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => setEditing(santri)}
-                                    >
-                                        Edit
-                                    </Button>
-                                    <Form
-                                        {...SantriController.destroy.form({
-                                            santri: santri.id,
-                                        })}
-                                    >
-                                        <Button
-                                            type="submit"
-                                            variant="ghost"
-                                            className="text-destructive"
-                                        >
-                                            Hapus
-                                        </Button>
-                                    </Form>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
+                    <DataTable
+                        columns={columns}
+                        data={santris.data}
+                        pagination={santris}
+                        perPage={5}
+                        emptyMessage="Belum ada santri."
+                    />
                 </CardContent>
             </Card>
 
-            <Dialog
-                open={editing !== null}
-                onOpenChange={(open) => !open && setEditing(null)}
-            >
-                <DialogContent
-                    key={editing?.id}
-                    className="max-h-[calc(100%-2rem)] overflow-y-auto"
-                >
+            <Dialog open={editing !== null} onOpenChange={(open) => !open && setEditing(null)}>
+                <DialogContent key={editing?.id} className="max-h-[calc(100%-2rem)] overflow-y-auto">
                     <DialogHeader>
                         <DialogTitle>Edit Santri</DialogTitle>
-                        <DialogDescription>
-                            Perbarui data santri dan akun loginnya.
-                        </DialogDescription>
+                        <DialogDescription>Perbarui data santri dan akun loginnya.</DialogDescription>
                     </DialogHeader>
                     {editing && (
                         <SantriForm

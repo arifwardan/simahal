@@ -22,7 +22,7 @@ class HalaqahController extends Controller
             ->with(['muhafidz'])
             ->withCount('santris')
             ->orderBy('nama')
-            ->paginate(15)
+            ->paginate(5)
             ->through(fn (Halaqah $halaqah) => [
                 'id' => $halaqah->id,
                 'nama' => $halaqah->nama,

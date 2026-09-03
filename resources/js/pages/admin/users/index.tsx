@@ -1,5 +1,5 @@
-import { Form, Link, router, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { Form, router, usePage } from '@inertiajs/react';
+import { useMemo, useState } from 'react';
 import UserController from '@/actions/App/Http/Controllers/Admin/UserController';
 import UserForm from '@/components/forms/UserForm';
 import type { UserRow } from '@/components/forms/UserForm';
@@ -7,6 +7,7 @@ import Heading from '@/components/heading';
 import PageContainer from '@/components/page-container';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { DataTable, type DataTableColumn } from '@/components/ui/data-table';
 import { Label } from '@/components/ui/label';
 import {
     Select,
@@ -55,6 +56,124 @@ export default function AdminUsersIndex({ users, roles, assignOptions }: Props) 
     const [assignSantriId, setAssignSantriId] = useState<string>('');
     const [assignOrangTuaId, setAssignOrangTuaId] = useState<string>('');
 
+    const userColumns = useMemo<DataTableColumn<UserRow>[]>(
+        () => [
+            {
+                id: 'nama',
+                header: 'Nama',
+                cell: (row) => <span className="font-black text-black">{row.name}</span>,
+            },
+            {
+                id: 'email',
+                header: 'Email',
+                cell: (row) => <span className="font-bold text-black">{row.email}</span>,
+            },
+            {
+                id: 'role',
+                header: 'Role',
+                cell: (row) => (
+                    <Badge className="border-2 border-black bg-black text-[#FFF7E8]">{row.role_label}</Badge>
+                ),
+            },
+            {
+                id: 'aksi',
+                header: 'Aksi',
+                headerClassName: 'text-right',
+                className: 'text-right',
+                cell: (row) => (
+                    <div className="flex items-center justify-end gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setEditing(row)}
+                            className="cursor-pointer border-[2.5px] border-black font-black"
+                        >
+                            Edit
+                        </Button>
+                        {auth.user.id !== row.id && (
+                            <Form action={UserController.destroy.url({ user: row.id })} method="delete">
+                                <Button
+                                    type="submit"
+                                    variant="destructive"
+                                    size="sm"
+                                    className="cursor-pointer border-[2.5px] border-black font-black"
+                                >
+                                    Hapus
+                                </Button>
+                            </Form>
+                        )}
+                    </div>
+                ),
+            },
+        ],
+        [auth.user.id],
+    );
+
+    const assignmentColumns = useMemo<
+        DataTableColumn<AssignOption['assignments'][number]>[]
+    >(
+        () => [
+            {
+                id: 'santri',
+                header: 'Santri',
+                cell: (row) => (
+                    <div>
+                        <p className="font-black text-black">{row.nama}</p>
+                        <p className="text-xs font-bold text-black/70">{row.nis ?? '-'}</p>
+                    </div>
+                ),
+            },
+            {
+                id: 'orang_tua',
+                header: 'Orang Tua',
+                cell: (row) =>
+                    row.orang_tua_nama ? (
+                        <Badge className="border-2 border-black bg-[#FFD600] text-black">
+                            {row.orang_tua_nama}
+                        </Badge>
+                    ) : (
+                        <span className="border-2 border-dashed border-black bg-[#FFF7E8] px-2 py-1 text-xs font-black">
+                            Belum ada
+                        </span>
+                    ),
+            },
+            {
+                id: 'assign',
+                header: 'Assign',
+                headerClassName: 'text-right',
+                className: 'text-right',
+                cell: (row) => (
+                    <Form
+                        action={UserController.assignOrangTua.url({ santri: row.id })}
+                        method="patch"
+                        className="inline-flex items-center gap-2"
+                    >
+                        <select
+                            name="orang_tua_id"
+                            defaultValue={row.orang_tua_id ? String(row.orang_tua_id) : ''}
+                            className="h-9 cursor-pointer border-[3px] border-black bg-[#FFF7E8] px-2 text-sm font-bold"
+                        >
+                            <option value="">— Lepas —</option>
+                            {assignOptions.orangTuas.map((o) => (
+                                <option key={o.id} value={String(o.id)}>
+                                    {o.nama}
+                                </option>
+                            ))}
+                        </select>
+                        <Button
+                            type="submit"
+                            size="sm"
+                            className="cursor-pointer border-[2.5px] border-black font-black"
+                        >
+                            Simpan
+                        </Button>
+                    </Form>
+                ),
+            },
+        ],
+        [assignOptions.orangTuas],
+    );
+
     return (
         <PageContainer>
             <Heading title="Manajemen User" description="Kelola akun dan peran pengguna SIMAHAL." />
@@ -62,107 +181,32 @@ export default function AdminUsersIndex({ users, roles, assignOptions }: Props) 
             <Card className="overflow-hidden bg-[#FFE7A3]">
                 <CardHeader className="bg-primary">
                     <CardTitle className="font-head font-black uppercase">Daftar User ({users.total})</CardTitle>
-                    <CardDescription className="font-bold text-black">10 user per halaman — sisanya via pagination brutal.</CardDescription>
+                    <CardDescription className="font-bold text-black">
+                        10 user per halaman — sisanya via pagination brutal.
+                    </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4 bg-[#FFF7E8] pt-6">
-                    <div className="overflow-x-auto border-[3px] border-black">
-                        <table className="w-full text-sm">
-                            <thead>
-                                <tr className="border-b-[3px] border-black bg-black text-left text-white">
-                                    <th className="px-3 py-3 font-head font-black uppercase">Nama</th>
-                                    <th className="px-3 py-3 font-head font-black uppercase">Email</th>
-                                    <th className="px-3 py-3 font-head font-black uppercase">Role</th>
-                                    <th className="px-3 py-3 text-right font-head font-black uppercase">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y-[3px] divide-black">
-                                {users.data.map((user, idx) => (
-                                    <tr
-                                        key={user.id}
-                                        className={`${idx % 3 === 0 ? 'bg-[#FFD600]' : idx % 3 === 1 ? 'bg-[#FF90E8]' : 'bg-[#5CE1E6]'} hover:brightness-95`}
-                                    >
-                                        <td className="px-3 py-3 font-black text-black">{user.name}</td>
-                                        <td className="px-3 py-3 font-bold text-black">{user.email}</td>
-                                        <td className="px-3 py-3">
-                                            <Badge className="border-2 border-black bg-black text-white">{user.role_label}</Badge>
-                                        </td>
-                                        <td className="px-3 py-3 text-right">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    onClick={() => setEditing(user)}
-                                                    className="border-[2.5px] border-black font-black"
-                                                >
-                                                    Edit
-                                                </Button>
-                                                {auth.user.id !== user.id && (
-                                                    <Form
-                                                        action={UserController.destroy.url({ user: user.id })}
-                                                        method="delete"
-                                                    >
-                                                        <Button
-                                                            type="submit"
-                                                            variant="destructive"
-                                                            size="sm"
-                                                            className="border-[2.5px] border-black font-black"
-                                                        >
-                                                            Hapus
-                                                        </Button>
-                                                    </Form>
-                                                )}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    {users.last_page > 1 && (
-                        <div className="flex flex-wrap items-center justify-between gap-2 border-[3px] border-black bg-[#FFF7E8] p-2">
-                            <span className="px-2 text-xs font-black uppercase">
-                                Hal {users.current_page} dari {users.last_page} · {users.total} user
-                            </span>
-                            <div className="flex gap-1">
-                                {users.links.map((link, i) => {
-                                    if (!link.url) {
-                                        return (
-                                            <span
-                                                key={i}
-                                                className="border-2 border-black bg-[#FFF7E8] px-3 py-1 text-xs font-black opacity-40"
-                                                dangerouslySetInnerHTML={{ __html: link.label }}
-                                            />
-                                        );
-                                    }
-                                    return (
-                                        <Link
-                                            key={i}
-                                            href={link.url}
-                                            preserveState
-                                            preserveScroll
-                                            className={`border-[3px] border-black px-3 py-1 text-xs font-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] ${link.active ? 'bg-primary text-black' : 'bg-[#FFF7E8] text-black hover:bg-accent'}`}
-                                            dangerouslySetInnerHTML={{ __html: link.label }}
-                                        />
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    )}
+                    <DataTable
+                        columns={userColumns}
+                        data={users.data}
+                        pagination={users}
+                        emptyMessage="Belum ada user."
+                    />
                 </CardContent>
             </Card>
 
             {/* Assign Orang Tua ↔ Santri */}
             <Card className="overflow-hidden bg-[#5CE1E6]">
-                <CardHeader className="bg-black text-white">
+                <CardHeader className="bg-black text-[#FFF7E8]">
                     <CardTitle className="font-head font-black uppercase">Assign Orang Tua ↔ Santri</CardTitle>
-                    <CardDescription className="font-bold text-white/80">
-                        Kelola hubungan orang tua — pilih santri dan orang tuanya, lalu Assign. Kosongkan untuk lepas.
+                    <CardDescription className="font-bold text-[#FFF7E8]/80">
+                        Kelola hubungan orang tua — pilih santri dan orang tuanya, lalu Assign. Kosongkan untuk
+                        lepas.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6 bg-[#FFF7E8] pt-6">
                     {/* Quick assign */}
-                    <div className="grid gap-3 border-[3px] border-black bg-white p-4 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+                    <div className="grid gap-3 border-[3px] border-black bg-[#FFF7E8] p-4 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
                         <div className="grid gap-2">
                             <Label className="font-black uppercase">Santri</Label>
                             <Select value={assignSantriId} onValueChange={setAssignSantriId}>
@@ -195,7 +239,7 @@ export default function AdminUsersIndex({ users, roles, assignOptions }: Props) 
                             </Select>
                         </div>
                         <Button
-                            className="h-11 border-[3px] border-black font-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
+                            className="h-11 cursor-pointer border-[3px] border-black font-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
                             disabled={!assignSantriId}
                             onClick={() => {
                                 if (!assignSantriId) return;
@@ -206,7 +250,7 @@ export default function AdminUsersIndex({ users, roles, assignOptions }: Props) 
                                 router.patch(
                                     UserController.assignOrangTua.url({ santri: Number(assignSantriId) }),
                                     { orang_tua_id: orangTuaId },
-                                    { preserveScroll: true }
+                                    { preserveScroll: true },
                                 );
                             }}
                         >
@@ -214,94 +258,27 @@ export default function AdminUsersIndex({ users, roles, assignOptions }: Props) 
                         </Button>
                     </div>
 
-                    {/* Daftar assignments */}
-                    <div className="overflow-x-auto border-[3px] border-black">
-                        <table className="w-full text-sm">
-                            <thead>
-                                <tr className="border-b-[3px] border-black bg-black text-left text-white">
-                                    <th className="px-3 py-3 font-head font-black uppercase">Santri</th>
-                                    <th className="px-3 py-3 font-head font-black uppercase">Orang Tua</th>
-                                    <th className="px-3 py-3 text-right font-head font-black uppercase">Assign</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y-[3px] divide-black">
-                                {assignOptions.assignments.map((s, idx) => (
-                                    <tr
-                                        key={s.id}
-                                        className={`${idx % 2 === 0 ? 'bg-white' : 'bg-[#FFE7A3]'} hover:brightness-95`}
-                                    >
-                                        <td className="px-3 py-3">
-                                            <p className="font-black text-black">{s.nama}</p>
-                                            <p className="text-xs font-bold text-black/70">{s.nis ?? '-'}</p>
-                                        </td>
-                                        <td className="px-3 py-3">
-                                            {s.orang_tua_nama ? (
-                                                <Badge className="border-2 border-black bg-[#FFD600] text-black">
-                                                    {s.orang_tua_nama}
-                                                </Badge>
-                                            ) : (
-                                                <span className="border-2 border-dashed border-black bg-white px-2 py-1 text-xs font-black">
-                                                    Belum ada
-                                                </span>
-                                            )}
-                                        </td>
-                                        <td className="px-3 py-3 text-right">
-                                            <Form
-                                                action={UserController.assignOrangTua.url({ santri: s.id })}
-                                                method="patch"
-                                                className="inline-flex items-center gap-2"
-                                            >
-                                                {({ errors }: { errors: Record<string, string> }) => (
-                                                    <>
-                                                        <select
-                                                            name="orang_tua_id"
-                                                            defaultValue={s.orang_tua_id ? String(s.orang_tua_id) : ''}
-                                                            className="h-9 border-[3px] border-black bg-white px-2 text-sm font-bold"
-                                                        >
-                                                            <option value="">— Lepas —</option>
-                                                            {assignOptions.orangTuas.map((o) => (
-                                                                <option key={o.id} value={String(o.id)}>
-                                                                    {o.nama}
-                                                                </option>
-                                                            ))}
-                                                        </select>
-                                                        <Button
-                                                            type="submit"
-                                                            size="sm"
-                                                            className="border-[2.5px] border-black font-black"
-                                                        >
-                                                            Simpan
-                                                        </Button>
-                                                    </>
-                                                )}
-                                            </Form>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                    <p className="text-xs font-bold">Pilih santri di atas untuk assign cepat, atau ubah per baris di tabel lalu Simpan.</p>
+                    <DataTable
+                        columns={assignmentColumns}
+                        data={assignOptions.assignments}
+                        emptyMessage="Belum ada data santri."
+                        perPage={5}
+                    />
+                    <p className="text-xs font-bold">
+                        Pilih santri di atas untuk assign cepat, atau ubah per baris di tabel lalu Simpan. Otomatis
+                        paginasi jika &gt;10 data.
+                    </p>
                 </CardContent>
             </Card>
 
-            <Dialog
-                open={editing !== null}
-                onOpenChange={(open) => !open && setEditing(null)}
-            >
+            <Dialog open={editing !== null} onOpenChange={(open) => !open && setEditing(null)}>
                 <DialogContent key={editing?.id}>
                     <DialogHeader>
                         <DialogTitle>Edit User</DialogTitle>
-                        <DialogDescription>
-                            Perbarui akun pengguna.
-                        </DialogDescription>
+                        <DialogDescription>Perbarui akun pengguna.</DialogDescription>
                     </DialogHeader>
                     {editing && (
-                        <UserForm
-                            roles={roles}
-                            nilaiAwal={editing}
-                            onSuccess={() => setEditing(null)}
-                        />
+                        <UserForm roles={roles} nilaiAwal={editing} onSuccess={() => setEditing(null)} />
                     )}
                 </DialogContent>
             </Dialog>

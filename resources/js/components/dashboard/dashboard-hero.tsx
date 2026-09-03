@@ -22,7 +22,7 @@ export default function DashboardHero({ subtitle }: { subtitle: string }) {
                 }}
             />
             <div className="relative flex flex-col gap-3">
-                <div className="inline-flex w-fit items-center gap-2 border-2 border-black bg-black px-3 py-1 text-xs font-black uppercase tracking-widest text-white">
+                <div className="inline-flex w-fit items-center gap-2 border-2 border-black bg-black px-3 py-1 text-xs font-black uppercase tracking-widest text-[#FFF7E8]">
                     <span className="size-2 animate-pulse rounded-full bg-primary" />
                     {dateLabel}
                 </div>
