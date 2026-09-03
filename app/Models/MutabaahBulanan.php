@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable([
     'santri_id', 'tahun', 'bulan', 'halaman_awal_bulan', 'halaman_kumulatif',
     'juz_dihafal', 'tasmi_pekan_1', 'tasmi_pekan_2', 'tasmi_pekan_3', 'tasmi_pekan_4', 'tasmi_pekan_5',
-    'ujian_soal_1', 'ujian_soal_2', 'ujian_soal_3', 'ujian_soal_4', 'ujian_soal_5',
+    'ujian_bulanan', 'catatan_tasmi', 'catatan_ujian',
 ])]
 class MutabaahBulanan extends Model
 {
@@ -41,11 +41,7 @@ class MutabaahBulanan extends Model
             'tasmi_pekan_3' => 'integer',
             'tasmi_pekan_4' => 'integer',
             'tasmi_pekan_5' => 'integer',
-            'ujian_soal_1' => 'integer',
-            'ujian_soal_2' => 'integer',
-            'ujian_soal_3' => 'integer',
-            'ujian_soal_4' => 'integer',
-            'ujian_soal_5' => 'integer',
+            'ujian_bulanan' => 'integer',
         ];
     }
 
