@@ -172,10 +172,18 @@ class DemoDataSeeder extends Seeder
 
         $createMutabaah = function (Carbon $date) use ($surahs, $allSantriIds, $allMuhafidzIds): void {
             $mulai = rand(1, 200);
-            Mutabaah::create([
-                'santri_id' => fake()->randomElement($allSantriIds),
+            $attempts = 0;
+            $tanggal = $date->toDateString();
+            $santriId = fake()->randomElement($allSantriIds);
+            do {
+                $santriId = fake()->randomElement($allSantriIds);
+                $tanggal = $date->copy()->addDays(rand(0, 2))->toDateString();
+                $exists = Mutabaah::where('santri_id', $santriId)->whereDate('tanggal', $tanggal)->exists();
+                $attempts++;
+            } while ($exists && $attempts < 10);
+            $existing = Mutabaah::where('santri_id', $santriId)->whereDate('tanggal', $tanggal)->first();
+            $payload = [
                 'muhafidz_id' => fake()->randomElement($allMuhafidzIds),
-                'tanggal' => $date->toDateString(),
                 'jenis' => fake()->randomElement([MutabaahJenis::Setoran, MutabaahJenis::Murajaah]),
                 'surah' => fake()->randomElement($surahs),
                 'ayat_mulai' => $mulai,
@@ -184,7 +192,12 @@ class DemoDataSeeder extends Seeder
                 'status' => fake()->randomElement([MutabaahStatus::Lulus, MutabaahStatus::Lulus, MutabaahStatus::Lulus, MutabaahStatus::Mengulang, MutabaahStatus::PerluMurajaah]),
                 'catatan' => fake()->optional()->sentence(),
                 'halaman' => fake()->numberBetween(1, 12),
-            ]);
+            ];
+            if ($existing) {
+                $existing->update($payload);
+            } else {
+                Mutabaah::create(array_merge(['santri_id' => $santriId, 'tanggal' => $tanggal], $payload));
+            }
         };
 
         // bulan ini 35
@@ -204,10 +217,10 @@ class DemoDataSeeder extends Seeder
         $topSantris = $santris->take(3);
         foreach ($topSantris as $s) {
             for ($i = 0; $i < 4; $i++) {
-                Mutabaah::create([
-                    'santri_id' => $s->id,
+                $tanggal = Carbon::now()->subDays($i)->toDateString();
+                $existing = Mutabaah::where('santri_id', $s->id)->whereDate('tanggal', $tanggal)->first();
+                $payload = [
                     'muhafidz_id' => $muhafidzs->random()->id,
-                    'tanggal' => Carbon::now()->subDays(rand(0, 10)),
                     'jenis' => MutabaahJenis::Setoran,
                     'surah' => fake()->randomElement($surahs),
                     'ayat_mulai' => rand(1, 100),
@@ -215,7 +228,12 @@ class DemoDataSeeder extends Seeder
                     'nilai' => fake()->numberBetween(85, 100),
                     'status' => MutabaahStatus::Lulus,
                     'halaman' => fake()->numberBetween(8, 15),
-                ]);
+                ];
+                if ($existing) {
+                    $existing->update($payload);
+                } else {
+                    Mutabaah::create(array_merge(['santri_id' => $s->id, 'tanggal' => $tanggal], $payload));
+                }
             }
         }
     }

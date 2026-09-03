@@ -60,9 +60,7 @@ class MutabaahBulananCalculator
 
     public function rataUjian(MutabaahBulanan $mb): ?float
     {
-        return $this->rataNilai([
-            $mb->ujian_soal_1, $mb->ujian_soal_2, $mb->ujian_soal_3, $mb->ujian_soal_4, $mb->ujian_soal_5,
-        ]);
+        return $mb->ujian_bulanan !== null ? (float) $mb->ujian_bulanan : null;
     }
 
     /**

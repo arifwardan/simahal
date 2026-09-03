@@ -22,6 +22,7 @@ test('progress sums ayat spans of lulus setoran mutabaah', function () {
 
     Mutabaah::factory()->create([
         'santri_id' => $santri->id,
+        'tanggal' => '2024-05-13',
         'jenis' => MutabaahJenis::Setoran,
         'status' => MutabaahStatus::Lulus,
         'ayat_mulai' => 1,
@@ -29,6 +30,7 @@ test('progress sums ayat spans of lulus setoran mutabaah', function () {
     ]);
     Mutabaah::factory()->create([
         'santri_id' => $santri->id,
+        'tanggal' => '2024-05-14',
         'jenis' => MutabaahJenis::Setoran,
         'status' => MutabaahStatus::Lulus,
         'ayat_mulai' => 8,
@@ -50,6 +52,7 @@ test('non-lulus and murajaah mutabaah are excluded', function () {
 
     Mutabaah::factory()->create([
         'santri_id' => $santri->id,
+        'tanggal' => '2024-05-13',
         'jenis' => MutabaahJenis::Setoran,
         'status' => MutabaahStatus::Mengulang,
         'ayat_mulai' => 1,
@@ -57,6 +60,7 @@ test('non-lulus and murajaah mutabaah are excluded', function () {
     ]);
     Mutabaah::factory()->create([
         'santri_id' => $santri->id,
+        'tanggal' => '2024-05-14',
         'jenis' => MutabaahJenis::Murajaah,
         'status' => MutabaahStatus::Lulus,
         'ayat_mulai' => 1,

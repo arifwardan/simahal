@@ -192,8 +192,8 @@ test('santri dashboard includes only their mutabaah status distribution', functi
     $user = User::factory()->create(['role' => UserRole::Santri]);
     $santri = Santri::factory()->create(['user_id' => $user->id]);
 
-    Mutabaah::factory()->count(2)->create(['santri_id' => $santri->id, 'status' => MutabaahStatus::Lulus]);
-    Mutabaah::factory()->count(1)->create(['santri_id' => $santri->id, 'status' => MutabaahStatus::PerluMurajaah]);
+    Mutabaah::factory()->count(2)->sequence(['tanggal' => '2024-05-13', 'santri_id' => $santri->id], ['tanggal' => '2024-05-14', 'santri_id' => $santri->id])->create(['status' => MutabaahStatus::Lulus]);
+    Mutabaah::factory()->create(['santri_id' => $santri->id, 'tanggal' => '2024-05-15', 'status' => MutabaahStatus::PerluMurajaah]);
 
     $other = Santri::factory()->create();
     Mutabaah::factory()->count(4)->create(['santri_id' => $other->id, 'status' => MutabaahStatus::Lulus]);

@@ -25,11 +25,9 @@ class MutabaahBulananFactory extends Factory
             'tasmi_pekan_3' => null,
             'tasmi_pekan_4' => null,
             'tasmi_pekan_5' => null,
-            'ujian_soal_1' => null,
-            'ujian_soal_2' => null,
-            'ujian_soal_3' => null,
-            'ujian_soal_4' => null,
-            'ujian_soal_5' => null,
+            'ujian_bulanan' => null,
+            'catatan_tasmi' => null,
+            'catatan_ujian' => null,
         ];
     }
 }

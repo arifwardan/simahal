@@ -24,7 +24,7 @@ class MutabaahFactory extends Factory
         return [
             'santri_id' => Santri::factory(),
             'muhafidz_id' => Muhafidz::factory(),
-            'tanggal' => now(),
+            'tanggal' => fake()->dateTimeBetween('-90 days', 'now')->format('Y-m-d'),
             'jenis' => MutabaahJenis::Setoran,
             'surah' => 'Al-Baqarah',
             'ayat_mulai' => $mulai,

@@ -73,11 +73,7 @@ test('rata tasmi and rata ujian ignore null values', function () {
         'tasmi_pekan_3' => 90,
         'tasmi_pekan_4' => null,
         'tasmi_pekan_5' => 100,
-        'ujian_soal_1' => 70,
-        'ujian_soal_2' => 80,
-        'ujian_soal_3' => null,
-        'ujian_soal_4' => null,
-        'ujian_soal_5' => null,
+        'ujian_bulanan' => 75,
     ]);
 
     expect($calc->rataTasmi($mb))->toBe(90.0);
