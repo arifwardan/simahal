@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { totalSepekan, gradeLabel, pekanNumberInMonth } from '@/lib/mutabaah-bulanan';
+import { gradeLabel, pekanNumberInMonth } from '@/lib/mutabaah-bulanan';
 import { index as halaqahIndex } from '@/routes/muhafidz/halaqahs';
 import { index as setoranIndex, store as setoranStore } from '@/routes/muhafidz/setoran';
 
@@ -39,14 +39,23 @@ const DAY_LABELS: Record<string, string> = {
 };
 
 const GRADE_OPTIONS = [
-  { value: '95', label: 'A (90-100)' },
-  { value: '85', label: 'B (80-89)' },
-  { value: '75', label: 'C (70-79)' },
-  { value: '65', label: 'D (60-69)' },
-  { value: '50', label: 'E (<60)' },
-];
+  { value: '95', label: 'A (90-100)', color: 'bg-emerald-500' },
+  { value: '85', label: 'B (80-89)', color: 'bg-blue-500' },
+  { value: '75', label: 'C (70-79)', color: 'bg-yellow-400' },
+  { value: '65', label: 'D (60-69)', color: 'bg-orange-500' },
+  { value: '50', label: 'E (<60)', color: 'bg-red-500' },
+] as const;
 
 function getGradeColor(value: number | null): string {
+  if (value === null) return '';
+  if (value >= 90) return 'bg-emerald-500 text-white';
+  if (value >= 80) return 'bg-blue-500 text-white';
+  if (value >= 70) return 'bg-yellow-400 text-black';
+  if (value >= 60) return 'bg-orange-500 text-white';
+  return 'bg-red-500 text-white';
+}
+
+function getGradeTextColor(value: number | null): string {
   if (value === null) return '';
   if (value >= 90) return 'text-emerald-600';
   if (value >= 80) return 'text-blue-600';
@@ -124,7 +133,7 @@ export default function SetoranIndex({
 
       <div className="grid gap-4 lg:grid-cols-5">
         {/* PANEL 1: Setoran Harian */}
-        <Card className="col-span-full lg:col-span-1">
+        <Card className="col-span-full border-[3px] border-black bg-[#FFF7E8] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] lg:col-span-1">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm">Setoran Harian</CardTitle>
           </CardHeader>
@@ -138,10 +147,13 @@ export default function SetoranIndex({
                   max={20}
                   value={harianForm[day] ?? ''}
                   onChange={(e) => handleDayChange(day, e.target.value)}
-                  className="h-8 w-20 text-center"
+                  className="h-8 w-20 cursor-pointer bg-[#FFFEF2] text-center"
                 />
                 {harianForm[day] !== null && harianForm[day] !== undefined && harianForm[day]! > 0 && (
                   <span className="text-xs text-emerald-600">✓</span>
+                )}
+                {harianForm[day] !== null && harianForm[day] !== undefined && harianForm[day]! > 0 && (
+                  <span className="text-[10px] text-muted-foreground">○</span>
                 )}
               </div>
             ))}
@@ -149,21 +161,21 @@ export default function SetoranIndex({
         </Card>
 
         {/* PANEL 2: Total Sepekan */}
-        <Card className="col-span-full lg:col-span-1">
+        <Card className="col-span-full border-[3px] border-black bg-[#FFF7E8] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] lg:col-span-1">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm">Total Sepekan</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col items-center justify-center py-6">
             <div className="text-4xl font-bold">{liveTotal}</div>
             <div className="text-sm text-muted-foreground">halaman</div>
-            <div className="mt-2 text-xs">
+            <div className={`mt-2 rounded-full border-2 border-black px-3 py-1 text-xs font-bold ${getGradeColor(liveTotal)}`}>
               {gradeLabel(liveTotal)}
             </div>
           </CardContent>
         </Card>
 
         {/* PANEL 3: Tasmi */}
-        <Card className="col-span-full lg:col-span-1">
+        <Card className="col-span-full border-[3px] border-black bg-[#FFF7E8] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] lg:col-span-1">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm">Tasmi Pekan {pekanNumber}</CardTitle>
           </CardHeader>
@@ -176,10 +188,10 @@ export default function SetoranIndex({
                 max={100}
                 value={tasmiValue}
                 onChange={(e) => setTasmiValue(e.target.value)}
-                className="h-8 w-20"
+                className="h-8 w-20 cursor-pointer bg-[#FFFEF2]"
               />
               {tasmiValue && (
-                <span className={`text-sm font-bold ${getGradeColor(parseInt(tasmiValue))}`}>
+                <span className={`rounded-full border-2 border-black px-2 py-0.5 text-sm font-bold ${getGradeColor(parseInt(tasmiValue))}`}>
                   {gradeLabel(parseInt(tasmiValue))}
                 </span>
               )}
@@ -189,7 +201,7 @@ export default function SetoranIndex({
               <Textarea
                 value={catatanTasmiValue}
                 onChange={(e) => setCatatanTasmiValue(e.target.value)}
-                className="h-20 resize-none text-sm"
+                className="h-20 cursor-pointer resize-none bg-[#FFFEF2] text-sm"
                 placeholder="Catatan optional..."
               />
             </div>
@@ -197,7 +209,7 @@ export default function SetoranIndex({
         </Card>
 
         {/* PANEL 4: Total Bulanan */}
-        <Card className="col-span-full lg:col-span-1">
+        <Card className="col-span-full border-[3px] border-black bg-[#FFF7E8] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] lg:col-span-1">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm">Total Bulanan</CardTitle>
           </CardHeader>
@@ -211,7 +223,7 @@ export default function SetoranIndex({
         </Card>
 
         {/* PANEL 5: Ujian Bulanan */}
-        <Card className="col-span-full lg:col-span-1">
+        <Card className="col-span-full border-[3px] border-black bg-[#FFF7E8] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] lg:col-span-1">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm">Ujian Bulanan</CardTitle>
           </CardHeader>
@@ -219,24 +231,30 @@ export default function SetoranIndex({
             <div className="space-y-1">
               <Label className="text-xs">Nilai Ujian</Label>
               <Select value={ujianValue} onValueChange={setUjianValue}>
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full cursor-pointer">
                   <SelectValue placeholder="Pilih nilai..." />
                 </SelectTrigger>
                 <SelectContent>
                   {GRADE_OPTIONS.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
+                    <SelectItem key={opt.value} value={opt.value} className="cursor-pointer">
+                      <span className={`inline-block h-3 w-3 rounded-full border border-black ${opt.color}`} />
                       {opt.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+              {ujianValue && (
+                <span className={`mt-1 inline-block rounded-full border-2 border-black px-2 py-0.5 text-xs font-bold ${getGradeColor(parseInt(ujianValue))}`}>
+                  {gradeLabel(parseInt(ujianValue))}
+                </span>
+              )}
             </div>
             <div className="space-y-1">
               <Label className="text-xs">Catatan Ujian</Label>
               <Textarea
                 value={catatanUjianValue}
                 onChange={(e) => setCatatanUjianValue(e.target.value)}
-                className="h-20 resize-none text-sm"
+                className="h-20 cursor-pointer resize-none bg-[#FFFEF2] text-sm"
                 placeholder="Catatan optional..."
               />
             </div>
