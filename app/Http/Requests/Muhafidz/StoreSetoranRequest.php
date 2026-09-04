@@ -67,8 +67,8 @@ class StoreSetoranRequest extends FormRequest
             'harian.sabtu' => ['nullable', 'integer', 'min:0', 'max:20'],
             'harian.ahad' => ['nullable', 'integer', 'min:0', 'max:20'],
             'harian.*' => ['nullable', 'integer', 'min:0', 'max:20'],
-            'tasmi_pekan' => ['nullable', 'integer', 'min:10', 'max:100'],
-            'ujian_bulanan' => ['nullable', 'integer', 'min:10', 'max:100'],
+            'tasmi_pekan' => ['nullable', 'integer', 'min:1', 'max:100'],
+            'ujian_bulanan' => ['nullable', 'integer', 'min:1', 'max:100'],
             'catatan_tasmi' => ['nullable', 'string', 'max:1000'],
             'catatan_ujian' => ['nullable', 'string', 'max:1000'],
         ];

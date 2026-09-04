@@ -38,12 +38,12 @@ const DAY_LABELS: Record<string, string> = {
   jumat: 'Jumat', sabtu: 'Sabtu', ahad: 'Ahad',
 };
 
-const GRADE_OPTIONS = [
-  { value: '95', label: 'A (90-100)', color: 'bg-emerald-500' },
-  { value: '85', label: 'B (80-89)', color: 'bg-blue-500' },
-  { value: '75', label: 'C (70-79)', color: 'bg-yellow-400' },
-  { value: '65', label: 'D (60-69)', color: 'bg-orange-500' },
-  { value: '50', label: 'E (<60)', color: 'bg-red-500' },
+const GRADE_LEGEND = [
+  { label: 'A', range: '90-100', color: 'bg-emerald-500' },
+  { label: 'B', range: '80-89', color: 'bg-blue-500' },
+  { label: 'C', range: '70-79', color: 'bg-yellow-400' },
+  { label: 'D', range: '60-69', color: 'bg-orange-500' },
+  { label: 'E', range: '<60', color: 'bg-red-500' },
 ] as const;
 
 function getGradeColor(value: number | null): string {
@@ -184,11 +184,17 @@ export default function SetoranIndex({
               <Label className="w-12 text-xs">Nilai</Label>
               <Input
                 type="number"
-                min={10}
+                min={1}
                 max={100}
                 value={tasmiValue}
-                onChange={(e) => setTasmiValue(e.target.value)}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  if (v === '') { setTasmiValue(''); return; }
+                  const n = Math.min(100, Math.max(1, parseInt(v) || 1));
+                  setTasmiValue(String(n));
+                }}
                 className="h-8 w-20 cursor-pointer bg-[#FFFEF2]"
+                placeholder="1-100"
               />
               {tasmiValue && (
                 <span className={`rounded-full border-2 border-black px-2 py-0.5 text-sm font-bold ${getGradeColor(parseInt(tasmiValue))}`}>
@@ -196,6 +202,13 @@ export default function SetoranIndex({
                 </span>
               )}
             </div>
+            <p className="flex flex-wrap gap-1 text-[10px] font-bold">
+              {GRADE_LEGEND.map((g) => (
+                <span key={g.label} className={`inline-flex items-center gap-1 rounded-full border border-black px-1.5 py-0.5 ${g.color} ${g.label === 'C' ? 'text-black' : 'text-white'}`}>
+                  {g.label} {g.range}
+                </span>
+              ))}
+            </p>
             <div className="space-y-1">
               <Label className="text-xs">Catatan Tasmi</Label>
               <Textarea
@@ -228,27 +241,35 @@ export default function SetoranIndex({
             <CardTitle className="text-sm">Ujian Bulanan</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="space-y-1">
-              <Label className="text-xs">Nilai Ujian</Label>
-              <Select value={ujianValue} onValueChange={setUjianValue}>
-                <SelectTrigger className="w-full cursor-pointer">
-                  <SelectValue placeholder="Pilih nilai..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {GRADE_OPTIONS.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value} className="cursor-pointer">
-                      <span className={`inline-block h-3 w-3 rounded-full border border-black ${opt.color}`} />
-                      {opt.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="flex items-center gap-2">
+              <Label className="w-12 text-xs">Nilai</Label>
+              <Input
+                type="number"
+                min={1}
+                max={100}
+                value={ujianValue}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  if (v === '') { setUjianValue(''); return; }
+                  const n = Math.min(100, Math.max(1, parseInt(v) || 1));
+                  setUjianValue(String(n));
+                }}
+                className="h-8 w-20 cursor-pointer bg-[#FFFEF2]"
+                placeholder="1-100"
+              />
               {ujianValue && (
-                <span className={`mt-1 inline-block rounded-full border-2 border-black px-2 py-0.5 text-xs font-bold ${getGradeColor(parseInt(ujianValue))}`}>
+                <span className={`rounded-full border-2 border-black px-2 py-0.5 text-sm font-bold ${getGradeColor(parseInt(ujianValue))}`}>
                   {gradeLabel(parseInt(ujianValue))}
                 </span>
               )}
             </div>
+            <p className="flex flex-wrap gap-1 text-[10px] font-bold">
+              {GRADE_LEGEND.map((g) => (
+                <span key={g.label} className={`inline-flex items-center gap-1 rounded-full border border-black px-1.5 py-0.5 ${g.color} ${g.label === 'C' ? 'text-black' : 'text-white'}`}>
+                  {g.label} {g.range}
+                </span>
+              ))}
+            </p>
             <div className="space-y-1">
               <Label className="text-xs">Catatan Ujian</Label>
               <Textarea
