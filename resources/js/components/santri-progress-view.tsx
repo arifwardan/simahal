@@ -1,5 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { formatTanggal } from '@/lib/utils';
 
 type RiwayatRow = {
     id: number;
@@ -105,7 +106,7 @@ export default function SantriProgressView({
                                         className="flex items-center justify-between gap-4 bg-[#FFF7E8] p-3 font-bold hover:bg-accent"
                                     >
                                         <p className="text-xs leading-tight">
-                                            <span className="bg-black px-1.5 py-0.5 text-[#FFF7E8]">{m.tanggal}</span>{' '}
+                                            <span className="bg-black px-1.5 py-0.5 text-[#FFF7E8]">{formatTanggal(m.tanggal)}</span>{' '}
                                             {m.jenis} · {m.surah} {m.ayat_mulai}-{m.ayat_selesai}
                                         </p>
                                         <Badge className="shrink-0 border-2 border-black bg-black text-[#FFF7E8]">{m.status}</Badge>

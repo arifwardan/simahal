@@ -6,6 +6,7 @@ import PageContainer from '@/components/page-container';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { formatTanggal } from '@/lib/utils';
 import { history } from '@/routes/muhafidz/mutabaahs';
 
 type MutabaahRow = {
@@ -49,7 +50,7 @@ export default function MuhafidzMutabaahHistory({ mutabaahs, santriOptions, filt
           {mutabaahs.data.map((m, idx) => (
             <div key={m.id} className={`relative flex flex-col overflow-hidden border-[3px] border-black p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] ${idx % 3 === 0 ? 'bg-[#FFF7E8]' : idx % 3 === 1 ? 'bg-[#FFD600]/60' : 'bg-[#5CE1E6]/40'}`}>
               <div className="flex items-center justify-between gap-2">
-                <span className="inline-flex items-center gap-1 border-2 border-black bg-black px-2 py-1 text-xs font-black text-white"><CalendarDays className="h-3 w-3" /> {m.tanggal}</span>
+                <span className="inline-flex items-center gap-1 border-2 border-black bg-black px-2 py-1 text-xs font-black text-white"><CalendarDays className="h-3 w-3" /> {formatTanggal(m.tanggal)}</span>
                 <Badge className={`border-2 border-black font-black ${statusColor[m.status.toLowerCase()] ?? 'bg-zinc-800 text-white'}`}>{m.status}</Badge>
               </div>
               <p className="mt-3 font-head text-sm font-black uppercase">{m.santri.nama}</p>

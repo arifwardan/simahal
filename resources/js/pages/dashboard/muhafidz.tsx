@@ -1,5 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import { Badge } from '@/components/ui/badge';
+import { formatTanggal } from '@/lib/utils';
 import { ClipboardCheck, FolderGit2, GraduationCap, Trophy } from 'lucide-react';
 import MutabaahStatusDonut from '@/components/dashboard/charts/mutabaah-status-donut';
 import DashboardHero from '@/components/dashboard/dashboard-hero';
@@ -101,7 +102,7 @@ export default function MuhafidzDashboard({
 
             {/* Hari ini + Perhatian */}
             <section>
-                <SectionHeading title="Hari Ini" description={`Progres mutabaah ${hariIni.tanggal} — ${hariIni.sudah}/${hariIni.total} santri`} />
+                <SectionHeading title="Hari Ini" description={`Progres mutabaah ${formatTanggal(hariIni.tanggal)} — ${hariIni.sudah}/${hariIni.total} santri`} />
                 <div className="mt-4 grid gap-4 lg:grid-cols-3">
                     <Card className="flex flex-col">
                         <CardHeader className="bg-primary">
@@ -286,7 +287,7 @@ export default function MuhafidzDashboard({
                             {recentMutabaahs.map((m) => (
                                 <li key={m.id} className="flex items-center justify-between gap-4 bg-[#FFF7E8] p-4 font-bold hover:bg-accent">
                                     <p className="text-sm">
-                                        <span className="bg-black px-1.5 py-0.5 text-[#FFF7E8]">{m.santri?.nama ?? '-'}</span> · {m.tanggal} · {m.jenis} · {m.surah}{' '}
+                                        <span className="bg-black px-1.5 py-0.5 text-[#FFF7E8]">{m.santri?.nama ?? '-'}</span> · {formatTanggal(m.tanggal)} · {m.jenis} · {m.surah}{' '}
                                         {m.ayat_mulai}-{m.ayat_selesai}
                                     </p>
                                     <Badge>{m.status}</Badge>

@@ -6,6 +6,7 @@ import {
     GraduationCap,
     HeartHandshake,
 } from 'lucide-react';
+import { formatTanggal } from '@/lib/utils';
 import MutabaahStatusDonut from '@/components/dashboard/charts/mutabaah-status-donut';
 import SantriJenisDonut from '@/components/dashboard/charts/santri-jenis-donut';
 import DashboardHero from '@/components/dashboard/dashboard-hero';
@@ -291,7 +292,7 @@ export default function AdminDashboard({
                                 >
                                     <p className="text-sm">
                                         <span className="bg-black px-1.5 py-0.5 text-[#FFF7E8]">{m.santri?.nama ?? '-'}</span>{' '}
-                                        · {m.tanggal} · {m.jenis} · {m.surah} {m.ayat_mulai}-{m.ayat_selesai}
+                                        · {formatTanggal(m.tanggal)} · {m.jenis} · {m.surah} {m.ayat_mulai}-{m.ayat_selesai}
                                     </p>
                                     <Badge>{m.status}</Badge>
                                 </li>
