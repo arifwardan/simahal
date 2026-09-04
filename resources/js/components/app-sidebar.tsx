@@ -52,7 +52,15 @@ const adminNavItems: NavItem[] = [
 ];
 
 const muhafidzNavItems: NavItem[] = [
-    { title: 'Halaqah Saya', href: muhafidzHalaqahsIndex(), icon: Library },
+    {
+        title: 'Halaqah Saya',
+        href: muhafidzHalaqahsIndex(),
+        icon: Library,
+        items: [
+            { title: 'Daftar Halaqah', href: muhafidzHalaqahsIndex(), icon: Library },
+            { title: 'Input Setoran', href: muhafidzHalaqahsIndex(), icon: CalendarCheck },
+        ],
+    },
     { title: 'Riwayat Mutabaah', href: muhafidzMutabaahsHistory(), icon: History },
     { title: 'Target Hafalan', href: muhafidzTargetsIndex(), icon: Target },
 ];
