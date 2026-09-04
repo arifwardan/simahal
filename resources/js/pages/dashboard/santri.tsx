@@ -38,33 +38,23 @@ type PageProps = {
     mutabaahByStatus: ChartSlice[];
 };
 
-export default function SantriDashboard({
-    progress,
-    riwayat,
-    halaqahs,
-    mutabaahByStatus,
-}: PageProps) {
+export default function SantriDashboard({ progress, riwayat, halaqahs, mutabaahByStatus }: PageProps) {
     return (
-        <PageContainer className="space-y-8">
+        <PageContainer className="space-y-6">
             <Head title="Dashboard Santri" />
-            <DashboardHero subtitle="Progres hafalan Anda — semangat mengejar target!" />
-            <SantriProgressView
-                progress={progress}
-                riwayat={riwayat}
-                halaqahs={halaqahs}
-            />
+            <DashboardHero subtitle="Progres hafalan Anda — semangat mengejar target juz!" />
+            <div className="grid gap-4 sm:grid-cols-3">
+                <Card className="border-[3px] border-black bg-[#FFD600] shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"><CardContent className="bg-[#FFF7E8] p-4 text-center"><p className="text-xs font-black uppercase">Progress</p><p className="font-head text-3xl font-black">{progress.progress}/{progress.target}</p><p className="text-xs font-bold">juz · {progress.percent}%</p></CardContent></Card>
+                <Card className="border-[3px] border-black bg-[#5CE1E6] shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"><CardContent className="bg-[#FFF7E8] p-4 text-center"><p className="text-xs font-black uppercase">Halaqah</p><p className="font-head text-3xl font-black">{halaqahs.length}</p><p className="text-xs font-bold">terdaftar</p></CardContent></Card>
+                <Card className="border-[3px] border-black bg-[#FF90E8] shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"><CardContent className="bg-[#FFF7E8] p-4 text-center"><p className="text-xs font-black uppercase">Riwayat</p><p className="font-head text-3xl font-black">{riwayat.length}</p><p className="text-xs font-bold">mutabaah</p></CardContent></Card>
+            </div>
+            <SantriProgressView progress={progress} riwayat={riwayat} halaqahs={halaqahs} />
             <section>
-                <SectionHeading
-                    title="Distribusi Mutabaah"
-                    description="Status setoran mutabaah Anda"
-                />
+                <SectionHeading title="Distribusi Mutabaah" description="Status setoran mutabaah Anda" />
                 <div className="mt-4 grid gap-4 lg:grid-cols-2">
-                    <MutabaahStatusDonut data={mutabaahByStatus} />
-                    <Card className="flex flex-col justify-center border-dashed bg-accent p-6">
-                        <p className="font-head text-lg font-black uppercase">Tips Murajaah</p>
-                        <p className="mt-2 text-sm font-bold leading-relaxed">
-                            Konsisten 1 halaman per hari lebih baik daripada 10 halaman sekaligus lalu lupa. — Tetap semangat!
-                        </p>
+                    <div className="border-[3px] border-black bg-white p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"><MutabaahStatusDonut data={mutabaahByStatus} /></div>
+                    <Card className="flex flex-col justify-center border-[3px] border-black bg-[#FFD600] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                        <CardContent className="bg-[#FFF7E8] p-6"><p className="font-head text-lg font-black uppercase">Tips Murajaah ★</p><p className="mt-2 border-l-[4px] border-black bg-white p-3 text-sm font-bold leading-relaxed">Konsisten 1 halaman/hari &amp; 1 juz target — istiqomah lebih baik. Tetap semangat!</p><p className="mt-3 inline-flex border-2 border-black bg-black px-2 py-1 text-xs font-black text-white">30 juz max · pelan-pelan</p></CardContent>
                     </Card>
                 </div>
             </section>

@@ -39,32 +39,31 @@ export default function SantriProgressView({
                 </div>
             )}
 
-            <Card className="mt-4 overflow-hidden">
-                <CardHeader className="bg-primary">
-                    <CardTitle className="font-head font-black uppercase">
-                        Target Hafalan {progress.periode ? `· Periode ${progress.periode}` : ''}
+            <Card className="mt-4 overflow-hidden border-[3px] border-black bg-[#FFF7E8] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <CardHeader className="bg-[#FFD600] py-3">
+                    <CardTitle className="flex items-center gap-2 font-head font-black uppercase">
+                        <span className="flex h-6 w-6 items-center justify-center border-2 border-black bg-black text-xs text-white">★</span>
+                        Target Hafalan {progress.periode ? `· Periode ${progress.periode}` : ''} · Juz
                     </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4 pt-6">
+                <CardContent className="space-y-3 pt-4">
                     <div className="flex flex-wrap items-center justify-between gap-3">
-                        <p className="border-2 border-black bg-black px-3 py-1 text-sm font-black text-[#FFF7E8]">
-                            {progress.progress}/{progress.target} ayat · {progress.percent}%
+                        <p className="border-[3px] border-black bg-black px-3 py-1 text-sm font-black text-[#FFF7E8] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                            {progress.progress}/{progress.target} juz · {progress.percent}%
                         </p>
                         {progress.status && (
-                            <Badge className="border-2 border-black bg-[#FFF7E8] text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                            <Badge className="border-[3px] border-black bg-[#5CE1E6] font-black text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                                 {progress.status_label}
                             </Badge>
                         )}
                     </div>
-                    <div className="h-4 w-full border-[3px] border-black bg-[#FFF7E8] p-1">
-                        <div
-                            className="h-full bg-black transition-all"
-                            style={{ width: `${Math.min(100, progress.percent)}%` }}
-                        />
+                    <div className="h-5 w-full border-[3px] border-black bg-white p-1">
+                        <div className="h-full bg-black transition-all" style={{ width: `${Math.min(100, progress.percent)}%` }} />
                     </div>
-                    <p className="text-xs font-bold">
-                        {progress.percent >= 100 ? 'Alhamdulillah target tercapai!' : `${100 - progress.percent}% lagi menuju target`}
-                    </p>
+                    <div className="flex items-center justify-between">
+                        <p className="text-xs font-black uppercase">{progress.percent >= 100 ? 'Alhamdulillah tercapai!' : `${100 - progress.percent}% lagi`}</p>
+                        <span className="border-2 border-black bg-[#FF90E8] px-2 py-1 text-xs font-black">{progress.target} juz max</span>
+                    </div>
                 </CardContent>
             </Card>
 
