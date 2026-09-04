@@ -1,477 +1,152 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import {
-    BarChart3,
-    Bell,
-    BookOpen,
-    GraduationCap,
-    HeartHandshake,
-    ShieldCheck,
-    Target,
-    User,
-} from 'lucide-react';
-
+import { BarChart3, Bell, BookOpen, Check, Crown, GraduationCap, HeartHandshake, ShieldCheck, Sparkles, Target, User, Zap } from 'lucide-react';
 import AppLogoIcon from '@/components/app-logo-icon';
 import { dashboard, login, register } from '@/routes';
-
-type Feature = {
-    icon: React.ReactNode;
-    title: string;
-    description: string;
-};
-
+type Feature = { icon: React.ReactNode; title: string; description: string };
 const roles = [
-    {
-        icon: <ShieldCheck className="size-5" />,
-        name: 'Admin',
-        description: 'Mengelola ekosistem halaqah dan seluruh data akademik.',
-    },
-    {
-        icon: <GraduationCap className="size-5" />,
-        name: 'Muhafidz / Musyrif',
-        description: 'Mencatat mutabaah dan membimbing santri secara langsung.',
-    },
-    {
-        icon: <User className="size-5" />,
-        name: 'Santri',
-        description: 'Memahami perkembangan hafalan dan target pribadi.',
-    },
-    {
-        icon: <HeartHandshake className="size-5" />,
-        name: 'Orang Tua',
-        description: 'Memantau perkembangan hafalan anak dengan tenang.',
-    },
+  { icon: <ShieldCheck className="size-5" />, name: 'Admin', description: 'Mengelola ekosistem halaqah dan seluruh data akademik.', color: 'bg-[#FFD600]' },
+  { icon: <GraduationCap className="size-5" />, name: 'Muhafidz', description: 'Mencatat mutabaah dan membimbing santri langsung.', color: 'bg-[#5CE1E6]' },
+  { icon: <User className="size-5" />, name: 'Santri', description: 'Memahami perkembangan hafalan dan target pribadi.', color: 'bg-[#FF90E8]' },
+  { icon: <HeartHandshake className="size-5" />, name: 'Orang Tua', description: 'Memantau hafalan anak dengan tenang & aman.', color: 'bg-[#22c55e]' },
 ];
-
 const journey = [
-    { label: 'Target', description: 'Tujuan hafalan' },
-    { label: 'Hafalan', description: 'Perjalanan ziyadah' },
-    { label: 'Mutabaah', description: 'Setoran harian' },
-    { label: 'Evaluasi', description: 'Nilai & status' },
-    { label: 'Progress', description: 'Perkembangan' },
-    { label: 'Insight', description: 'Pemahaman' },
+  { label: 'Target', description: 'Tujuan hafalan' },
+  { label: 'Hafalan', description: 'Ziyadah' },
+  { label: 'Mutabaah', description: 'Setoran harian' },
+  { label: 'Evaluasi', description: 'Nilai & status' },
+  { label: 'Progress', description: 'Perkembangan' },
+  { label: 'Insight', description: 'Pemahaman' },
 ];
-
 const features: Feature[] = [
-    {
-        icon: <BookOpen className="size-5" />,
-        title: 'Mutabaah Terstruktur',
-        description: 'Catat ziyadah dan murajaah dengan alur yang cepat dan konsisten.',
-    },
-    {
-        icon: <Target className="size-5" />,
-        title: 'Target Hafalan',
-        description: 'Tetapkan target harian, mingguan, bulanan, hingga periode akademik.',
-    },
-    {
-        icon: <BarChart3 className="size-5" />,
-        title: 'Progress Real-Time',
-        description: 'Perkembangan dihitung dari data mutabaah yang nyata, bukan asumsi.',
-    },
-    {
-        icon: <HeartHandshake className="size-5" />,
-        title: 'Portal Orang Tua',
-        description: 'Orang tua memantau perkembangan anak secara aman dan terarah.',
-    },
-    {
-        icon: <ShieldCheck className="size-5" />,
-        title: 'Evaluasi Bermakna',
-        description: 'Nilai, status, dan catatan muhafidz tersimpan dalam satu riwayat.',
-    },
-    {
-        icon: <Bell className="size-5" />,
-        title: 'Notifikasi Cerdas',
-        description: 'Kabar penting sampai kepada orang tua pada waktu yang tepat.',
-    },
+  { icon: <BookOpen className="size-5" />, title: 'Mutabaah Terstruktur', description: 'Catat ziyadah & murajaah cepat konsisten.' },
+  { icon: <Target className="size-5" />, title: 'Target Hafalan', description: 'Target harian, mingguan, bulanan hingga juz (max 30).' },
+  { icon: <BarChart3 className="size-5" />, title: 'Progress Real-Time', description: 'Hitung otomatis dari data nyata, bukan asumsi.' },
+  { icon: <HeartHandshake className="size-5" />, title: 'Portal Orang Tua', description: 'Pantau anak aman & terarah.' },
+  { icon: <ShieldCheck className="size-5" />, title: 'Evaluasi Bermakna', description: 'Nilai 1-100 flag A-E + catatan.' },
+  { icon: <Bell className="size-5" />, title: 'Notifikasi Cerdas', description: 'Kabar penting tepat waktu.' },
 ];
-
-const statuses = [
-    { label: 'PASSED', className: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300' },
-    { label: 'REVISION', className: 'bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300' },
-    { label: 'REPEAT', className: 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-300' },
+const pricing = [
+  { name: 'Gratis', price: 'Rp 0', period: '/selamanya', desc: 'Cocok untuk halaqah rintisan', features: ['1 Halaqah', '30 Santri', 'Mutabaah harian', 'Riwayat basic'], cta: 'Mulai Gratis', highlight: false, color: 'bg-white' },
+  { name: 'Pondok', price: 'Rp 199k', period: '/bulan', desc: 'Paling populer untuk pondok', features: ['Halaqah unlimited', 'Santri unlimited', 'Input Setoran 5 panel', 'Portal Orang Tua', 'Target Juz 30', 'Notifikasi WA'], cta: 'Pilih Pondok', highlight: true, color: 'bg-[#FFD600]' },
+  { name: 'Yayasan', price: 'Custom', period: '', desc: 'Untuk jaringan & white-label', features: ['Semua di Pondok', 'Multi-cabang', 'API & Export', 'Support prioritas', 'Onboarding'], cta: 'Hubungi Kami', highlight: false, color: 'bg-[#5CE1E6]' },
 ];
-
 export default function Welcome() {
-    const { auth } = usePage().props;
-
-    return (
-        <>
-            <Head title="Sistem Manajemen Halaqah Al-Qur'an" />
-
-            <div className="min-h-screen bg-background text-foreground antialiased">
-                {/* Navigation */}
-                <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
-                    <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-                        <Link href="/" className="flex items-center gap-2.5">
-                            <span className="flex size-9 items-center justify-center rounded-lg bg-emerald-600 dark:bg-emerald-500">
-                                <AppLogoIcon className="size-5 fill-white" />
-                            </span>
-                            <span className="text-lg font-semibold tracking-tight">SIMAHAL</span>
-                        </Link>
-
-                        <div className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
-                            <a href="#tentang" className="transition hover:text-foreground">
-                                Ekosistem
-                            </a>
-                            <a href="#alur" className="transition hover:text-foreground">
-                                Alur
-                            </a>
-                            <a href="#fitur" className="transition hover:text-foreground">
-                                Fitur
-                            </a>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                            {auth.user ? (
-                                <Link
-                                    href={dashboard()}
-                                    className="inline-flex h-9 items-center rounded-lg bg-emerald-600 px-4 text-sm font-medium text-[#FFF7E8] transition hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600"
-                                >
-                                    Dashboard
-                                </Link>
-                            ) : (
-                                <>
-                                    <Link
-                                        href={login()}
-                                        className="inline-flex h-9 items-center rounded-lg px-4 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
-                                    >
-                                        Masuk
-                                    </Link>
-                                    <Link
-                                        href={register()}
-                                        className="inline-flex h-9 items-center rounded-lg bg-emerald-600 px-4 text-sm font-medium text-[#FFF7E8] transition hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600"
-                                    >
-                                        Daftar
-                                    </Link>
-                                </>
-                            )}
-                        </div>
-                    </nav>
-                </header>
-
-                {/* Hero */}
-                <section className="relative overflow-hidden">
-                    <div className="pointer-events-none absolute inset-0">
-                        <div className="absolute -top-40 right-0 size-[36rem] rounded-full bg-emerald-100/60 blur-3xl dark:bg-emerald-500/10" />
-                        <div className="absolute top-1/3 -left-40 size-[28rem] rounded-full bg-muted/70 blur-3xl" />
-                    </div>
-
-                    <div className="relative mx-auto max-w-6xl px-6 py-20 md:py-28">
-                        <div className="grid items-center gap-14 lg:grid-cols-2">
-                            <div>
-                                <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-xs font-medium text-muted-foreground">
-                                    <span className="size-1.5 rounded-full bg-emerald-500" />
-                                    PondokIT · Halaqah Al-Qur'an
-                                </div>
-                                <h1 className="text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
-                                    Menjaga perjalanan hafalan,{' '}
-                                    <span className="text-emerald-700 dark:text-emerald-400">terstruktur</span> dan{' '}
-                                    <span className="text-emerald-700 dark:text-emerald-400">bermakna</span>.
-                                </h1>
-                                <p className="mt-6 max-w-lg text-base leading-relaxed text-muted-foreground">
-                                    SIMAHAL menghubungkan Admin, Muhafidz, Santri, dan Orang Tua dalam
-                                    satu ekosistem digital — dari pencatatan mutabaah hingga
-                                    pemantauan perkembangan hafalan.
-                                </p>
-                                <div className="mt-8 flex flex-wrap items-center gap-3">
-                                    {auth.user ? (
-                                        <Link
-                                            href={dashboard()}
-                                            className="inline-flex h-11 items-center rounded-xl bg-emerald-600 px-6 text-sm font-medium text-[#FFF7E8] shadow-sm transition hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600"
-                                        >
-                                            Buka Dashboard
-                                        </Link>
-                                    ) : (
-                                        <>
-                                            <Link
-                                                href={register()}
-                                                className="inline-flex h-11 items-center rounded-xl bg-emerald-600 px-6 text-sm font-medium text-[#FFF7E8] shadow-sm transition hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600"
-                                            >
-                                                Mulai Sekarang
-                                            </Link>
-                                            <Link
-                                                href={login()}
-                                                className="inline-flex h-11 items-center rounded-xl border border-border bg-card/60 px-6 text-sm font-medium text-foreground transition hover:border-foreground/20 hover:bg-card"
-                                            >
-                                                Masuk
-                                            </Link>
-                                        </>
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Hero visual */}
-                            <div className="relative mx-auto w-full max-w-md">
-                                <div className="rounded-2xl border border-border bg-card p-6 shadow-xl shadow-emerald-600/10 dark:shadow-emerald-500/10">
-                                    <div className="flex items-center justify-between">
-                                        <p className="text-sm font-medium text-muted-foreground">
-                                            Mutabaah Terbaru
-                                        </p>
-                                        <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">
-                                            Hari Ini
-                                        </span>
-                                    </div>
-
-                                    <div className="mt-6 flex items-center gap-4">
-                                        <div className="flex size-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">
-                                            <BookOpen className="size-6" />
-                                        </div>
-                                        <div>
-                                            <p className="font-medium">Ahmad Fauzan</p>
-                                            <p className="text-sm text-muted-foreground">
-                                                Al-Baqarah · Ayat 1–10
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="mt-6 grid grid-cols-2 gap-3">
-                                        <div className="rounded-xl border border-border bg-muted/60 p-3">
-                                            <p className="text-xs text-muted-foreground">Tipe</p>
-                                            <p className="mt-1 text-sm font-medium">Ziyadah</p>
-                                        </div>
-                                        <div className="rounded-xl border border-border bg-muted/60 p-3">
-                                            <p className="text-xs text-muted-foreground">Nilai</p>
-                                            <p className="mt-1 text-sm font-medium text-emerald-700 dark:text-emerald-400">
-                                                90
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="mt-4 flex items-center justify-between rounded-xl border border-emerald-200 bg-emerald-50 p-3 dark:border-emerald-500/20 dark:bg-emerald-500/10">
-                                        <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
-                                            Status
-                                        </span>
-                                        <span className="rounded-full bg-emerald-600 px-3 py-1 text-xs font-medium text-[#FFF7E8] dark:bg-emerald-500">
-                                            PASSED
-                                        </span>
-                                    </div>
-
-                                    <div className="mt-6">
-                                        <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                            <span>Target 20 Juz</span>
-                                            <span className="font-medium text-foreground/70">16 Juz · 80%</span>
-                                        </div>
-                                        <div className="mt-2 h-2 overflow-hidden rounded-full bg-muted">
-                                            <div className="h-full w-[80%] rounded-full bg-emerald-500" />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="absolute -right-4 -bottom-6 hidden rounded-2xl border border-border bg-card p-4 shadow-lg shadow-emerald-600/10 dark:shadow-emerald-500/10 sm:block">
-                                    <p className="text-xs text-muted-foreground">Juz 16</p>
-                                    <p className="mt-1 text-2xl font-semibold text-emerald-700 dark:text-emerald-400">
-                                        Al-Kahfi
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Roles */}
-                <section id="tentang" className="mx-auto max-w-6xl px-6 py-20">
-                    <div className="mx-auto max-w-2xl text-center">
-                        <p className="text-sm font-medium tracking-wide text-emerald-700 uppercase dark:text-emerald-400">
-                            Satu Ekosistem
-                        </p>
-                        <h2 className="mt-3 text-3xl font-semibold tracking-tight">
-                            Terhubung untuk pembinaan hafalan
-                        </h2>
-                        <p className="mt-4 text-muted-foreground">
-                            Setiap pihak memiliki peran yang jelas dalam perjalanan hafalan santri.
-                        </p>
-                    </div>
-
-                    <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                        {roles.map((role) => (
-                            <div
-                                key={role.name}
-                                className="group rounded-2xl border border-border bg-card p-6 transition hover:border-emerald-300 hover:shadow-lg hover:shadow-emerald-600/10 dark:hover:border-emerald-500/40"
-                            >
-                                <div className="flex size-11 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">
-                                    {role.icon}
-                                </div>
-                                <h3 className="mt-4 font-medium">{role.name}</h3>
-                                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                                    {role.description}
-                                </p>
-                            </div>
-                        ))}
-                    </div>
-                </section>
-
-                {/* Journey */}
-                <section id="alur" className="border-y border-border bg-muted/40">
-                    <div className="mx-auto max-w-6xl px-6 py-20">
-                        <div className="mx-auto max-w-2xl text-center">
-                            <p className="text-sm font-medium tracking-wide text-emerald-700 uppercase dark:text-emerald-400">
-                                Alur Perjalanan
-                            </p>
-                            <h2 className="mt-3 text-3xl font-semibold tracking-tight">
-                                Dari target menuju insight
-                            </h2>
-                            <p className="mt-4 text-muted-foreground">
-                                Data mutabaah menjadi dasar dari setiap keputusan pembinaan.
-                            </p>
-                        </div>
-
-                        <div className="mt-12 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
-                            {journey.map((step, index) => (
-                                <div key={step.label} className="relative">
-                                    <div className="rounded-xl border border-border bg-card p-4 text-center shadow-sm">
-                                        <p className="text-xs font-medium tracking-wide text-emerald-600 dark:text-emerald-400">
-                                            0{index + 1}
-                                        </p>
-                                        <p className="mt-2 font-medium">{step.label}</p>
-                                        <p className="mt-1 text-xs text-muted-foreground">
-                                            {step.description}
-                                        </p>
-                                    </div>
-                                    {index < journey.length - 1 && (
-                                        <div className="absolute top-1/2 -right-2.5 z-10 hidden text-emerald-500/60 lg:block">
-                                            →
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-
-                {/* Features */}
-                <section id="fitur" className="mx-auto max-w-6xl px-6 py-20">
-                    <div className="mx-auto max-w-2xl text-center">
-                        <p className="text-sm font-medium tracking-wide text-emerald-700 uppercase dark:text-emerald-400">
-                            Fitur Inti
-                        </p>
-                        <h2 className="mt-3 text-3xl font-semibold tracking-tight">
-                            Sederhana namun bermakna
-                        </h2>
-                        <p className="mt-4 text-muted-foreground">
-                            Setiap fitur dirancang dengan satu tujuan: membantu muhafidz membimbing
-                            santri dengan lebih baik.
-                        </p>
-                    </div>
-
-                    <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {features.map((feature) => (
-                            <div
-                                key={feature.title}
-                                className="rounded-2xl border border-border bg-card p-6 transition hover:border-emerald-300 hover:shadow-lg hover:shadow-emerald-600/10 dark:hover:border-emerald-500/40"
-                            >
-                                <div className="flex size-11 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">
-                                    {feature.icon}
-                                </div>
-                                <h3 className="mt-4 font-medium">{feature.title}</h3>
-                                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                                    {feature.description}
-                                </p>
-                            </div>
-                        ))}
-                    </div>
-                </section>
-
-                {/* Status */}
-                <section className="border-y border-border bg-muted/40">
-                    <div className="mx-auto max-w-6xl px-6 py-20">
-                        <div className="grid items-center gap-12 lg:grid-cols-2">
-                            <div>
-                                <p className="text-sm font-medium tracking-wide text-emerald-700 uppercase dark:text-emerald-400">
-                                    Evaluasi yang Jelas
-                                </p>
-                                <h2 className="mt-3 text-3xl font-semibold tracking-tight">
-                                    Status mutabaah yang mudah dibaca
-                                </h2>
-                                <p className="mt-4 text-muted-foreground">
-                                    Setiap setoran memiliki status yang jelas — tidak hanya
-                                    bergantung pada warna, tetapi juga simbol dan makna.
-                                </p>
-                            </div>
-
-                            <div className="space-y-3">
-                                {statuses.map((status) => (
-                                    <div
-                                        key={status.label}
-                                        className="flex items-center justify-between rounded-xl border border-border bg-card p-4"
-                                    >
-                                        <span className="text-sm text-muted-foreground">
-                                            {status.label === 'PASSED'
-                                                ? 'Lancar dan melewati evaluasi'
-                                                : status.label === 'REVISION'
-                                                  ? 'Perlu perbaikan kecil'
-                                                  : 'Perlu diulang kembali'}
-                                        </span>
-                                        <span
-                                            className={`rounded-full px-3 py-1 text-xs font-medium ${status.className}`}
-                                        >
-                                            {status.label}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* CTA */}
-                <section className="mx-auto max-w-6xl px-6 py-20">
-                    <div className="relative overflow-hidden rounded-3xl bg-emerald-700 px-8 py-16 text-center md:py-20 dark:bg-emerald-600">
-                        <div className="pointer-events-none absolute inset-0">
-                            <div className="absolute -top-20 left-1/4 size-72 rounded-full bg-[#FFF7E8]/5" />
-                            <div className="absolute -bottom-24 right-1/4 size-80 rounded-full bg-[#FFF7E8]/5" />
-                        </div>
-                        <div className="relative">
-                            <h2 className="mx-auto max-w-2xl text-3xl font-semibold tracking-tight text-[#FFF7E8] md:text-4xl">
-                                Jadikan perjalanan hafalan lebih terstruktur dan bermakna
-                            </h2>
-                            <p className="mx-auto mt-4 max-w-lg text-[#FFF7E8]/70">
-                                Mulai kelola halaqah, catat mutabaah, dan pantau perkembangan hafalan
-                                dalam satu ekosistem digital.
-                            </p>
-                            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-                                {auth.user ? (
-                                    <Link
-                                        href={dashboard()}
-                                        className="inline-flex h-11 items-center rounded-xl bg-[#FFF7E8] px-6 text-sm font-medium text-emerald-700 transition hover:bg-emerald-50"
-                                    >
-                                        Buka Dashboard
-                                    </Link>
-                                ) : (
-                                    <>
-                                        <Link
-                                            href={register()}
-                                            className="inline-flex h-11 items-center rounded-xl bg-[#FFF7E8] px-6 text-sm font-medium text-emerald-700 transition hover:bg-emerald-50"
-                                        >
-                                            Daftar Sekarang
-                                        </Link>
-                                        <Link
-                                            href={login()}
-                                            className="inline-flex h-11 items-center rounded-xl border border-[#FFF7E8]/30 px-6 text-sm font-medium text-[#FFF7E8] transition hover:border-[#FFF7E8]/50 hover:bg-[#FFF7E8]/10"
-                                        >
-                                            Masuk
-                                        </Link>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Footer */}
-                <footer className="border-t border-border">
-                    <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 py-10 md:flex-row">
-                        <div className="flex items-center gap-2.5">
-                            <span className="flex size-8 items-center justify-center rounded-lg bg-emerald-600 dark:bg-emerald-500">
-                                <AppLogoIcon className="size-4 fill-white" />
-                            </span>
-                            <span className="text-sm font-semibold">SIMAHAL</span>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                            © {new Date().getFullYear()} PondokIT. Sistem Manajemen Halaqah
-                            Al-Qur'an.
-                        </p>
-                    </div>
-                </footer>
+  const { auth } = usePage().props;
+  return (
+    <>
+      <Head title="SIMAHAL — Retro Halaqah" />
+      <div className="min-h-screen bg-[#FFF7E8] text-black antialiased selection:bg-black selection:text-[#FFF7E8]">
+        <header className="sticky top-0 z-40 border-b-[3px] border-black bg-[#FFF7E8]">
+          <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
+            <Link href="/" className="flex items-center gap-2">
+              <span className="flex size-9 items-center justify-center border-[3px] border-black bg-black text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"><AppLogoIcon className="size-5 fill-white" /></span>
+              <span className="font-head text-lg font-black uppercase tracking-tight">SIMAHAL</span>
+              <span className="hidden rounded-full border-2 border-black bg-[#FFD600] px-2 py-0.5 text-[10px] font-black uppercase sm:inline">Retro</span>
+            </Link>
+            <div className="hidden items-center gap-1 text-xs font-black uppercase md:flex">
+              <a href="#tentang" className="rounded-none border-2 border-transparent px-3 py-1 hover:border-black hover:bg-black hover:text-white">Ekosistem</a>
+              <a href="#alur" className="rounded-none border-2 border-transparent px-3 py-1 hover:border-black hover:bg-black hover:text-white">Alur</a>
+              <a href="#fitur" className="rounded-none border-2 border-transparent px-3 py-1 hover:border-black hover:bg-black hover:text-white">Fitur</a>
+              <a href="#pricing" className="rounded-none border-2 border-black bg-[#FFD600] px-3 py-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">Pricing</a>
             </div>
-        </>
-    );
+            <div className="flex items-center gap-2">
+              {auth.user ? <Link href={dashboard()} className="inline-flex h-9 cursor-pointer items-center border-[3px] border-black bg-black px-4 text-xs font-black uppercase text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">Dashboard</Link> : <><Link href={login()} className="hidden h-9 cursor-pointer items-center border-[3px] border-black bg-white px-4 text-xs font-black uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] sm:inline-flex">Masuk</Link><Link href={register()} className="inline-flex h-9 cursor-pointer items-center border-[3px] border-black bg-[#FF3B30] px-4 text-xs font-black uppercase text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px]">Daftar</Link></>}
+            </div>
+          </nav>
+        </header>
+
+        <section className="relative overflow-hidden border-b-[3px] border-black">
+          <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_12px,rgba(0,0,0,0.03)_12px,rgba(0,0,0,0.03)_13px)]" />
+          <div className="relative mx-auto max-w-6xl px-4 py-12 md:py-16">
+            <div className="grid items-center gap-8 lg:grid-cols-2">
+              <div>
+                <div className="inline-flex items-center gap-2 border-[3px] border-black bg-black px-3 py-1 text-xs font-black uppercase text-[#FFF7E8] shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"><span className="h-2 w-2 rounded-full bg-[#FFD600] animate-pulse" /> PondokIT · Retro Halaqah</div>
+                <h1 className="mt-4 font-head text-4xl font-black uppercase leading-[0.9] tracking-tight md:text-5xl">Menjaga hafalan, <span className="inline-block rotate-1 border-[3px] border-black bg-[#FFD600] px-2 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">terstruktur</span> & <span className="inline-block -rotate-1 border-[3px] border-black bg-[#5CE1E6] px-2 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">bermakna</span>.</h1>
+                <p className="mt-4 max-w-lg border-l-[4px] border-black bg-white p-3 text-sm font-bold leading-relaxed">SIMAHAL menghubungkan Admin, Muhafidz, Santri, Orang Tua — mutabaah, target juz (1-30), nilai 1-100 flag A-E dalam tema brutal warm.</p>
+                <div className="mt-6 flex flex-wrap gap-3">
+                  {auth.user ? <Link href={dashboard()} className="inline-flex h-11 cursor-pointer items-center border-[3px] border-black bg-black px-6 text-sm font-black uppercase text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">Buka Dashboard →</Link> : <><Link href={register()} className="inline-flex h-11 cursor-pointer items-center border-[3px] border-black bg-[#FF3B30] px-6 text-sm font-black uppercase text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">Mulai Sekarang →</Link><Link href={login()} className="inline-flex h-11 cursor-pointer items-center border-[3px] border-black bg-white px-6 text-sm font-black uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">Masuk</Link></>}
+                </div>
+                <div className="mt-6 flex items-center gap-2 text-xs font-black uppercase"><span className="border-2 border-black bg-white px-2 py-1">1-30 Juz</span><span className="border-2 border-black bg-[#FFD600] px-2 py-1">1-100 Nilai</span><span className="border-2 border-black bg-[#5CE1E6] px-2 py-1">A-E Flag</span></div>
+              </div>
+              <div className="relative mx-auto w-full max-w-md">
+                <div className="rotate-1 border-[3px] border-black bg-white p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+                  <div className="flex items-center justify-between border-b-[3px] border-black pb-3"><p className="font-head text-xs font-black uppercase">Mutabaah Terbaru</p><span className="border-2 border-black bg-[#22c55e] px-2 py-0.5 text-xs font-black text-white">Hari Ini</span></div>
+                  <div className="mt-4 flex items-center gap-3 border-[3px] border-black bg-[#FFF7E8] p-3"><div className="flex size-10 items-center justify-center border-2 border-black bg-black text-white"><BookOpen className="size-5" /></div><div><p className="text-sm font-black">Ahmad Fauzan</p><p className="text-xs font-bold text-black/60">Al-Baqarah · 1–10 · Ziyadah</p></div><span className="ml-auto border-2 border-black bg-[#FFD600] px-2 py-1 text-xs font-black">90 A</span></div>
+                  <div className="mt-3 grid grid-cols-2 gap-2"><div className="border-2 border-black bg-[#5CE1E6] p-2 text-center"><p className="text-xs font-black uppercase">Hafalan</p><p className="font-head text-lg font-black">16 Juz</p></div><div className="border-2 border-black bg-[#FF90E8] p-2 text-center"><p className="text-xs font-black uppercase">Target</p><p className="font-head text-lg font-black">20 Juz</p></div></div>
+                  <div className="mt-3 h-3 border-[3px] border-black bg-white p-0.5"><div className="h-full bg-black" style={{ width: '80%' }} /></div>
+                </div>
+                <div className="absolute -right-2 -bottom-4 hidden rotate-2 border-[3px] border-black bg-[#FFD600] p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:block"><p className="text-xs font-black uppercase">Juz 16</p><p className="font-head text-xl font-black">Al-Kahfi</p></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="tentang" className="mx-auto max-w-6xl px-4 py-12">
+          <div className="inline-flex items-center gap-2 border-[3px] border-black bg-black px-3 py-1 text-xs font-black uppercase text-white"><Sparkles className="h-4 w-4 text-[#FFD600]" /> Satu Ekosistem</div>
+          <h2 className="mt-3 font-head text-3xl font-black uppercase">Terhubung untuk pembinaan</h2>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {roles.map((r) => (
+              <div key={r.name} className={`border-[3px] border-black p-5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] ${r.color}`}>
+                <div className="flex size-10 items-center justify-center border-[3px] border-black bg-black text-white">{r.icon}</div>
+                <h3 className="mt-3 font-head font-black uppercase">{r.name}</h3><p className="mt-1 text-xs font-bold leading-relaxed">{r.description}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section id="alur" className="border-y-[3px] border-black bg-black py-12">
+          <div className="mx-auto max-w-6xl px-4">
+            <h2 className="font-head text-2xl font-black uppercase text-[#FFF7E8]">Dari target menuju insight</h2>
+            <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
+              {journey.map((s, i) => (
+                <div key={s.label} className="border-[3px] border-white bg-[#FFF7E8] p-3 text-center shadow-[3px_3px_0px_0px_rgba(255,255,255,1)]">
+                  <p className="text-xs font-black">0{i + 1}</p><p className="font-head font-black uppercase">{s.label}</p><p className="text-xs font-bold text-black/60">{s.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="fitur" className="mx-auto max-w-6xl px-4 py-12">
+          <h2 className="font-head text-3xl font-black uppercase">Sederhana namun bermakna</h2>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {features.map((f) => (
+              <div key={f.title} className="border-[3px] border-black bg-white p-5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-[#FFF7E8]">
+                <div className="flex size-10 items-center justify-center border-[3px] border-black bg-black text-white">{f.icon}</div>
+                <h3 className="mt-3 font-black uppercase">{f.title}</h3><p className="mt-1 text-xs font-bold text-black/60">{f.description}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section id="pricing" className="border-y-[3px] border-black bg-[#FFE7A3] py-12">
+          <div className="mx-auto max-w-6xl px-4">
+            <div className="text-center"><p className="inline-flex border-[3px] border-black bg-black px-3 py-1 text-xs font-black uppercase text-white">Pricing Retro</p><h2 className="mt-3 font-head text-3xl font-black uppercase">Pilih paket halaqahmu</h2><p className="mx-auto mt-2 max-w-xl text-sm font-bold text-black/60">Mulai gratis, scale ke pondok. Semua paket tema brutal & support Indonesia.</p></div>
+            <div className="mt-8 grid gap-6 lg:grid-cols-3">
+              {pricing.map((p) => (
+                <div key={p.name} className={`relative flex flex-col border-[3px] border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] ${p.color} ${p.highlight ? 'scale-[1.02] rotate-0' : ''}`}>
+                  {p.highlight && <span className="absolute -top-3 left-1/2 -translate-x-1/2 border-[3px] border-black bg-black px-3 py-1 text-xs font-black uppercase text-white">Populer</span>}
+                  <div className="flex items-center gap-2"><div className="flex size-8 items-center justify-center border-2 border-black bg-black text-white">{p.name === 'Gratis' ? <Zap className="h-4 w-4" /> : p.name === 'Pondok' ? <Crown className="h-4 w-4 text-[#FFD600]" /> : <ShieldCheck className="h-4 w-4" />}</div><h3 className="font-head font-black uppercase">{p.name}</h3></div>
+                  <p className="mt-2 text-xs font-bold text-black/60">{p.desc}</p>
+                  <p className="mt-4 font-head text-3xl font-black">{p.price} <span className="text-sm font-bold">{p.period}</span></p>
+                  <ul className="mt-4 flex-1 space-y-2">{p.features.map((f) => <li key={f} className="flex items-center gap-2 text-xs font-bold"><span className="flex size-5 items-center justify-center border-2 border-black bg-black text-white"><Check className="h-3 w-3" /></span> {f}</li>)}</ul>
+                  <Link href={register()} className={`mt-6 inline-flex h-10 cursor-pointer items-center justify-center border-[3px] border-black text-xs font-black uppercase shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] ${p.highlight ? 'bg-black text-white' : 'bg-white text-black hover:bg-black hover:text-white'}`}>{p.cta}</Link>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-6xl px-4 py-12">
+          <div className="border-[3px] border-black bg-black p-6 text-center shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+            <h2 className="font-head text-2xl font-black uppercase text-[#FFF7E8] md:text-3xl">Jadikan hafalan lebih terstruktur</h2>
+            <p className="mx-auto mt-2 max-w-lg text-sm font-bold text-white/70">Kelola halaqah, catat mutabaah, pantau progres — retro, cepat, bermakna.</p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">{auth.user ? <Link href={dashboard()} className="inline-flex h-11 cursor-pointer items-center border-[3px] border-white bg-[#FFF7E8] px-6 text-sm font-black uppercase text-black">Buka Dashboard</Link> : <><Link href={register()} className="inline-flex h-11 cursor-pointer items-center border-[3px] border-black bg-[#FFD600] px-6 text-sm font-black uppercase shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">Daftar Sekarang</Link><Link href={login()} className="inline-flex h-11 cursor-pointer items-center border-2 border-white px-6 text-sm font-black uppercase text-white">Masuk</Link></>}</div>
+          </div>
+        </section>
+
+        <footer className="border-t-[3px] border-black bg-[#FFF7E8]"><div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-6 md:flex-row"><div className="flex items-center gap-2"><span className="flex size-8 items-center justify-center border-[3px] border-black bg-black"><AppLogoIcon className="size-4 fill-white" /></span><span className="font-head font-black uppercase">SIMAHAL</span></div><p className="text-xs font-bold">© {new Date().getFullYear()} PondokIT · Retro Halaqah</p></div></footer>
+      </div>
+    </>
+  );
 }
