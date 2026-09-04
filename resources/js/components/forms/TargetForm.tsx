@@ -77,16 +77,19 @@ export default function TargetForm({ nilaiAwal, santris, statuses, onSuccess }: 
 
                     <div className="grid gap-2">
                         <Label htmlFor={`target-${isEdit ? nilaiAwal!.id : 'new'}`}>
-                            Target (ayat)
+                            Target (juz)
                         </Label>
                         <Input
                             id={`target-${isEdit ? nilaiAwal!.id : 'new'}`}
                             name="target"
                             type="number"
                             min={1}
+                            max={30}
+                            placeholder="1-30"
                             defaultValue={nilaiAwal?.target}
                             required
                         />
+                        <p className="text-xs font-bold text-black/50">Maksimal 30 juz</p>
                         <InputError message={errors.target} />
                     </div>
 

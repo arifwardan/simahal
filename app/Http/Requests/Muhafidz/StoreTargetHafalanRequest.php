@@ -16,7 +16,7 @@ class StoreTargetHafalanRequest extends FormRequest
         return [
             'santri_id' => ['required', 'exists:santris,id'],
             'periode' => ['required', 'string', 'max:50'],
-            'target' => ['required', 'integer', 'min:1'],
+            'target' => ['required', 'integer', 'min:1', 'max:30'],
             'status' => ['required', new Enum(TargetHafalanStatus::class)],
         ];
     }
