@@ -84,6 +84,7 @@ type PageProps = {
     bulan: number;
     tahun: number;
     bulanan: BulananRow[];
+    availableSantris: { id: number; nama: string; nis: string | null }[];
 };
 
 const NAMA_BULAN = [
@@ -393,9 +394,12 @@ export default function MuhafidzHalaqahSantris({
     settings,
     bulan,
     bulanan,
+    availableSantris,
 }: PageProps) {
     const [catatSantri, setCatatSantri] = useState<SantriRow | null>(null);
     const [showRekap, setShowRekap] = useState(false);
+    const [showTambah, setShowTambah] = useState(false);
+    const [selectedSantriId, setSelectedSantriId] = useState<string>('');
     const [highlightId, setHighlightId] = useState<number | null>(null);
     const [processingSantri, setProcessingSantri] = useState<number | null>(null);
 
@@ -409,12 +413,14 @@ export default function MuhafidzHalaqahSantris({
             <Card>
                 <CardHeader className="flex-row items-center justify-between">
                     <CardTitle>Santri ({santris.total})</CardTitle>
-                    <Button
-                        variant="outline"
-                        onClick={() => setShowRekap(true)}
-                    >
-                        Rekap Bulanan
-                    </Button>
+                    <div className="flex gap-2">
+                        <Button variant="outline" onClick={() => setShowTambah(true)} className="cursor-pointer border-[3px] border-black bg-[#FFF7E8]">
+                            Tambah Santri
+                        </Button>
+                        <Button variant="outline" onClick={() => setShowRekap(true)} className="cursor-pointer">
+                            Rekap Bulanan
+                        </Button>
+                    </div>
                 </CardHeader>
                 <CardContent>
                     <ul className="divide-y rounded-lg border">
@@ -509,6 +515,59 @@ export default function MuhafidzHalaqahSantris({
                     onClose={() => setShowRekap(false)}
                 />
             )}
+
+            <Dialog open={showTambah} onOpenChange={(o) => !o && setShowTambah(false)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Tambah Santri ke Halaqah</DialogTitle>
+                        <DialogDescription>Pilih santri yang belum ada di halaqah {halaqah.nama}.</DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                        <div className="grid gap-2">
+                            <Label>Santri</Label>
+                            <Select value={selectedSantriId} onValueChange={setSelectedSantriId}>
+                                <SelectTrigger className="cursor-pointer border-[3px] border-black bg-[#FFF7E8]">
+                                    <SelectValue placeholder="Pilih santri..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {availableSantris.length === 0 ? (
+                                        <div className="p-2 text-sm text-muted-foreground">Semua santri sudah di halaqah</div>
+                                    ) : (
+                                        availableSantris.map((s) => (
+                                            <SelectItem key={s.id} value={String(s.id)} className="cursor-pointer">
+                                                {s.nama} {s.nis ? `· ${s.nis}` : ''}
+                                            </SelectItem>
+                                        ))
+                                    )}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="flex justify-end gap-2">
+                            <Button variant="outline" onClick={() => setShowTambah(false)} className="cursor-pointer">
+                                Batal
+                            </Button>
+                            <Button
+                                disabled={!selectedSantriId}
+                                onClick={() => {
+                                    router.post(
+                                        `/muhafidz/halaqah-saya/${halaqah.id}/santri`,
+                                        { santri_id: Number(selectedSantriId) },
+                                        {
+                                            onSuccess: () => {
+                                                setShowTambah(false);
+                                                setSelectedSantriId('');
+                                            },
+                                        },
+                                    );
+                                }}
+                                className="cursor-pointer border-[3px] border-black"
+                            >
+                                Tambahkan
+                            </Button>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </PageContainer>
     );
 }

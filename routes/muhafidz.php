@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth', 'verified', 'role:muhafidz'])->prefix('muhafidz')->name('muhafidz.')->group(function () {
     Route::get('halaqah-saya', [HalaqahController::class, 'index'])->name('halaqahs.index');
     Route::get('halaqah-saya/{halaqah}/santri', [HalaqahController::class, 'santris'])->name('halaqahs.santris.show');
+    Route::post('halaqah-saya/{halaqah}/santri', [HalaqahController::class, 'storeSantri'])->name('halaqahs.santris.store');
+    Route::delete('halaqah-saya/{halaqah}/santri/{santri}', [HalaqahController::class, 'destroySantri'])->name('halaqahs.santris.destroy');
     Route::get('halaqahs/{halaqah}/setoran', [SetoranController::class, 'index'])->name('setoran.index');
     Route::post('setoran', [SetoranController::class, 'store'])->name('setoran.store');
     Route::post('mutabaah', [MutabaahController::class, 'store'])->name('mutabaahs.store');

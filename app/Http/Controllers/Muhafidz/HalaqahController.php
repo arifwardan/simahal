@@ -5,12 +5,16 @@ namespace App\Http\Controllers\Muhafidz;
 use App\Actions\MutabaahBulanan\MutabaahBulananCalculator;
 use App\Enums\MutabaahJenis;
 use App\Enums\MutabaahStatus;
+use App\Enums\HalaqahMemberStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Muhafidz\StoreHalaqahSantriRequest;
 use App\Models\Halaqah;
+use App\Models\HalaqahMember;
 use App\Models\Mutabaah;
 use App\Models\MutabaahBulanan;
 use App\Models\MutabaahSetting;
 use App\Models\Santri;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -108,6 +112,12 @@ class HalaqahController extends Controller
                 ];
             });
 
+        $availableSantris = Santri::query()
+            ->whereNotIn('id', $santriIds)
+            ->orderBy('nama')
+            ->limit(50)
+            ->get(['id', 'nama', 'nis']);
+
         return Inertia::render('muhafidz/halaqahs/santris', [
             'halaqah' => $halaqah,
             'santris' => $santris,
@@ -117,6 +127,36 @@ class HalaqahController extends Controller
             'bulan' => $bulan,
             'tahun' => $tahun,
             'bulanan' => $bulanan,
+            'availableSantris' => $availableSantris,
         ]);
+    }
+
+    public function storeSantri(StoreHalaqahSantriRequest $request, Halaqah $halaqah): RedirectResponse
+    {
+        $santriId = (int) $request->validated()['santri_id'];
+
+        $exists = HalaqahMember::where('halaqah_id', $halaqah->id)->where('santri_id', $santriId)->exists();
+
+        if ($exists) {
+            return to_route('muhafidz.halaqahs.santris.show', $halaqah)->with('error', 'Santri sudah di halaqah ini.');
+        }
+
+        HalaqahMember::create([
+            'halaqah_id' => $halaqah->id,
+            'santri_id' => $santriId,
+            'joined_at' => now()->toDateString(),
+            'status' => HalaqahMemberStatus::Aktif,
+        ]);
+
+        return to_route('muhafidz.halaqahs.santris.show', $halaqah)->with('success', 'Santri ditambahkan ke halaqah.');
+    }
+
+    public function destroySantri(Request $request, Halaqah $halaqah, Santri $santri): RedirectResponse
+    {
+        abort_unless($request->user()?->muhafidz?->id === $halaqah->muhafidz_id, 403);
+
+        HalaqahMember::where('halaqah_id', $halaqah->id)->where('santri_id', $santri->id)->delete();
+
+        return to_route('muhafidz.halaqahs.santris.show', $halaqah)->with('success', 'Santri dikeluarkan dari halaqah.');
     }
 }
