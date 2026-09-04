@@ -3,10 +3,11 @@
 namespace App\Helpers;
 
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 
 class PekanHelper
 {
-    public static function pekanNumberInMonth(Carbon $senin): int
+    public static function pekanNumberInMonth(CarbonInterface $senin): int
     {
         return intdiv($senin->day - 1, 7) + 1;
     }
@@ -26,9 +27,9 @@ class PekanHelper
     }
 
     /**
-     * @return array{senin: Carbon, ahad: Carbon}
+     * @return array{senin: CarbonInterface, ahad: CarbonInterface}
      */
-    public static function weekRange(Carbon $minggu): array
+    public static function weekRange(CarbonInterface $minggu): array
     {
         $senin = $minggu->copy()->startOfWeek(Carbon::MONDAY);
         $ahad = $senin->copy()->addDays(6);
