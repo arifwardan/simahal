@@ -1,5 +1,5 @@
 import { Form, Link, router } from '@inertiajs/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import MutabaahBulananController from '@/actions/App/Http/Controllers/Muhafidz/MutabaahBulananController';
 import MutabaahForm from '@/components/forms/MutabaahForm';
 import Heading from '@/components/heading';
@@ -8,6 +8,7 @@ import PageContainer from '@/components/page-container';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { DataTable, type DataTableColumn } from '@/components/ui/data-table';
 import {
     Dialog,
     DialogContent,
@@ -77,7 +78,7 @@ type Halaqah = { id: number; nama: string };
 
 type PageProps = {
     halaqah: Halaqah;
-    santris: { data: SantriRow[]; total: number };
+    santris: { data: SantriRow[]; total: number; current_page: number; last_page: number; links: { url: string | null; label: string; active: boolean }[] };
     jenisOptions: Option[];
     statusOptions: Option[];
     settings: Settings;
@@ -403,6 +404,54 @@ export default function MuhafidzHalaqahSantris({
     const [highlightId, setHighlightId] = useState<number | null>(null);
     const [processingSantri, setProcessingSantri] = useState<number | null>(null);
 
+    const columns = useMemo<DataTableColumn<SantriRow>[]>(
+        () => [
+            {
+                id: 'santri',
+                header: 'Santri',
+                accessor: (r) => `${r.nama} ${r.nis ?? ''}`,
+                cell: (row) => (
+                    <div className={highlightId === row.id ? 'rounded bg-emerald-100 px-1' : ''}>
+                        <p className="font-black text-black">{row.nama}</p>
+                        {row.nis && <p className="text-xs font-bold text-black/60">{row.nis}</p>}
+                    </div>
+                ),
+            },
+            {
+                id: 'mutabaah',
+                header: 'Mutabaah Hari Ini',
+                cell: (row) =>
+                    row.mutabaah_hari_ini ? (
+                        <span className="text-xs font-bold text-black/70">
+                            {row.mutabaah_hari_ini.jenis} · {row.mutabaah_hari_ini.surah} {row.mutabaah_hari_ini.ayat_mulai}-{row.mutabaah_hari_ini.ayat_selesai}
+                        </span>
+                    ) : (
+                        <span className="text-xs font-bold text-black/40">Belum dicatat</span>
+                    ),
+            },
+            {
+                id: 'aksi',
+                header: 'Aksi',
+                headerClassName: 'text-right',
+                className: 'text-right',
+                cell: (row) =>
+                    row.mutabaah_hari_ini ? (
+                        <Badge variant="secondary" className="shrink-0 border-2 border-black">
+                            Sudah dicatat ✓
+                        </Badge>
+                    ) : (
+                        <Link
+                            href={setoranIndex.url(halaqah.id, { query: { santri_id: row.id } })}
+                            className="inline-flex cursor-pointer items-center justify-center rounded-none border-[3px] border-black bg-primary px-3 py-1 text-xs font-black text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
+                        >
+                            Input Setoran
+                        </Link>
+                    ),
+            },
+        ],
+        [halaqah.id, highlightId],
+    );
+
     return (
         <PageContainer>
             <Heading
@@ -423,47 +472,14 @@ export default function MuhafidzHalaqahSantris({
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <ul className="divide-y rounded-lg border">
-                        {santris.data.map((santri) => {
-                            const recorded = santri.mutabaah_hari_ini;
-                            const isHighlighted = highlightId === santri.id;
-
-                            return (
-                                <li
-                                    key={santri.id}
-                                    className={`flex items-center justify-between gap-4 p-4 transition-colors ${
-                                        isHighlighted ? 'bg-emerald-50 ring-1 ring-emerald-300 dark:bg-emerald-500/10 dark:ring-emerald-500/40' : ''
-                                    }`}
-                                >
-                                    <div>
-                                        <p className="font-medium">{santri.nama}</p>
-                                        {santri.nis && (
-                                            <p className="text-sm text-muted-foreground">
-                                                {santri.nis}
-                                            </p>
-                                        )}
-                                        {recorded && (
-                                            <p className="mt-1 text-xs text-muted-foreground">
-                                                {recorded.jenis} · {recorded.surah} {recorded.ayat_mulai}-{recorded.ayat_selesai}
-                                            </p>
-                                        )}
-                                    </div>
-                                    {recorded ? (
-                                        <Badge variant="secondary" className="shrink-0">
-                                            Sudah dicatat ✓
-                                        </Badge>
-                                    ) : (
-                                        <Link
-                                            href={setoranIndex.url(halaqah.id, { query: { santri_id: santri.id } })}
-                                            className="inline-flex items-center justify-center rounded-md bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground shadow hover:bg-primary/90"
-                                        >
-                                            Input Setoran
-                                        </Link>
-                                    )}
-                                </li>
-                            );
-                        })}
-                    </ul>
+                    <DataTable
+                        columns={columns}
+                        data={santris.data}
+                        pagination={santris}
+                        perPage={5}
+                        searchPlaceholder="Cari santri / NIS..."
+                        emptyMessage="Belum ada santri di halaqah ini."
+                    />
                 </CardContent>
             </Card>
 
