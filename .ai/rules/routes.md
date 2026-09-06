@@ -1,9 +1,9 @@
 ---
 paths:
-  - routes/ustadz.php
+  - routes/muhafidz.php
 ---
 
 # Routes
 
-## Ustadz route group convention
-All ustadz routes live in routes/ustadz.php, grouped under middleware(['auth','verified','role:ustadz']) with prefix('ustadz') and name('ustadz.'). Resolve the profile as $request->user()->ustadz and abort(403) when missing. Add new ustadz endpoint files here.
+## Muhafidz route group convention
+All muhafidz routes live in routes/muhafidz.php, grouped under middleware(['auth','verified','role:muhafidz']) with prefix('muhafidz') and name('muhafidz.'). Resolve the profile as $request->user()->muhafidz and abort(403) when missing. Add new muhafidz endpoint files here.

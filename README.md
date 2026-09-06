@@ -4,7 +4,7 @@
 
 SIMAHAL adalah aplikasi manajemen halaqah Al-Qur'an untuk membantu PondokIT mengelola aktivitas hafalan santri secara terstruktur, modern, dan terintegrasi.
 
-SIMAHAL menghubungkan **Admin, Ustadz/Musyrif, Santri, dan Orang Tua** dalam satu ekosistem sehingga proses pencatatan mutabaah, pemantauan hafalan, target, evaluasi, dan perkembangan santri dapat dilakukan secara digital.
+SIMAHAL menghubungkan **Admin, Muhafidz/Musyrif, Santri, dan Orang Tua** dalam satu ekosistem sehingga proses pencatatan mutabaah, pemantauan hafalan, target, evaluasi, dan perkembangan santri dapat dilakukan secara digital.
 
 ---
 
@@ -34,7 +34,7 @@ Insight
 
 Informasi tersebut kemudian dapat digunakan oleh:
 
-* Ustadz untuk membimbing santri.
+* Muhafidz untuk membimbing santri.
 * Santri untuk memahami perkembangan hafalannya.
 * Orang tua untuk memantau perkembangan anak.
 * Admin untuk mengelola ekosistem halaqah.
@@ -215,7 +215,7 @@ Data hafalan harus mudah dibaca dan dipahami.
 
 ### Mobile Friendly
 
-Ustadz kemungkinan besar menggunakan smartphone ketika melakukan mutabaah.
+Muhafidz kemungkinan besar menggunakan smartphone ketika melakukan mutabaah.
 
 Oleh karena itu workflow mutabaah harus nyaman digunakan pada mobile.
 
@@ -227,7 +227,7 @@ SIMAHAL memiliki empat role utama.
 
 ```text
 ADMIN
-USTADZ
+MUHAFIDZ
 SANTRI
 PARENT
 ```
@@ -238,7 +238,7 @@ Contoh:
 
 ```text
 User
-├── USTADZ
+├── MUHAFIDZ
 └── PARENT
 ```
 
@@ -252,12 +252,12 @@ Admin bertanggung jawab terhadap konfigurasi dan operasional sistem.
 
 * Mengelola user.
 * Mengelola santri.
-* Mengelola ustadz.
+* Mengelola muhafidz.
 * Mengelola orang tua.
 * Menghubungkan orang tua dengan santri.
 * Membuat periode akademik.
 * Membuat halaqah.
-* Menentukan ustadz halaqah.
+* Menentukan muhafidz halaqah.
 * Menempatkan santri ke halaqah.
 * Mengelola target.
 * Melihat laporan.
@@ -269,7 +269,7 @@ Dashboard harus memberikan overview:
 
 ```text
 Total Santri
-Total Ustadz
+Total Muhafidz
 Total Halaqah
 
 Active Halaqah
@@ -285,11 +285,11 @@ Recent Activity
 
 ---
 
-# 9. Ustadz / Musyrif
+# 9. Muhafidz / Musyrif
 
-Ustadz adalah pengguna utama dalam workflow mutabaah.
+Muhafidz adalah pengguna utama dalam workflow mutabaah.
 
-### Ustadz dapat:
+### Muhafidz dapat:
 
 * Melihat halaqah yang dibimbing.
 * Melihat daftar santri.
@@ -346,7 +346,7 @@ Santri berfokus pada perjalanan hafalannya sendiri.
 * Melihat histori mutabaah.
 * Melihat nilai.
 * Melihat evaluasi.
-* Melihat catatan ustadz.
+* Melihat catatan muhafidz.
 * Melihat perkembangan target.
 
 Dashboard santri harus menjawab:
@@ -377,7 +377,7 @@ Parent dapat:
 * Melihat setoran terbaru.
 * Melihat nilai.
 * Melihat evaluasi.
-* Melihat catatan ustadz.
+* Melihat catatan muhafidz.
 * Melihat histori perkembangan.
 
 Satu parent dapat memiliki lebih dari satu anak.
@@ -654,7 +654,7 @@ Data harus memiliki ownership yang jelas.
 
 Global access sesuai permission.
 
-### Ustadz
+### Muhafidz
 
 Hanya dapat mengelola data halaqah yang menjadi tanggung jawabnya.
 
@@ -808,7 +808,7 @@ Melihat Santri
 Melihat Setoran
 ```
 
-Karena ustadz dapat menggunakan SIMAHAL langsung ketika kegiatan halaqah berlangsung.
+Karena muhafidz dapat menggunakan SIMAHAL langsung ketika kegiatan halaqah berlangsung.
 
 ---
 
@@ -955,7 +955,7 @@ Data orang tua tidak boleh melihat data santri lain.
 
 Data santri tidak boleh melihat data santri lain.
 
-Ustadz tidak boleh mengubah mutabaah dari halaqah yang bukan tanggung jawabnya kecuali memiliki permission khusus.
+Muhafidz tidak boleh mengubah mutabaah dari halaqah yang bukan tanggung jawabnya kecuali memiliki permission khusus.
 
 ---
 
@@ -1084,12 +1084,12 @@ setoran dalam 3 minggu terakhir."
 "Target bulan ini kemungkinan tidak tercapai
 jika pola saat ini berlanjut."
 
-"Santri ini membutuhkan perhatian ustadz."
+"Santri ini membutuhkan perhatian muhafidz."
 ```
 
 AI hanya memberikan **insight dan rekomendasi**.
 
-Keputusan pembinaan tetap berada pada ustadz.
+Keputusan pembinaan tetap berada pada muhafidz.
 
 ---
 
@@ -1138,7 +1138,7 @@ Jangan menganggap fitur selesai hanya karena happy path berhasil.
 
 Setiap keputusan dalam SIMAHAL harus menjawab:
 
-> **Apakah ini membantu ustadz membimbing santri dengan lebih baik?**
+> **Apakah ini membantu muhafidz membimbing santri dengan lebih baik?**
 
 Jika tidak, jangan menambah kompleksitas hanya karena teknologinya menarik.
 
@@ -1172,7 +1172,7 @@ Islamic Education / Halaqah Management
 
 **Primary Users**
 
-Admin, Ustadz, Santri, Orang Tua
+Admin, Muhafidz, Santri, Orang Tua
 
 **Core Domain**
 

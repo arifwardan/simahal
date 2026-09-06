@@ -1,6 +1,6 @@
 ---
 paths:
-  - resources/js/pages/ustadz/halaqahs/santris.tsx
+  - resources/js/pages/muhafidz/halaqahs/santris.tsx
 ---
 
 # Halaqahs

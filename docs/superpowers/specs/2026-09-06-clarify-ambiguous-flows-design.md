@@ -6,7 +6,7 @@
 
 ## 1. Principles & Naming
 
-- Single term `muhafidz` everywhere. Rename `ustadz` in `docs/`, `.ai/rules/`, `README`, comments. No DB rename (table `muhafidzs` already).
+- Single term `muhafidz` everywhere. Rename `muhafidz` in `docs/`, `.ai/rules/`, `README`, comments. No DB rename (table `muhafidzs` already).
 - Canonical units: `TargetHafalan.target` = Juz (1-30, `max:30`), `progress` = Halaman (0-600). `progressPercent = floor(progress / (target*20) *100)` using `MutabaahSetting.konversi_juz_halaman=20`. Display always `X/Y Juz · A/B hal` (e.g., `0.1/6 Juz · 2/120 hal`).
 - Target ownership: both `santri` (own `santri_id`) and `muhafidz` (only santri in his `halaqahs`) can `create/update/delete`. No approval workflow; last-write wins with toast indicating actor.
 
@@ -31,7 +31,7 @@
 ## 5. Onboarding, Migration, Testing
 
 - **Onboarding tour** (4 steps, `localStorage onboarding_done`): 1) Complete profile & halaqah assignment → 2) Create Target 1-30 Juz → 3) Input first Setoran week (Monday) → 4) View Prestasi & Share. Checklist bar on `dashboard/santri` and `dashboard/muhafidz`.
-- **Migration:** existing `target>30` clamped to 30, `progress` juz→halaman (`*20`), `ustadz`→`muhafidz` docs rename. Already applied via `migrate:fresh --seed` (Budi now `6 Juz/2 hal=1%` not `1140`).
+- **Migration:** existing `target>30` clamped to 30, `progress` juz→halaman (`*20`), `muhafidz`→`muhafidz` docs rename. Already applied via `migrate:fresh --seed` (Budi now `6 Juz/2 hal=1%` not `1140`).
 - **Error handling:** validations `halaman 0-20`, `tasmi 10-100`, `ujian 0-100`, `target 1-30`, `unique santri_id+tanggal`. Cross-month pekan shows warning, not error.
 - **Tests:** Feature: santri can create target, muhafidz can create target for his santri, pekan cross-month stored in Monday month, prestasi share scoped. Manual: verify `0/6 Juz` not `0/1140`.
 

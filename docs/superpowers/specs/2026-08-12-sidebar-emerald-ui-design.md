@@ -80,8 +80,8 @@ Map tone → kelas ikon box (soft bg + text):
 Rendering: CardHeader berisi `CardTitle` (label) + icon box; atau struktur: baris atas = icon box kiri + value kanan. Desain: header baris dengan label (muted) + box ikon di kanan; nilai `text-2xl font-semibold` di bawah. Default tone `emerald`, icon opsional (bila tidak ada, tampil tanpa box).
 
 Update pemakaian di dashboard:
-- `dashboard/admin.tsx`: Santri=GraduationCap/emerald, Ustadz=BookOpen/sky, Orang Tua=HeartHandshake/violet, Halaqah=FolderGit2/amber, Mutabaah=ClipboardCheck/rose.
-- `dashboard/ustadz.tsx`: Halaqah=FolderGit2/emerald, Santri=GraduationCap/sky, Mutabaah=ClipboardCheck/violet.
+- `dashboard/admin.tsx`: Santri=GraduationCap/emerald, Muhafidz=BookOpen/sky, Orang Tua=HeartHandshake/violet, Halaqah=FolderGit2/amber, Mutabaah=ClipboardCheck/rose.
+- `dashboard/muhafidz.tsx`: Halaqah=FolderGit2/emerald, Santri=GraduationCap/sky, Mutabaah=ClipboardCheck/violet.
 
 Ikon diimpor dari `lucide-react`.
 

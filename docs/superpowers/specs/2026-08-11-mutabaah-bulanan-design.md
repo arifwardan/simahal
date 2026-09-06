@@ -8,7 +8,7 @@
 
 ## Ringkasan
 
-Menggantikan workbook Excel mutaba'ah hafalan santri dengan modul web dalam SIMAHAL: ustadz mengisi rekapitulasi bulanan per santri di halaqah-nya (halaman kumulatif, juz yang dihafal, nilai tasmi' pekan 1–5, nilai ujian bulanan soal 1–5), seluruh perhitungan turunan (tambah halaman/juz, kategori pencapaian, keterangan capaian, rata-rata) dihitung on-the-fly persis mengikuti rumus Excel, dan admin melihat dashboard ringkasan per kelompok + distribusi kategori. Modul ini hidup **berdampingan** dengan modul setoran harian (`Mutabaah`, `TargetHafalan`) yang sudah ada di Phase 3 — tidak mengubah logika progress ayat.
+Menggantikan workbook Excel mutaba'ah hafalan santri dengan modul web dalam SIMAHAL: muhafidz mengisi rekapitulasi bulanan per santri di halaqah-nya (halaman kumulatif, juz yang dihafal, nilai tasmi' pekan 1–5, nilai ujian bulanan soal 1–5), seluruh perhitungan turunan (tambah halaman/juz, kategori pencapaian, keterangan capaian, rata-rata) dihitung on-the-fly persis mengikuti rumus Excel, dan admin melihat dashboard ringkasan per kelompok + distribusi kategori. Modul ini hidup **berdampingan** dengan modul setoran harian (`Mutabaah`, `TargetHafalan`) yang sudah ada di Phase 3 — tidak mengubah logika progress ayat.
 
 Aplikasi: Laravel 13, Inertia v3 + React 19 + TypeScript, shadcn/ui, Wayfinder, Pest.
 
@@ -43,7 +43,7 @@ Dari ekstraksi workbook:
 
 1. **Tujuan:** ganti Excel dengan aplikasi (input + kalkulasi + dashboard), bukan sekadar impor.
 2. **Co-existence:** modul bulanan baru berdampingan dengan setoran harian; tidak mengubah `TargetHafalan`/`RecalculateTargetProgress`.
-3. **Role & pemetaan:** ustadz (muhafidz) mengisi data bulanan santri di halaqah milik mereka (= kelompok); admin melihat dashboard global & mengelola konfigurasi. Kelompok Excel ≡ `Halaqah` SIMAHAL; muhafidz ≡ `Ustadz`.
+3. **Role & pemetaan:** muhafidz (muhafidz) mengisi data bulanan santri di halaqah milik mereka (= kelompok); admin melihat dashboard global & mengelola konfigurasi. Kelompok Excel ≡ `Halaqah` SIMAHAL; muhafidz ≡ `Muhafidz`.
 4. **Penyimpanan:** simpan input mentah; semua nilai turunan dihitung on-the-fly (tidak ada snapshot), seperti rumus Excel yang live.
 5. **Konfigurasi & periode:** `konversi_juz_halaman`, `ambang_hadiah_juz`, `tahun_aktif` tersimpan di DB dan editable admin; periode = tahun (2026, dst.) dengan 12 bulan per tahun.
 6. **Data master:** memakai data `Santri`/`Halaqah` SIMAHAL yang sudah ada dari Phase 2; tambah field `santris.halaman_awal` (nullable) untuk nilai "Halaman Awal Sebelum Program".
@@ -108,11 +108,11 @@ Rasio juz kategori memakai `halaman_kumulatif ÷ konversi` (persis Excel `G/Dash
 
 ### Routes
 
-**Ustadz** (`routes/ustadz.php`, middleware `['auth','verified','role:ustadz']`):
-- `GET  /ustadz/mutabaah-bulanan/{bulan}` → `Ustadz\MutabaahBulananController@edit`
-- `POST /ustadz/mutabaah-bulanan/{bulan}` → `@update` (batch upsert)
+**Muhafidz** (`routes/muhafidz.php`, middleware `['auth','verified','role:muhafidz']`):
+- `GET  /muhafidz/mutabaah-bulanan/{bulan}` → `Muhafidz\MutabaahBulananController@edit`
+- `POST /muhafidz/mutabaah-bulanan/{bulan}` → `@update` (batch upsert)
 
-Prop `edit`: `bulan`, `tahun` (dari setting tahun_aktif), `halaqahs` (milik ustadz + santri anggota dengan record bulanan/`halaman_awal_bulan`), `settings` ({konversi, ambang, tahun}), nilai terisi existing.
+Prop `edit`: `bulan`, `tahun` (dari setting tahun_aktif), `halaqahs` (milik muhafidz + santri anggota dengan record bulanan/`halaman_awal_bulan`), `settings` ({konversi, ambang, tahun}), nilai terisi existing.
 
 **Admin:**
 - `GET /admin/mutabaah-bulanan` → `Admin\MutabaahBulananDashboardController@index` — dropdown bulan/tahun (default `tahun_aktif`, bulan terakhir terisi), ringkasan per kelompok + distribusi per jenis.
@@ -121,13 +121,13 @@ Prop `edit`: `bulan`, `tahun` (dari setting tahun_aktif), `halaqahs` (milik usta
 
 ### Controller concern
 
-- Ustadz: resolusi `$request->user()->ustadz`; `abort_unless($ustadz !== null, 403)`; scoping santri via `$ustadz->halaqahs()->with('santris')` — `abort_unless` untuk santri bukan anggota halaqah ustadz.
+- Muhafidz: resolusi `$request->user()->muhafidz`; `abort_unless($muhafidz !== null, 403)`; scoping santri via `$muhafidz->halaqahs()->with('santris')` — `abort_unless` untuk santri bukan anggota halaqah muhafidz.
 - Admin: `role:admin` middleware.
 - Authorization terapkan di backend (PRD §8).
 
 ### Frontend
 
-- `resources/js/pages/ustadz/mutabaah-bulanan/edit.tsx` — tabel per santri (kolom halaman kumulatif, juz, tasmi 1–5, ujian 1–5), preview turunan (tambah halaman/juz, kategori, keterangan, rata²) yang live via kalkulator hasil render awal, submit batch (Form + wayfinder `.form()`), toast sukses.
+- `resources/js/pages/muhafidz/mutabaah-bulanan/edit.tsx` — tabel per santri (kolom halaman kumulatif, juz, tasmi 1–5, ujian 1–5), preview turunan (tambah halaman/juz, kategori, keterangan, rata²) yang live via kalkulator hasil render awal, submit batch (Form + wayfinder `.form()`), toast sukses.
 - `resources/js/pages/admin/mutabaah-bulanan/index.tsx` — dropdown bulan+tahun, ringkasan per kelompok (jenis, kelompok, muhafidz, jumlah santri, rata² halaman, rata² tambah juz, rata² tasmi', rata² ujian, jumlah berprestasi), distribusi kategori per jenis (Ikhwan/Akhwat/total).
 - `resources/js/pages/admin/mutabaah-settings.tsx` — form konfigurasi (konversi, ambang, tahun aktif).
 
@@ -135,20 +135,20 @@ Semua halaman memakai `page.layout = { breadcrumbs }`, Indonesian copy, komponen
 
 ### UI Konsistensi (bundled task)
 
-1. **`PageContainer`** (`resources/js/components/page-container.tsx`) — wrapper `px-4 pb-8 pt-4 md:px-6` untuk semua halaman app; rapikan spacing kartu vs sidebar. Terapkan di halaman dashboard + admin/ustadz yang ada agar seragam.
+1. **`PageContainer`** (`resources/js/components/page-container.tsx`) — wrapper `px-4 pb-8 pt-4 md:px-6` untuk semua halaman app; rapikan spacing kartu vs sidebar. Terapkan di halaman dashboard + admin/muhafidz yang ada agar seragam.
 2. **Welcome → shadcn** — ganti token custom `ivory/ink/sand/gold/emerald-soft/deep` di `welcome.tsx` dengan token shadcn (`background`, `foreground`, `primary`, `card`, `muted`, `accent`) + aksen emerald sebagai warna brand; pertahanakan light/dark.
 3. **Verifikasi visual** — cek halaman dashboard & modul baru di mode light/dark, spacing kartu vs sidebar, dan keselarasan welcome.
 
 > Catatan: aksen emerald memakai palet default Tailwind (`emerald-*`) dengan varian `dark:`; token brand custom (`--color-emerald-*`, `gold`, `sand`, `ivory`, `ink`) dihapus dari `app.css` karena tidak lagi dipakai.
 
-> Status: item 1 & 2 SELESAI (commit sebelum plan). `PageContainer` dipakai di semua halaman dashboard/admin/ustadz; `welcome.tsx` dipindah ke token shadcn + aksen emerald (light/dark). Item 3 diverifikasi via build + test hijau; cek visual final saat modul baru selesai.
+> Status: item 1 & 2 SELESAI (commit sebelum plan). `PageContainer` dipakai di semua halaman dashboard/admin/muhafidz; `welcome.tsx` dipindah ke token shadcn + aksen emerald (light/dark). Item 3 diverifikasi via build + test hijau; cek visual final saat modul baru selesai.
 
 ---
 
 ## Data Flow
 
-1. **Input (ustadz):** open edit → props (bulan, tahun, santri + existing record). Ustadz isi kolom per santri → submit batch → controller validasi → hitung `halaman_awal_bulan` (Jan: `santris.halaman_awal`; lain: record bulan sebelumnya, bila ada) → upsert tiap santri → toast.
-2. **Baca (ustadz/konsumen):** kalkulator menghitung turunan on-the-fly.
+1. **Input (muhafidz):** open edit → props (bulan, tahun, santri + existing record). Muhafidz isi kolom per santri → submit batch → controller validasi → hitung `halaman_awal_bulan` (Jan: `santris.halaman_awal`; lain: record bulan sebelumnya, bila ada) → upsert tiap santri → toast.
+2. **Baca (muhafidz/konsumen):** kalkulator menghitung turunan on-the-fly.
 3. **Dashboard (admin):** query agregat (avg halaman kumulatif, avg tambah juz via kalkulator per baris lalu rata², avg tasmi, avg ujian, berprestasi = `keterangan = Berprestasi (Hadiah)`) + distribusi kategori per jenis.
 
 ---
@@ -156,7 +156,7 @@ Semua halaman memakai `page.layout = { breadcrumbs }`, Indonesian copy, komponen
 ## Error Handling
 
 - **FormRequest:** `halaman_kumulatif` `required|integer|min:0`; `halaman_kumulatif >= halaman_awal_bulan`; tasmi/ujian `nullable|integer|between:10,100`; `juz_dihafal` nullable string; bulan/tahun diperiksa.
-- **403:** ustadz non-pemilik halaqah / santri di luar halaqah ustadz; role salah.
+- **403:** muhafidz non-pemilik halaqah / santri di luar halaqah muhafidz; role salah.
 - **404:** config belum ada → 404 dengan pesan; record bulanan santri optional.
 - **Kalkulator toleran:** field null → hasil null (bukan exception); tidak ada pembagian dengan nol (konversi divalidasi > 0).
 
@@ -166,7 +166,7 @@ Semua halaman memakai `page.layout = { breadcrumbs }`, Indonesian copy, komponen
 
 - **Unit `MutabaahBulananCalculatorTest`** — bandingkan dengan nilai Excel nyata: tambah halaman/juz (17 halaman), kategori (17→1/2 Juz; 40→2 Juz), keterangan (threshold 1.5 & 0.25, kosong→Belum Diisi), rata² tasmi/ujian, boundary bin kategori.
 - **Unit enum `MutabaahKategori`** — lookup boundary.
-- **Feature `UstadzMutabaahBulananTest`** — scoping halaqah (403 santri asing), validasi, batch upsert (tahun/bulan unik), `halaman_awal_bulan` Jan vs Feb.
+- **Feature `MuhafidzMutabaahBulananTest`** — scoping halaqah (403 santri asing), validasi, batch upsert (tahun/bulan unik), `halaman_awal_bulan` Jan vs Feb.
 - **Feature `AdminMutabaahBulananDashboardTest`** — ringkasan per kelompok (avg, jumlah berprestasi), distribusi per jenis, 403 non-admin.
 - **Feature `AdminMutabaahSettingTest`** — update config; 403 non-admin.
 - **Konvensi:** TDD (test dulu), `php artisan test --compact`, `types:check`, `vendor/bin/pint --dirty --format agent`, Wayfinder regenerate setelah route baru.
@@ -184,7 +184,7 @@ Semua halaman memakai `page.layout = { breadcrumbs }`, Indonesian copy, komponen
 
 ## Kriteria Sukses
 
-- Ustadz dapat mengisi/update rekapitulasi bulanan santri di halaqah-nya dengan semua perhitungan turunan benar (sesuai Excel).
+- Muhafidz dapat mengisi/update rekapitulasi bulanan santri di halaqah-nya dengan semua perhitungan turunan benar (sesuai Excel).
 - Admin melihat dashboard ringkasan + distribusi per bulan/tahun.
 - Simpan & baca konsisten: mengubah input atau konfigurasi langsung mengubah turunan (no stale snapshot).
 - Seluruh test hijau; UI konsisten (spacing, tema) di light & dark.

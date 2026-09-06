@@ -8,7 +8,7 @@
 
 ## Ringkasan
 
-Seluruh dashboard (admin, ustadz, santri, orang tua) dirombak tampilannya:
+Seluruh dashboard (admin, muhafidz, santri, orang tua) dirombak tampilannya:
 
 1. **Brand color baru: violet** — primary color seluruh app diubah dari hitam netral ke violet, konsisten light/dark.
 2. **Chart distribusi** — data yang tadinya cuma angka/kartu ditampilkan sebagai donut chart berbasis agregasi kecil (bukan deret waktu).
@@ -57,12 +57,12 @@ Shape yang dikirim ke frontend: array `[{ key, label, count }]`. Warna di-map da
 |---|---|---|
 | Admin | Donut **status mutabaah** (lulus / perlu murajaah / mengulang) | `Mutabaah` groupBy `status` |
 | Admin | Donut **jenis santri** (ikhwan / akhwat) | `Santri` groupBy `jenis`, `whereNotNull` |
-| Ustadz | Donut **status mutabaah** (scoped halaqah) | `$ustadz->mutabaahs()` groupBy `status` |
+| Muhafidz | Donut **status mutabaah** (scoped halaqah) | `$muhafidz->mutabaahs()` groupBy `status` |
 | Santri | Donut **status mutabaah** milik santri | `$santri->mutabaahs()` groupBy `status` |
 | Orang Tua | Donut **status progress anak** (berlangsung / selesai) | agregat `progressData()` per anak |
 
 **Delta kecil kartu statistik** (tanpa time-series):
-- Kartu Mutabaah (admin & ustadz): subtitle "X setoran bulan ini · ↑/↓ Y vs bulan lalu" — hitung `whereMonth`/`whereYear` bulan ini vs bulan lalu (dua count sederhana).
+- Kartu Mutabaah (admin & muhafidz): subtitle "X setoran bulan ini · ↑/↓ Y vs bulan lalu" — hitung `whereMonth`/`whereYear` bulan ini vs bulan lalu (dua count sederhana).
 - Kartu Santri (admin): "X santri baru bulan ini" (count `created_at` bulan ini).
 
 **Frontend chart components** di `resources/js/components/dashboard/charts/`:
@@ -79,7 +79,7 @@ Shape yang dikirim ke frontend: array `[{ key, label, count }]`. Warna di-map da
 
 - **`DashboardHero`** — sapaan "Selamat datang, {nama}" + tanggal Indonesia (mis. "Kamis, 13 Agustus 2026") + subtitle per role:
   - admin: "Ringkasan data pesantren"
-  - ustadz: "Ringkasan halaqah Anda"
+  - muhafidz: "Ringkasan halaqah Anda"
   - santri: "Progres hafalan Anda"
   - orang tua: "Progres anak Anda"
 - **`StatCard` di-upgrade** — tambah `subtitle`/`delta` opsional dan link opsional. Tone disetel ulang ke keluarga violet (violet, indigo, fuchsia, teal, amber) menggantikan tone lama (emerald/sky/violet/amber/rose).
@@ -88,7 +88,7 @@ Shape yang dikirim ke frontend: array `[{ key, label, count }]`. Warna di-map da
 **Struktur tiap dashboard:**
 
 - **Admin:** Hero → grid 5 StatCard (dengan delta) → section "Mutabaah": grid chart (donut status mutabaah + donut jenis santri) → daftar Mutabaah Terbaru.
-- **Ustadz:** Hero → grid 3 StatCard → section: donut status mutabaah + daftar Halaqah Saya (dengan tombol "Kelola Halaqah").
+- **Muhafidz:** Hero → grid 3 StatCard → section: donut status mutabaah + daftar Halaqah Saya (dengan tombol "Kelola Halaqah").
 - **Santri:** Hero → progress hafalan (komponen `SantriProgressView` yang ada) + donut status mutabaah milik santri.
 - **Orang Tua:** Hero → donut status progress anak → progress view per anak.
 
@@ -99,7 +99,7 @@ Shape yang dikirim ke frontend: array `[{ key, label, count }]`. Warna di-map da
 ## Bagian 4 — Error Handling
 
 - Aggregasi adalah query count sederhana; tidak ada state baru yang bisa gagal di luar query yang sudah ada.
-- Profil null-safe (`ustadz`/`santri`/`orang tua` belum terdaftar) tetap dijaga seperti sekarang (`progressData()` sudah null-safe).
+- Profil null-safe (`muhafidz`/`santri`/`orang tua` belum terdaftar) tetap dijaga seperti sekarang (`progressData()` sudah null-safe).
 - `jenis` santri nullable → donut jenis santri memakai `whereNotNull`; tidak error bila banyak santri belum berjenis.
 - Chart tanpa data → empty state "Belum ada data".
 - Tidak ada fetch async baru — semua data via props halaman, tidak ada skeleton/loading baru.
@@ -110,7 +110,7 @@ Shape yang dikirim ke frontend: array `[{ key, label, count }]`. Warna di-map da
 
 - **Backend — perluas `tests/Feature/DashboardTest.php`** (sudah ada):
   - Admin: props `mutabaahByStatus` benar (lulus/perlu_murajaah/mengulang), `santriByJenis` (ikhwan/akhwat), delta bulan ini.
-  - Ustadz: `mutabaahByStatus` scoped ke halaqahnya.
+  - Muhafidz: `mutabaahByStatus` scoped ke halaqahnya.
   - Santri: donut status mutabaah milik santri.
   - Orang tua: donut status progress anak.
   - Pakai `assertInertia` + factory; TDD (tulis test dulu).
@@ -123,7 +123,7 @@ Shape yang dikirim ke frontend: array `[{ key, label, count }]`. Warna di-map da
 ## Di Luar Scope
 
 - Backend tren/deret waktu (chart tren per hari/bulan) — fase berikutnya bila diinginkan.
-- Perubahan alur/fungsi di luar dashboard (mis. halaman CRUD admin, ustadz, santri).
+- Perubahan alur/fungsi di luar dashboard (mis. halaman CRUD admin, muhafidz, santri).
 - Logika `Mutabaah`, `TargetHafalan`, `MutabaahBulananCalculator` tidak diubah.
 - Responsif mobile: hanya memastikan grid kartu/chart tetap rapi di layar kecil (pola `sm:`/`lg:` sudah ada).
 

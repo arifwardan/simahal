@@ -10,8 +10,8 @@
 
 1. **Konversi modal**: seluruh form create (dan form edit admin yang belum ada UI-nya) dirender dalam komponen `Dialog` (shadcn, sudah tersedia). Satu komponen form per entitas dipakai ulang untuk create (kosong) dan edit (nilai awal).
 2. **Setoran harian memakai halaman**: tabel `mutabaahs` ditambah kolom `halaman` (int nullable) — jumlah halaman disetor per hari, sesuai prinsip Excel (bukan hitung ayat, karena panjang ayat antar-surah tidak seragam).
-3. **Modul Mutaba'ah Bulanan (Phase 5) penuh**: input batch ustadz per bulan dalam modal (bukan halaman terpisah), dashboard admin + settings, kalkulator rumus Excel.
-4. **Integrasi harian↔bulanan**: modal rekap bulanan menampilkan `halaman_kumulatif` **terisi otomatis** (prefill) dari Σ `halaman` setoran harian santri pada bulan itu, sehingga ustadz yang rutin setoran harian tidak perlu mengisi bulanan dari nol; yang lupa berhari-hari tetap bisa isi manual/rekap akhir bulan.
+3. **Modul Mutaba'ah Bulanan (Phase 5) penuh**: input batch muhafidz per bulan dalam modal (bukan halaman terpisah), dashboard admin + settings, kalkulator rumus Excel.
+4. **Integrasi harian↔bulanan**: modal rekap bulanan menampilkan `halaman_kumulatif` **terisi otomatis** (prefill) dari Σ `halaman` setoran harian santri pada bulan itu, sehingga muhafidz yang rutin setoran harian tidak perlu mengisi bulanan dari nol; yang lupa berhari-hari tetap bisa isi manual/rekap akhir bulan.
 
 ---
 
@@ -36,10 +36,10 @@
 ## Keputusan Desain
 
 1. **Semua form input → modal.** Halaman index tetap menampilkan tabel/daftar; tombol aksi membuka modal. Create & edit memakai komponen form yang sama (prop nilai awal opsional).
-2. **Hapus halaman `ustadz/mutabaahs/create.tsx`** — diganti modal harian yang dibuka dari baris santri.
+2. **Hapus halaman `muhafidz/mutabaahs/create.tsx`** — diganti modal harian yang dibuka dari baris santri.
 3. **Setoran harian mencatat `halaman`** (jumlah halaman), bukan menghitung dari `ayat_mulai`–`ayat_selesai`.
 4. **Co-existence + fleksibilitas**: input harian rutin → rekap bulanan terbantu prefill; input bulanan akhir bulan → tanpa perlu setoran harian harian. `Mutabaah`/`TargetHafalan` yang ada tidak diubah logikanya.
-5. **Prefill, bukan snapshot**: nilai turunan selalu dihitung live oleh kalkulator; rekap bulanan (`halaman_kumulatif`) adalah input ustadz yang tidak otomatis ditimpa oleh perubahan setoran harian berikutnya.
+5. **Prefill, bukan snapshot**: nilai turunan selalu dihitung live oleh kalkulator; rekap bulanan (`halaman_kumulatif`) adalah input muhafidz yang tidak otomatis ditimpa oleh perubahan setoran harian berikutnya.
 6. **Sisi admin**: dashboard + settings sebagai halaman biasa (bukan modal), sesuai desain Phase 5.
 
 ---
@@ -104,7 +104,7 @@ Pure class; metode terima `MutabaahBulanan` (+ config):
 
 ### Routes
 
-**Ustadz** (`routes/ustadz.php`, middleware `['auth','verified','role:ustadz']`):
+**Muhafidz** (`routes/muhafidz.php`, middleware `['auth','verified','role:muhafidz']`):
 
 | method | path | controller@method | keterangan |
 |---|---|---|---|
@@ -116,7 +116,7 @@ Pure class; metode terima `MutabaahBulanan` (+ config):
 | POST | `target-hafalan` | `TargetHafalanController@store` | (ada) |
 | PATCH | `target-hafalan/{targetHafalan}` | `TargetHafalanController@update` | (ada) |
 | DELETE | `target-hafalan/{targetHafalan}` | `TargetHafalanController@destroy` | (ada) |
-| **GET** | **`mutabaah-bulanan/{bulan}`** | **`Ustadz\MutabaahBulananController@edit`** | props: bulan, tahun, halaqahs+santri, settings, existing + prefill |
+| **GET** | **`mutabaah-bulanan/{bulan}`** | **`Muhafidz\MutabaahBulananController@edit`** | props: bulan, tahun, halaqahs+santri, settings, existing + prefill |
 | **POST** | **`mutabaah-bulanan/{bulan}`** | **`@update`** | batch upsert |
 
 **Admin** (`routes/admin.php`, middleware `['auth','verified','role:admin']`):
@@ -131,23 +131,23 @@ Route admin create/update santri tetap (form santri ditambah `halaman_awal`).
 
 ### Controller concern
 
-- Ustadz: resolusi `$request->user()->ustadz`; `abort_unless($ustadz !== null, 403)`; scoping santri via `$ustadz->halaqahs()->with('santris')`; `abort_unless` untuk santri bukan anggota halaqah ustadz. Prefill dihitung per santri.
+- Muhafidz: resolusi `$request->user()->muhafidz`; `abort_unless($muhafidz !== null, 403)`; scoping santri via `$muhafidz->halaqahs()->with('santris')`; `abort_unless` untuk santri bukan anggota halaqah muhafidz. Prefill dihitung per santri.
 - Admin: `role:admin` middleware.
 - Authorization terapkan di backend.
 
 ### Frontend
 
-**Konversi modal — admin (5 halaman):** `admin/users`, `admin/santris`, `admin/ustadzs`, `admin/orang-tuas`, `admin/halaqahs`.
+**Konversi modal — admin (5 halaman):** `admin/users`, `admin/santris`, `admin/muhafidzs`, `admin/orang-tuas`, `admin/halaqahs`.
 - Komponen `Dialog` (dari `@/components/ui/dialog`) membungkus form; blok inline `{showForm && ...}` dihapus.
 - **Reuse form**: tiap entitas punya komponen form (`*Form.tsx`) dengan prop `nilaiAwal?`; edit via tombol baris → modal yang sama dengan `defaultValue` dari data; submit `PATCH /admin/{entity}/{id}` (`_method=PATCH`).
 - Form santri bertambah field `halaman_awal` (int nullable).
 - `onSuccess` → tutup modal; `errors` dari Inertia tampil via `InputError` di dalam modal.
 
-**Modal harian (ustadz):** hapus `ustadz/mutabaahs/create.tsx`. Di `ustadz/halaqahs/santris.tsx`, tombol "Catat Mutabaah" per baris santri membuka `Dialog` berisi form harian (`halaman` field baru wajib). `santri_id` terisi dari baris.
+**Modal harian (muhafidz):** hapus `muhafidz/mutabaahs/create.tsx`. Di `muhafidz/halaqahs/santris.tsx`, tombol "Catat Mutabaah" per baris santri membuka `Dialog` berisi form harian (`halaman` field baru wajib). `santri_id` terisi dari baris.
 
-**Modal targets (ustadz):** `ustadz/targets/index.tsx` — create + edit di dalam modal (reuse `TargetForm`).
+**Modal targets (muhafidz):** `muhafidz/targets/index.tsx` — create + edit di dalam modal (reuse `TargetForm`).
 
-**Modal bulanan (ustadz) — batch:** tombol "Rekap Bulanan" (di halaman halaqah santri) membuka `Dialog` lebar scrollable berisi tabel batch: tiap baris santri = kolom `halaman_kumulatif` (prefill), `juz_dihafal`, `tasmi_pekan_1..5`, `ujian_soal_1..5`. Satu submit → POST batch. Live preview turunan (tambah juz, kategori, keterangan) via nilai yang diketik, sesuai kalkulator.
+**Modal bulanan (muhafidz) — batch:** tombol "Rekap Bulanan" (di halaman halaqah santri) membuka `Dialog` lebar scrollable berisi tabel batch: tiap baris santri = kolom `halaman_kumulatif` (prefill), `juz_dihafal`, `tasmi_pekan_1..5`, `ujian_soal_1..5`. Satu submit → POST batch. Live preview turunan (tambah juz, kategori, keterangan) via nilai yang diketik, sesuai kalkulator.
 
 **Admin modul bulanan:** `admin/mutabaah-bulanan/index.tsx` (dropdown bulan/tahun, ringkasan per kelompok, distribusi per jenis) dan `admin/mutabaah-settings.tsx` (form konfigurasi) — sebagai halaman, bukan modal.
 
@@ -157,8 +157,8 @@ Semua halaman memakai `page.layout = { breadcrumbs }`, Indonesian copy, shadcn/u
 
 ## Data Flow
 
-1. **Setoran harian:** ustadz isi modal harian (termasuk `halaman`) → POST `mutabaahs.store` → riwayat & progress ayat tetap seperti sekarang (field `halaman` hanya data tambahan untuk bulanan).
-2. **Rekap bulanan:** buka modal batch bulan → backend menghitung `halaman_awal_bulan` (Jan/Feb–Des) dan `prefill halaman_kumulatif` (dari Σ setoran harian bulan tsb) → ustadz lengkapi tasmi'/ujian (atau sesuaikan kumulatif) → submit batch upsert.
+1. **Setoran harian:** muhafidz isi modal harian (termasuk `halaman`) → POST `mutabaahs.store` → riwayat & progress ayat tetap seperti sekarang (field `halaman` hanya data tambahan untuk bulanan).
+2. **Rekap bulanan:** buka modal batch bulan → backend menghitung `halaman_awal_bulan` (Jan/Feb–Des) dan `prefill halaman_kumulatif` (dari Σ setoran harian bulan tsb) → muhafidz lengkapi tasmi'/ujian (atau sesuaikan kumulatif) → submit batch upsert.
 3. **Baca:** kalkulator menghitung turunan on-the-fly; dashboard admin mengagregasi.
 4. **Konsistensi:** rekap yang sudah disimpan tidak otomatis ditimpa setoran harian berikutnya; prefill lain waktu memakai Σ terkini sebagai dasar.
 
@@ -168,7 +168,7 @@ Semua halaman memakai `page.layout = { breadcrumbs }`, Indonesian copy, shadcn/u
 
 - **FormRequest mutabaah harian:** `tanggal` required date; `surah` required; `ayat_mulai`/`ayat_selesai` required integer; **`halaman` required integer min:1**; `nilai` nullable; `status` in:lulus/mengulang/dll.
 - **FormRequest bulanan:** `halaman_kumulatif` required integer min:0; `halaman_kumulatif >= halaman_awal_bulan`; tasmi/ujian `nullable|integer|between:10,100`; `juz_dihafal` nullable string; `bulan` 1..12.
-- **403:** ustadz non-pemilik halaqah / santri di luar halaqah; role salah.
+- **403:** muhafidz non-pemilik halaqah / santri di luar halaqah; role salah.
 - **404:** config belum ada → 404 dengan pesan; record bulanan santri optional.
 - **Kalkulator toleran:** field null → hasil null (bukan exception); tidak ada pembagian dengan nol (konversi divalidasi > 0).
 
@@ -179,8 +179,8 @@ Semua halaman memakai `page.layout = { breadcrumbs }`, Indonesian copy, shadcn/u
 - **Unit `MutabaahBulananCalculatorTest`** — bandingkan dengan nilai Excel nyata: tambah halaman/juz (17 halaman), kategori (17→1/2 Juz; 40→2 Juz), keterangan (threshold 1.5 & 0.25, kosong→Belum Diisi), rata² tasmi/ujian, boundary bin, **prefillKumulatif (dengan/ tanpa setoran harian, Jan vs Feb)**.
 - **Unit `MutabaahKategoriTest`** — lookup boundary.
 - **Feature `AdminSantriTest`** (extend) — field `halaman_awal` di create/update.
-- **Feature `UstadzMutabaahTest`** (extend) — `halaman` wajib pada setoran harian.
-- **Feature `UstadzMutabaahBulananTest`** — scoping halaqah (403 santri asing), validasi, batch upsert (unik santri/tahun/bulan), `halaman_awal_bulan` Jan vs Feb, prefill dari Σ setoran harian.
+- **Feature `MuhafidzMutabaahTest`** (extend) — `halaman` wajib pada setoran harian.
+- **Feature `MuhafidzMutabaahBulananTest`** — scoping halaqah (403 santri asing), validasi, batch upsert (unik santri/tahun/bulan), `halaman_awal_bulan` Jan vs Feb, prefill dari Σ setoran harian.
 - **Feature `AdminMutabaahBulananDashboardTest`** — ringkasan per kelompok (avg, jumlah berprestasi), distribusi per jenis, 403 non-admin.
 - **Feature `AdminMutabaahSettingTest`** — update config; 403 non-admin.
 - Konversi modal = murni frontend: validasi via `types:check` + build + smoke test manual.
@@ -200,7 +200,7 @@ Semua halaman memakai `page.layout = { breadcrumbs }`, Indonesian copy, shadcn/u
 
 ## Kriteria Sukses
 
-- Semua form create/edit (admin & ustadz) dirender sebagai modal; halaman `mutabaahs/create` dihapus.
+- Semua form create/edit (admin & muhafidz) dirender sebagai modal; halaman `mutabaahs/create` dihapus.
 - Setoran harian mencatat jumlah halaman; rekap bulanan ter-prefill dari Σ halaman setoran harian (jika ada), atau diisi manual.
 - Input rutin harian → tidak perlu mengisi bulanan dari nol; input akhir bulan → tidak perlu setoran harian per hari.
 - Dashboard admin + settings sesuai Phase 5; seluruh test hijau; UI konsisten light/dark.

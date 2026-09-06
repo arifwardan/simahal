@@ -2,13 +2,13 @@
 
 **Tanggal:** 2026-08-12
 **Status:** Approved (design)
-**Latar belakang:** aplikasi SIMAHAL sudah memiliki CRUD admin, workflow ustadz, dashboards, dan modul mutabaah bulanan. Pengguna ingin memindahkan data master dari file `Mutabaah_Hafalan_Santri.xlsx` (template Excel PondokIT) ke dalam aplikasi secara massal.
+**Latar belakang:** aplikasi SIMAHAL sudah memiliki CRUD admin, workflow muhafidz, dashboards, dan modul mutabaah bulanan. Pengguna ingin memindahkan data master dari file `Mutabaah_Hafalan_Santri.xlsx` (template Excel PondokIT) ke dalam aplikasi secara massal.
 
 ---
 
 ## Ringkasan
 
-1. **Import data master** (santri, ustadz/muhafidz, halaqah/kelompok, `halaman_awal`) dari sheet `Data Kelompok` file Excel.
+1. **Import data master** (santri, muhafidz/muhafidz, halaqah/kelompok, `halaman_awal`) dari sheet `Data Kelompok` file Excel.
 2. **Halaman admin "Import Excel"** dengan alur 3 langkah: upload → pratinjau → konfirmasi eksekusi.
 3. **Akun user dibangkitkan otomatis** (email dari nama + password default), NIS otomatis berformat `SIM-{tahun}-{0001}`, idempoten & toleran duplikat.
 4. **Import mutabaah bulanan/harian ditunda** (sheet bulan saat ini kosong); struktur parser disiapkan untuk perluasan `readMonthSheet()` di masa depan.
@@ -37,8 +37,8 @@ File `Mutabaah_Hafalan_Santri.xlsx` memiliki 16 sheet: Petunjuk, Dashboard, Refe
 2. **Halaman admin "Import Excel"** (bukan modal): alur upload → pratinjau → konfirmasi. Files tidak disimpan di server; eksekusi mengirim ulang file yang sama dan di-parse ulang secara deterministik.
 3. **Akun user otomatis**: email = slug nama `@simahal.test` (unik dengan suffix `-2`, `-3` bila kembar, dalam-file maupun terhadap DB yang sudah ada); password default `password` (konvensi seeder), bisa diubah nanti; email yang dibuat ditampilkan di laporan hasil.
 4. **NIS otomatis**: `SIM-{tahun_aktif}-{4 digit urut}`, dimulai setelah NIS terbesar yang sudah ada pada tahun itu; tahun dari `mutabaah_settings.tahun_aktif`.
-5. **Duplikat**: santri/ustadz/halaqah dicocokkan berdasar nama ternormalisasi (+ jenis untuk santri). Tindakan `update` = tidak membuat baru tetapi memperbarui `halaman_awal` (santri) dan memastikan keanggotaan halaqah. Import dapat dijalankan ulang tanpa menimbulkan duplikat (idempoten).
-6. **Placeholder dilewati**: santri bernama kosong atau `Nama <angka>`; muhafidz kosong atau `Muhafidz... <angka>`. Grup dengan muhafidz placeholder → halaqah & ustadz tidak dibuat.
+5. **Duplikat**: santri/muhafidz/halaqah dicocokkan berdasar nama ternormalisasi (+ jenis untuk santri). Tindakan `update` = tidak membuat baru tetapi memperbarui `halaman_awal` (santri) dan memastikan keanggotaan halaqah. Import dapat dijalankan ulang tanpa menimbulkan duplikat (idempoten).
+6. **Placeholder dilewati**: santri bernama kosong atau `Nama <angka>`; muhafidz kosong atau `Muhafidz... <angka>`. Grup dengan muhafidz placeholder → halaqah & muhafidz tidak dibuat.
 7. **Dependency**: tambah `phpoffice/phpspreadsheet` untuk membaca xlsx/xls secara robust (disetujui pengguna).
 
 ---
@@ -64,17 +64,17 @@ Sesuai prinsip isolasi, dipecah menjadi 3 unit dengan tanggung jawab tunggal:
 
 2. **`ImportPlanner`** — murni (tidak menulis DB, boleh query membaca).
    - `plan(ParsedWorkbook): ImportPlan`.
-   - **Email**: hitung dulu untuk seluruh santri/ustadz asli dalam 1 pass (dedup dalam-file), lalu lawan user yang sudah ada di DB (suffix numerik).
+   - **Email**: hitung dulu untuk seluruh santri/muhafidz asli dalam 1 pass (dedup dalam-file), lalu lawan user yang sudah ada di DB (suffix numerik).
    - **NIS**: urut `SIM-{tahun}-{0001..}` setelah `MAX(nis)` tahun itu.
-   - **Pencocokan**: ustadz berdasar nama ternormalisasi; halaqah berdasar nama; santri berdasar nama ternormalisasi + jenis.
+   - **Pencocokan**: muhafidz berdasar nama ternormalisasi; halaqah berdasar nama; santri berdasar nama ternormalisasi + jenis.
    - Setiap item rencana membawa: tipe entitas, `action` (`create` | `update` | `placeholder` | `error`), nilai-nilai yang akan ditulis, dan `reason` untuk skip/error (kepentingan pratinjau & laporan).
 
 3. **`ImportExecutor`** — melakukan penulisan.
    - `execute(ImportPlan): ImportResult` dalam satu `DB::transaction`.
    - `create` santri → `User` (role `santri`, email, password) + `Santri` (nis, nama, jenis, status aktif, `halaman_awal`) + `halaqah_members`.
-   - `create` ustadz → `User` (role `ustadz`) + `Ustadz` (nama) + halaqah terkait (create bila belum ada, set `ustadz_id`).
+   - `create` muhafidz → `User` (role `muhafidz`) + `Muhafidz` (nama) + halaqah terkait (create bila belum ada, set `muhafidz_id`).
    - `update` santri → perbarui `halaman_awal` (+ `jenis` bila beda), pastikan keanggotaan halaqah (attach bila belum ada; tidak menghapus keanggotaan lain).
-   - `update` ustadz → perbarui `nama` saja (tidak menyentuh email/kontak).
+   - `update` muhafidz → perbarui `nama` saja (tidak menyentuh email/kontak).
    - Error tak terduga per baris: `try/catch` per item → dicatat ke `ImportResult.errors`, baris valid tetap diproses; kesalahan fatal (file korup, dsb.) → rollback seluruh transaksi.
    - `ImportResult`: ringkasan + daftar email yang dibuat.
 
@@ -94,8 +94,8 @@ Sesuai prinsip isolasi, dipecah menjadi 3 unit dengan tanggung jawab tunggal:
 
 - `resources/js/pages/admin/excel-import.tsx` (komponen tunggal; state di dalam komponen).
   1. **Upload**: drag-drop / file input (komponen shadcn yang sudah ada), tombol "Lihat Pratinjau"; file dipegang di state client untuk dikirim ulang saat eksekusi.
-  2. **Pratinjau**: kartu ringkasan (akan dibuat, diperbarui, dilewati, error) + tabel rinci per santri/ustadz dengan kolom tindakan & alasan; tombol "Batalkan" dan "Konfirmasi Import".
-  3. **Selesai**: laporan hasil (jumlah per kategori + daftar email user yang dibuat) + tautan ke `admin.santris.index`, `admin.ustadzs.index`, `admin.halaqahs.index`.
+  2. **Pratinjau**: kartu ringkasan (akan dibuat, diperbarui, dilewati, error) + tabel rinci per santri/muhafidz dengan kolom tindakan & alasan; tombol "Batalkan" dan "Konfirmasi Import".
+  3. **Selesai**: laporan hasil (jumlah per kategori + daftar email user yang dibuat) + tautan ke `admin.santris.index`, `admin.muhafidzs.index`, `admin.halaqahs.index`.
 - Item sidebar admin "Import Excel" ditambahkan di layout admin (ikon `FileUp`), `page.layout = { breadcrumbs }`, kop Indonesia, `PageContainer`, shadcn/ui, aksen emerald — mengikuti halaman admin mutabaah-settings.
 - Wayfinder actions di-regenerate setelah route baru.
 
@@ -106,7 +106,7 @@ Sesuai prinsip isolasi, dipecah menjadi 3 unit dengan tanggung jawab tunggal:
 1. Admin membuka `admin/excel-import`, memilih file `.xlsx` → POST `preview`.
 2. `ExcelReader::readDataKelompok()` mem-parse → `ImportPlanner::plan()` menghitung tindakan (termasuk email/NIS). Hasil dirender sebagai pratinjau.
 3. Admin mengonfirmasi → POST `execute` dengan file yang sama → parse+plan ulang (deterministik, identik dengan pratinjau) → `ImportExecutor::execute()` dalam satu transaksi.
-4. Halaman menampilkan laporan hasil; navigasi kembali ke daftar santri/ustadz/halaqah.
+4. Halaman menampilkan laporan hasil; navigasi kembali ke daftar santri/muhafidz/halaqah.
 
 ---
 
@@ -125,8 +125,8 @@ Sesuai prinsip isolasi, dipecah menjadi 3 unit dengan tanggung jawab tunggal:
 Konvensi proyek: TDD, `php artisan test --compact`, `npx tsc --noEmit`, `vendor/bin/pint --dirty --format agent`, regenerate Wayfinder.
 
 - **Unit `ExcelReaderTest`**: parse fixture workbook (dibuat via factory PhpSpreadsheet); normalisasi nama (unicode/word-joiner, kutip); deteksi placeholder santri & muhafidz; baris → ParsedWorkbook sesuai.
-- **Unit `ImportPlannerTest`**: email unik (dalam-file & terhadap DB existing), urutan NIS (dari tahun aktif & MAX nis), klasifikasi tindakan (create/update/placeholder/error), pencocokan ustadz/halaqah/santri.
-- **Feature `AdminExcelImportTest`**: upload → preview (ringkasan benar, file invalid ditolak); execute (jumlah santri/ustadz/halaqah/keanggotaan di DB sesuai); **idempoten** (jalankan 2× → tidak dobel); `halaman_awal` santri existing diperbarui; email-user & NIS unik; non-admin → 403.
+- **Unit `ImportPlannerTest`**: email unik (dalam-file & terhadap DB existing), urutan NIS (dari tahun aktif & MAX nis), klasifikasi tindakan (create/update/placeholder/error), pencocokan muhafidz/halaqah/santri.
+- **Feature `AdminExcelImportTest`**: upload → preview (ringkasan benar, file invalid ditolak); execute (jumlah santri/muhafidz/halaqah/keanggotaan di DB sesuai); **idempoten** (jalankan 2× → tidak dobel); `halaman_awal` santri existing diperbarui; email-user & NIS unik; non-admin → 403.
 - Smoke manual UI pasca-build (drag-drop, pratinjau, konfirmasi).
 
 ---
@@ -142,7 +142,7 @@ Konvensi proyek: TDD, `php artisan test --compact`, `npx tsc --noEmit`, `vendor/
 
 ## Kriteria Sukses
 
-- File `Mutabaah_Hafalan_Santri.xlsx` dapat diimpor lewat halaman admin dengan pratinjau akurat dan hasil sesuai (santri/ustadz/halaqah asli dibuat; placeholder dilewati).
-- Akun user tiap santri/ustadz dibuat otomatis dengan email unik dan password default; NIS unik `SIM-{tahun}-{0001}`.
+- File `Mutabaah_Hafalan_Santri.xlsx` dapat diimpor lewat halaman admin dengan pratinjau akurat dan hasil sesuai (santri/muhafidz/halaqah asli dibuat; placeholder dilewati).
+- Akun user tiap santri/muhafidz dibuat otomatis dengan email unik dan password default; NIS unik `SIM-{tahun}-{0001}`.
 - Import idempoten: dijalankan ulang tidak menghasilkan duplikat; `halaman_awal` santri existing ikut diperbarui.
 - Seluruh test hijau, `types:check` & `lint` bersih.
