@@ -1,7 +1,6 @@
 import { Form, Link, router } from '@inertiajs/react';
 import { useMemo, useState } from 'react';
 import MutabaahBulananController from '@/actions/App/Http/Controllers/Muhafidz/MutabaahBulananController';
-import MutabaahForm from '@/components/forms/MutabaahForm';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import PageContainer from '@/components/page-container';
@@ -79,8 +78,8 @@ type Halaqah = { id: number; nama: string };
 type PageProps = {
     halaqah: Halaqah;
     santris: { data: SantriRow[]; total: number; current_page: number; last_page: number; links: { url: string | null; label: string; active: boolean }[] };
-    jenisOptions: Option[];
-    statusOptions: Option[];
+    jenisOptions?: Option[];
+    statusOptions?: Option[];
     settings: Settings;
     bulan: number;
     tahun: number;
@@ -390,19 +389,14 @@ function RekapBulananDialog({
 export default function MuhafidzHalaqahSantris({
     halaqah,
     santris,
-    jenisOptions,
-    statusOptions,
     settings,
     bulan,
     bulanan,
     availableSantris,
 }: PageProps) {
-    const [catatSantri, setCatatSantri] = useState<SantriRow | null>(null);
     const [showRekap, setShowRekap] = useState(false);
     const [showTambah, setShowTambah] = useState(false);
     const [selectedSantriId, setSelectedSantriId] = useState<string>('');
-    const [highlightId, setHighlightId] = useState<number | null>(null);
-    const [processingSantri, setProcessingSantri] = useState<number | null>(null);
 
     const columns = useMemo<DataTableColumn<SantriRow>[]>(
         () => [
@@ -411,7 +405,7 @@ export default function MuhafidzHalaqahSantris({
                 header: 'Santri',
                 accessor: (r) => `${r.nama} ${r.nis ?? ''}`,
                 cell: (row) => (
-                    <div className={highlightId === row.id ? 'rounded bg-emerald-100 px-1' : ''}>
+                    <div>
                         <p className="font-black text-black">{row.nama}</p>
                         {row.nis && <p className="text-xs font-bold text-black/60">{row.nis}</p>}
                     </div>
@@ -449,7 +443,7 @@ export default function MuhafidzHalaqahSantris({
                     ),
             },
         ],
-        [halaqah.id, highlightId],
+        [halaqah.id],
     );
 
     return (
@@ -482,44 +476,6 @@ export default function MuhafidzHalaqahSantris({
                     />
                 </CardContent>
             </Card>
-
-            <Dialog
-                open={catatSantri !== null}
-                onOpenChange={(open) => {
-                    if (!open) {
-                        setCatatSantri(null);
-                        setProcessingSantri(null);
-                    }
-                }}
-            >
-                <DialogContent key={catatSantri?.id}>
-                    <DialogHeader>
-                        <DialogTitle>Catat Mutabaah</DialogTitle>
-                        <DialogDescription>
-                            {catatSantri
-                                ? `${catatSantri.nama}${catatSantri.nis ? ` (${catatSantri.nis})` : ''}`
-                                : ''}
-                        </DialogDescription>
-                    </DialogHeader>
-                    {catatSantri && (
-                        <MutabaahForm
-                            santri={catatSantri}
-                            jenisOptions={jenisOptions}
-                            statusOptions={statusOptions}
-                            onSuccess={() => {
-                                setProcessingSantri(null);
-                                setCatatSantri(null);
-                                const next = santris.data.find(
-                                    (s) =>
-                                        s.id !== catatSantri?.id &&
-                                        !s.mutabaah_hari_ini,
-                                );
-                                setHighlightId(next?.id ?? null);
-                            }}
-                        />
-                    )}
-                </DialogContent>
-            </Dialog>
 
             {showRekap && (
                 <RekapBulananDialog
