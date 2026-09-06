@@ -16,7 +16,7 @@ test('progress sums ayat spans of lulus setoran mutabaah', function () {
     $santri = Santri::factory()->create();
     $target = TargetHafalan::factory()->create([
         'santri_id' => $santri->id,
-        'target' => 100,
+        'target' => 10,
         'progress' => 0,
     ]);
 
@@ -27,6 +27,7 @@ test('progress sums ayat spans of lulus setoran mutabaah', function () {
         'status' => MutabaahStatus::Lulus,
         'ayat_mulai' => 1,
         'ayat_selesai' => 7,
+        'halaman' => 7,
     ]);
     Mutabaah::factory()->create([
         'santri_id' => $santri->id,
@@ -35,11 +36,18 @@ test('progress sums ayat spans of lulus setoran mutabaah', function () {
         'status' => MutabaahStatus::Lulus,
         'ayat_mulai' => 8,
         'ayat_selesai' => 15,
+        'halaman' => 8,
     ]);
 
     RecalculateTargetProgress::run($santri);
 
     expect($target->fresh()->progress)->toBe(15);
+});
+
+test('progress percent uses halaman', function () {
+    $target = TargetHafalan::factory()->create(['target' => 6, 'progress' => 60]);
+
+    expect($target->progressPercent())->toBe(50);
 });
 
 test('non-lulus and murajaah mutabaah are excluded', function () {
@@ -86,11 +94,20 @@ test('progress is capped at target', function () {
         'status' => MutabaahStatus::Lulus,
         'ayat_mulai' => 1,
         'ayat_selesai' => 30,
+        'halaman' => 150,
+    ]);
+    Mutabaah::factory()->create([
+        'santri_id' => $santri->id,
+        'jenis' => MutabaahJenis::Setoran,
+        'status' => MutabaahStatus::Lulus,
+        'ayat_mulai' => 31,
+        'ayat_selesai' => 60,
+        'halaman' => 100,
     ]);
 
     RecalculateTargetProgress::run($santri);
 
-    expect($target->fresh()->progress)->toBe(10);
+    expect($target->fresh()->progress)->toBe(200);
 });
 
 test('santri with no berlangsung target does nothing', function () {

@@ -23,7 +23,7 @@ test('muhafidz sees target hafalan of member santri with progress percent', func
     $halaqah = Halaqah::factory()->create(['muhafidz_id' => $muhafidz->id]);
     $santri = Santri::factory()->create();
     $halaqah->santris()->attach($santri->id);
-    TargetHafalan::factory()->create(['santri_id' => $santri->id, 'target' => 100, 'progress' => 25]);
+    TargetHafalan::factory()->create(['santri_id' => $santri->id, 'target' => 6, 'progress' => 25]);
 
     $this->get(route('muhafidz.targets.index'))
         ->assertOk()
@@ -41,14 +41,14 @@ test('muhafidz can create a target for a member santri', function () {
     $this->post(route('muhafidz.targets.store'), [
         'santri_id' => $santri->id,
         'periode' => '2027-2028',
-        'target' => 600,
+        'target' => 6,
         'status' => TargetHafalanStatus::Berlangsung->value,
     ])->assertRedirect(route('muhafidz.targets.index'));
 
     $this->assertDatabaseHas('target_hafalans', [
         'santri_id' => $santri->id,
         'periode' => '2027-2028',
-        'target' => 600,
+        'target' => 6,
         'status' => TargetHafalanStatus::Berlangsung->value,
     ]);
 });
@@ -60,7 +60,7 @@ test('muhafidz cannot create a target for a stranger santri', function () {
     $this->post(route('muhafidz.targets.store'), [
         'santri_id' => $stranger->id,
         'periode' => '2027-2028',
-        'target' => 600,
+        'target' => 6,
         'status' => TargetHafalanStatus::Berlangsung->value,
     ])->assertForbidden();
 

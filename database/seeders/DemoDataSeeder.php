@@ -12,6 +12,8 @@ use App\Enums\UserRole;
 use App\Models\Halaqah;
 use App\Models\Muhafidz;
 use App\Models\Mutabaah;
+use App\Models\MutabaahBulanan;
+use App\Models\MutabaahSetting;
 use App\Models\OrangTua;
 use App\Models\Santri;
 use App\Models\TargetHafalan;
@@ -139,27 +141,27 @@ class DemoDataSeeder extends Seeder
             }
         }
 
-        // Target hafalan: TOP 3 tinggi, 3 rendah, sisa menengah
-        $topProgress = [520, 480, 450, 30, 45, 60];
+        // Target hafalan: TOP 3 tinggi, 3 rendah, sisa menengah (target Juz, progress Halaman)
+        $topProgressHalaman = [520, 480, 440, 40, 60, 80];
         foreach ($santris->take(6) as $i => $s) {
             TargetHafalan::firstOrCreate(
                 ['santri_id' => $s->id],
                 [
                     'periode' => now()->year.'-'.(now()->year + 1),
-                    'target' => 600,
-                    'progress' => $topProgress[$i],
-                    'status' => $topProgress[$i] >= 600 ? TargetHafalanStatus::Selesai : TargetHafalanStatus::Berlangsung,
+                    'target' => 30,
+                    'progress' => $topProgressHalaman[$i],
+                    'status' => $topProgressHalaman[$i] >= 600 ? TargetHafalanStatus::Selesai : TargetHafalanStatus::Berlangsung,
                 ]
             );
         }
-        // sisa santri random 120-350
+        // sisa santri random 120-360 halaman (6-18 Juz)
         foreach ($santris->slice(6) as $s) {
             if (! TargetHafalan::where('santri_id', $s->id)->exists()) {
                 TargetHafalan::create([
                     'santri_id' => $s->id,
                     'periode' => now()->year.'-'.(now()->year + 1),
-                    'target' => 600,
-                    'progress' => fake()->numberBetween(120, 350),
+                    'target' => 30,
+                    'progress' => fake()->numberBetween(120, 360),
                     'status' => TargetHafalanStatus::Berlangsung,
                 ]);
             }
@@ -211,6 +213,46 @@ class DemoDataSeeder extends Seeder
         // lebih lama 5
         for ($i = 0; $i < 5; $i++) {
             $createMutabaah(Carbon::now()->subMonths(2)->addDays(rand(0, 20)));
+        }
+
+        // --- Mutabaah Bulanan dummy untuk Rekap Halaqah (3 bulan terakhir) ---
+        $setting = MutabaahSetting::setting();
+        $tahunAktif = $setting->tahun_aktif;
+        $bulanIni = (int) now()->month;
+        $bulanList = [$bulanIni, $bulanIni - 1, $bulanIni - 2];
+        $bulanList = array_map(fn ($b) => $b <= 0 ? $b + 12 : $b, $bulanList);
+        foreach ($santris as $idx => $s) {
+            // variasi agar rekap ada yang bagus & rendah
+            $isTop = $idx < 3;
+            $isLow = $idx >= 3 && $idx < 6;
+            foreach ($bulanList as $bIdx => $bulan) {
+                // hanya isi bulan ini untuk semua, 2 bulan lalu hanya untuk sebagian agar terisi tidak 100%
+                if ($bIdx > 0 && fake()->boolean(30)) {
+                    continue;
+                }
+                $halAwal = $isTop ? fake()->numberBetween(80, 140) : ($isLow ? fake()->numberBetween(5, 25) : fake()->numberBetween(30, 90));
+                $kumulatif = $halAwal + fake()->numberBetween(10, 45);
+                // pastikan beberapa berprestasi
+                if ($isTop && $bIdx === 0) {
+                    $kumulatif = $halAwal + fake()->numberBetween(30, 50);
+                }
+                MutabaahBulanan::updateOrCreate(
+                    ['santri_id' => $s->id, 'tahun' => $tahunAktif, 'bulan' => $bulan],
+                    [
+                        'halaman_awal_bulan' => $halAwal,
+                        'halaman_kumulatif' => $kumulatif,
+                        'juz_dihafal' => (string) round($kumulatif / $setting->konversi_juz_halaman, 1),
+                        'tasmi_pekan_1' => $isLow ? fake()->numberBetween(50, 70) : fake()->numberBetween(75, 98),
+                        'tasmi_pekan_2' => $isLow ? fake()->numberBetween(50, 70) : fake()->numberBetween(75, 98),
+                        'tasmi_pekan_3' => $isLow ? fake()->numberBetween(50, 70) : fake()->numberBetween(75, 98),
+                        'tasmi_pekan_4' => $isLow ? fake()->numberBetween(50, 70) : fake()->numberBetween(75, 98),
+                        'tasmi_pekan_5' => fake()->optional(0.4)->numberBetween(70, 95),
+                        'ujian_bulanan' => $isLow ? fake()->numberBetween(55, 72) : fake()->numberBetween(78, 98),
+                        'catatan_tasmi' => fake()->optional()->sentence(),
+                        'catatan_ujian' => fake()->optional()->sentence(),
+                    ]
+                );
+            }
         }
 
         // Pastikan TOP santri (3 pertama) punya mutabaah terbanyak tambahan

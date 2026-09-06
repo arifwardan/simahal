@@ -47,6 +47,10 @@ class TargetHafalan extends Model
             return 0;
         }
 
-        return (int) floor(($this->progress / $this->target) * 100);
+        // target disimpan sebagai Juz (max 30), progress disimpan sebagai halaman
+        // konversi target ke halaman untuk persentase yang akurat
+        $targetHalaman = $this->target * 20;
+
+        return (int) floor(($this->progress / $targetHalaman) * 100);
     }
 }

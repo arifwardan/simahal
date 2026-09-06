@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Actions\Mutabaah\RecalculateTargetProgress;
 use App\Enums\HalaqahStatus;
 use App\Enums\MutabaahJenis;
 use App\Enums\MutabaahStatus;
@@ -77,7 +78,7 @@ class DatabaseSeeder extends Seeder
         TargetHafalan::factory()->create([
             'santri_id' => $santri->id,
             'periode' => now()->year.'-'.(now()->year + 1),
-            'target' => 1140,
+            'target' => 6,
             'progress' => 0,
             'status' => TargetHafalanStatus::Berlangsung,
         ]);
@@ -93,7 +94,11 @@ class DatabaseSeeder extends Seeder
             'nilai' => 95,
             'status' => MutabaahStatus::Lulus,
             'catatan' => 'Lancar, tajwid baik.',
+            'halaman' => 2,
         ]);
+
+        // hitung progress Budi yang benar (halaman)
+        RecalculateTargetProgress::run($santri);
 
         $this->call(DemoDataSeeder::class);
     }

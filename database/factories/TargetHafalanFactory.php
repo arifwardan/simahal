@@ -20,7 +20,7 @@ class TargetHafalanFactory extends Factory
         return [
             'santri_id' => Santri::factory(),
             'periode' => now()->year.'-'.(now()->year + 1),
-            'target' => fake()->numberBetween(30, 600),
+            'target' => fake()->numberBetween(5, 30),
             'progress' => 0,
             'status' => TargetHafalanStatus::Berlangsung,
         ];

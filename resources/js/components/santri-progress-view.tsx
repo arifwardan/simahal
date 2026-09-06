@@ -50,7 +50,7 @@ export default function SantriProgressView({
                 <CardContent className="space-y-3 pt-4">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                         <p className="border-[3px] border-black bg-black px-3 py-1 text-sm font-black text-[#FFF7E8] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                            {progress.progress}/{progress.target} juz · {progress.percent}%
+                            {(progress.progress / 20).toFixed(1)}/{progress.target} Juz · {progress.progress}/{progress.target * 20} hal · {progress.percent}%
                         </p>
                         {progress.status && (
                             <Badge className="border-[3px] border-black bg-[#5CE1E6] font-black text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
@@ -63,7 +63,7 @@ export default function SantriProgressView({
                     </div>
                     <div className="flex items-center justify-between">
                         <p className="text-xs font-black uppercase">{progress.percent >= 100 ? 'Alhamdulillah tercapai!' : `${100 - progress.percent}% lagi`}</p>
-                        <span className="border-2 border-black bg-[#FF90E8] px-2 py-1 text-xs font-black">{progress.target} juz max</span>
+                        <span className="border-2 border-black bg-[#FF90E8] px-2 py-1 text-xs font-black">Target {progress.target}/30 Juz · ~{progress.target * 20} hal</span>
                     </div>
                 </CardContent>
             </Card>

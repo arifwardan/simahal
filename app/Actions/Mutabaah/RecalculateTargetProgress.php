@@ -24,12 +24,20 @@ class RecalculateTargetProgress
             return;
         }
 
-        $progress = $santri->mutabaahs()
+        $progressHalaman = $santri->mutabaahs()
+            ->where('status', MutabaahStatus::Lulus)
+            ->where('jenis', MutabaahJenis::Setoran)
             ->get()
-            ->filter(fn ($mutabaah) => $mutabaah->jenis === MutabaahJenis::Setoran
-                && $mutabaah->status === MutabaahStatus::Lulus)
-            ->sum(fn ($mutabaah) => max(0, $mutabaah->ayat_selesai - $mutabaah->ayat_mulai + 1));
+            ->sum(function ($m) {
+                if ($m->halaman !== null && $m->halaman > 0) {
+                    return (int) $m->halaman;
+                }
 
-        $target->update(['progress' => min($progress, $target->target)]);
+                return max(0, $m->ayat_selesai - $m->ayat_mulai + 1);
+            });
+
+        // target disimpan Juz, progress disimpan halaman
+        $targetHalaman = $target->target * 20;
+        $target->update(['progress' => min($progressHalaman, $targetHalaman)]);
     }
 }
