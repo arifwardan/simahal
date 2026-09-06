@@ -24,17 +24,11 @@ class RecalculateTargetProgress
             return;
         }
 
-        $progressHalaman = $santri->mutabaahs()
+        // Spec verbatim: sum halaman only; null halaman rows are ignored (backfilled via migration if needed).
+        $progressHalaman = (int) $santri->mutabaahs()
             ->where('status', MutabaahStatus::Lulus)
             ->where('jenis', MutabaahJenis::Setoran)
-            ->get()
-            ->sum(function ($m) {
-                if ($m->halaman !== null && $m->halaman > 0) {
-                    return (int) $m->halaman;
-                }
-
-                return max(0, $m->ayat_selesai - $m->ayat_mulai + 1);
-            });
+            ->sum('halaman');
 
         // target disimpan Juz, progress disimpan halaman
         $targetHalaman = $target->target * 20;

@@ -44,8 +44,6 @@ type SantriRow = {
     } | null;
 };
 
-type Option = { value: string; label: string };
-
 type Settings = {
     konversi_juz_halaman: number;
     ambang_hadiah_juz: number;
@@ -78,8 +76,6 @@ type Halaqah = { id: number; nama: string };
 type PageProps = {
     halaqah: Halaqah;
     santris: { data: SantriRow[]; total: number; current_page: number; last_page: number; links: { url: string | null; label: string; active: boolean }[] };
-    jenisOptions?: Option[];
-    statusOptions?: Option[];
     settings: Settings;
     bulan: number;
     tahun: number;

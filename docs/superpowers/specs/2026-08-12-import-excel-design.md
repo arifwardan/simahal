@@ -8,7 +8,7 @@
 
 ## Ringkasan
 
-1. **Import data master** (santri, muhafidz/muhafidz, halaqah/kelompok, `halaman_awal`) dari sheet `Data Kelompok` file Excel.
+1. **Import data master** (santri, muhafidz, halaqah/kelompok, `halaman_awal`) dari sheet `Data Kelompok` file Excel.
 2. **Halaman admin "Import Excel"** dengan alur 3 langkah: upload → pratinjau → konfirmasi eksekusi.
 3. **Akun user dibangkitkan otomatis** (email dari nama + password default), NIS otomatis berformat `SIM-{tahun}-{0001}`, idempoten & toleran duplikat.
 4. **Import mutabaah bulanan/harian ditunda** (sheet bulan saat ini kosong); struktur parser disiapkan untuk perluasan `readMonthSheet()` di masa depan.
