@@ -6,19 +6,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
-import { login } from '@/routes';
-import { store } from '@/routes/register';
 
-type Props = {
-    passwordRules: string;
-};
-
-export default function Register({ passwordRules }: Props) {
+export default function RegisterPondok() {
     return (
         <>
-            <Head title="Register" />
+            <Head title="Daftarkan Pondok" />
             <Form
-                {...store.form()}
+                action="/register-pondok"
+                method="post"
                 resetOnSuccess={['password', 'password_confirmation']}
                 disableWhileProcessing
                 className="flex flex-col gap-6"
@@ -27,21 +22,47 @@ export default function Register({ passwordRules }: Props) {
                     <>
                         <div className="grid gap-6">
                             <div className="grid gap-2">
-                                <Label htmlFor="name">Name</Label>
+                                <Label htmlFor="nama_yayasan">
+                                    Nama Yayasan / Pondok
+                                </Label>
                                 <Input
-                                    id="name"
+                                    id="nama_yayasan"
                                     type="text"
                                     required
                                     autoFocus
                                     tabIndex={1}
+                                    autoComplete="organization"
+                                    name="nama_yayasan"
+                                    placeholder="Yayasan Cahaya Ilmu"
+                                />
+                                <InputError message={errors.nama_yayasan} />
+                            </div>
+
+                            <div className="grid gap-2">
+                                <Label htmlFor="slug">Slug</Label>
+                                <Input
+                                    id="slug"
+                                    type="text"
+                                    required
+                                    tabIndex={2}
+                                    name="slug"
+                                    placeholder="cahaya-ilmu"
+                                />
+                                <InputError message={errors.slug} />
+                            </div>
+
+                            <div className="grid gap-2">
+                                <Label htmlFor="name">Nama Admin</Label>
+                                <Input
+                                    id="name"
+                                    type="text"
+                                    required
+                                    tabIndex={3}
                                     autoComplete="name"
                                     name="name"
                                     placeholder="Full name"
                                 />
-                                <InputError
-                                    message={errors.name}
-                                    className="mt-2"
-                                />
+                                <InputError message={errors.name} />
                             </div>
 
                             <div className="grid gap-2">
@@ -50,7 +71,7 @@ export default function Register({ passwordRules }: Props) {
                                     id="email"
                                     type="email"
                                     required
-                                    tabIndex={2}
+                                    tabIndex={4}
                                     autoComplete="email"
                                     name="email"
                                     placeholder="email@example.com"
@@ -63,11 +84,10 @@ export default function Register({ passwordRules }: Props) {
                                 <PasswordInput
                                     id="password"
                                     required
-                                    tabIndex={3}
+                                    tabIndex={5}
                                     autoComplete="new-password"
                                     name="password"
                                     placeholder="Password"
-                                    passwordrules={passwordRules}
                                 />
                                 <InputError message={errors.password} />
                             </div>
@@ -79,11 +99,10 @@ export default function Register({ passwordRules }: Props) {
                                 <PasswordInput
                                     id="password_confirmation"
                                     required
-                                    tabIndex={4}
+                                    tabIndex={6}
                                     autoComplete="new-password"
                                     name="password_confirmation"
                                     placeholder="Confirm password"
-                                    passwordrules={passwordRules}
                                 />
                                 <InputError
                                     message={errors.password_confirmation}
@@ -93,17 +112,18 @@ export default function Register({ passwordRules }: Props) {
                             <Button
                                 type="submit"
                                 className="mt-2 w-full"
-                                tabIndex={5}
-                                data-test="register-user-button"
+                                tabIndex={7}
+                                disabled={processing}
+                                data-test="register-pondok-button"
                             >
                                 {processing && <Spinner />}
-                                Create account
+                                Daftarkan Pondok
                             </Button>
                         </div>
 
                         <div className="text-center text-sm text-muted-foreground">
-                            Already have an account?{' '}
-                            <TextLink href={login()} tabIndex={6}>
+                            Sudah punya akun?{' '}
+                            <TextLink href="/login" tabIndex={8}>
                                 Log in
                             </TextLink>
                         </div>
@@ -114,7 +134,7 @@ export default function Register({ passwordRules }: Props) {
     );
 }
 
-Register.layout = {
-    title: 'Create an account',
-    description: 'Enter your details below to create your account',
+RegisterPondok.layout = {
+    title: 'Daftarkan pondok baru',
+    description: 'Buat ruang pondok dan akun admin dalam satu langkah',
 };

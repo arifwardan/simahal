@@ -1,7 +1,7 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { BarChart3, Bell, BookOpen, Check, Crown, GraduationCap, HeartHandshake, ShieldCheck, Sparkles, Target, User, Zap } from 'lucide-react';
 import AppLogoIcon from '@/components/app-logo-icon';
-import { dashboard, login, register } from '@/routes';
+import { dashboard, login, registerPondok } from '@/routes';
 type Feature = { icon: React.ReactNode; title: string; description: string };
 const roles = [
   { icon: <ShieldCheck className="size-5" />, name: 'Admin', description: 'Mengelola ekosistem halaqah dan seluruh data akademik.', color: 'bg-[#FFD600]' },
@@ -50,7 +50,7 @@ export default function Welcome() {
               <a href="#pricing" className="rounded-none border-2 border-black bg-[#FFD600] px-3 py-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">Pricing</a>
             </div>
             <div className="flex items-center gap-2">
-              {auth.user ? <Link href={dashboard()} className="inline-flex h-9 cursor-pointer items-center border-[3px] border-black bg-black px-4 text-xs font-black uppercase text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">Dashboard</Link> : <><Link href={login()} className="hidden h-9 cursor-pointer items-center border-[3px] border-black bg-white px-4 text-xs font-black uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] sm:inline-flex">Masuk</Link><Link href={register()} className="inline-flex h-9 cursor-pointer items-center border-[3px] border-black bg-[#FF3B30] px-4 text-xs font-black uppercase text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px]">Daftar</Link></>}
+              {auth.user ? <Link href={dashboard()} className="inline-flex h-9 cursor-pointer items-center border-[3px] border-black bg-black px-4 text-xs font-black uppercase text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">Dashboard</Link> : <><Link href={login()} className="hidden h-9 cursor-pointer items-center border-[3px] border-black bg-white px-4 text-xs font-black uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] sm:inline-flex">Masuk</Link><Link href={registerPondok()} className="inline-flex h-9 cursor-pointer items-center border-[3px] border-black bg-[#FF3B30] px-4 text-xs font-black uppercase text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px]">Daftar</Link></>}
             </div>
           </nav>
         </header>
@@ -64,7 +64,7 @@ export default function Welcome() {
                 <h1 className="mt-4 font-head text-4xl font-black uppercase leading-[0.9] tracking-tight md:text-5xl">Menjaga hafalan, <span className="inline-block rotate-1 border-[3px] border-black bg-[#FFD600] px-2 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">terstruktur</span> & <span className="inline-block -rotate-1 border-[3px] border-black bg-[#5CE1E6] px-2 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">bermakna</span>.</h1>
                 <p className="mt-4 max-w-lg border-l-[4px] border-black bg-white p-3 text-sm font-bold leading-relaxed">SIMAHAL menghubungkan Admin, Muhafidz, Santri, Orang Tua — mutabaah, target juz (1-30), nilai 1-100 flag A-E dalam tema brutal warm.</p>
                 <div className="mt-6 flex flex-wrap gap-3">
-                  {auth.user ? <Link href={dashboard()} className="inline-flex h-11 cursor-pointer items-center border-[3px] border-black bg-black px-6 text-sm font-black uppercase text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">Buka Dashboard →</Link> : <><Link href={register()} className="inline-flex h-11 cursor-pointer items-center border-[3px] border-black bg-[#FF3B30] px-6 text-sm font-black uppercase text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">Mulai Sekarang →</Link><Link href={login()} className="inline-flex h-11 cursor-pointer items-center border-[3px] border-black bg-white px-6 text-sm font-black uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">Masuk</Link></>}
+                  {auth.user ? <Link href={dashboard()} className="inline-flex h-11 cursor-pointer items-center border-[3px] border-black bg-black px-6 text-sm font-black uppercase text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">Buka Dashboard →</Link> : <><Link href={registerPondok()} className="inline-flex h-11 cursor-pointer items-center border-[3px] border-black bg-[#FF3B30] px-6 text-sm font-black uppercase text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">Mulai Sekarang →</Link><Link href={login()} className="inline-flex h-11 cursor-pointer items-center border-[3px] border-black bg-white px-6 text-sm font-black uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">Masuk</Link></>}
                 </div>
                 <div className="mt-6 flex items-center gap-2 text-xs font-black uppercase"><span className="border-2 border-black bg-white px-2 py-1">1-30 Juz</span><span className="border-2 border-black bg-[#FFD600] px-2 py-1">1-100 Nilai</span><span className="border-2 border-black bg-[#5CE1E6] px-2 py-1">A-E Flag</span></div>
               </div>
@@ -130,7 +130,7 @@ export default function Welcome() {
                   <p className="mt-2 text-xs font-bold text-black/60">{p.desc}</p>
                   <p className="mt-4 font-head text-3xl font-black">{p.price} <span className="text-sm font-bold">{p.period}</span></p>
                   <ul className="mt-4 flex-1 space-y-2">{p.features.map((f) => <li key={f} className="flex items-center gap-2 text-xs font-bold"><span className="flex size-5 items-center justify-center border-2 border-black bg-black text-white"><Check className="h-3 w-3" /></span> {f}</li>)}</ul>
-                  <Link href={register()} className={`mt-6 inline-flex h-10 cursor-pointer items-center justify-center border-[3px] border-black text-xs font-black uppercase shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] ${p.highlight ? 'bg-black text-white' : 'bg-white text-black hover:bg-black hover:text-white'}`}>{p.cta}</Link>
+                  <Link href={registerPondok()} className={`mt-6 inline-flex h-10 cursor-pointer items-center justify-center border-[3px] border-black text-xs font-black uppercase shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] ${p.highlight ? 'bg-black text-white' : 'bg-white text-black hover:bg-black hover:text-white'}`}>{p.cta}</Link>
                 </div>
               ))}
             </div>
@@ -141,7 +141,7 @@ export default function Welcome() {
           <div className="border-[3px] border-black bg-black p-6 text-center shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
             <h2 className="font-head text-2xl font-black uppercase text-[#FFF7E8] md:text-3xl">Jadikan hafalan lebih terstruktur</h2>
             <p className="mx-auto mt-2 max-w-lg text-sm font-bold text-white/70">Kelola halaqah, catat mutabaah, pantau progres — retro, cepat, bermakna.</p>
-            <div className="mt-6 flex flex-wrap justify-center gap-3">{auth.user ? <Link href={dashboard()} className="inline-flex h-11 cursor-pointer items-center border-[3px] border-white bg-[#FFF7E8] px-6 text-sm font-black uppercase text-black">Buka Dashboard</Link> : <><Link href={register()} className="inline-flex h-11 cursor-pointer items-center border-[3px] border-black bg-[#FFD600] px-6 text-sm font-black uppercase shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">Daftar Sekarang</Link><Link href={login()} className="inline-flex h-11 cursor-pointer items-center border-2 border-white px-6 text-sm font-black uppercase text-white">Masuk</Link></>}</div>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">{auth.user ? <Link href={dashboard()} className="inline-flex h-11 cursor-pointer items-center border-[3px] border-white bg-[#FFF7E8] px-6 text-sm font-black uppercase text-black">Buka Dashboard</Link> : <><Link href={registerPondok()} className="inline-flex h-11 cursor-pointer items-center border-[3px] border-black bg-[#FFD600] px-6 text-sm font-black uppercase shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">Daftar Sekarang</Link><Link href={login()} className="inline-flex h-11 cursor-pointer items-center border-2 border-white px-6 text-sm font-black uppercase text-white">Masuk</Link></>}</div>
           </div>
         </section>
 
