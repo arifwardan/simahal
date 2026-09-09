@@ -43,6 +43,8 @@ class SetoranController extends Controller
         $tasmiPekan = null;
         $totalBulanan = 0;
         $ujianBulanan = null;
+        $ujianSoal = [null, null, null, null, null];
+        $ujianTotal = 0;
         $catatanTasmi = null;
         $catatanUjian = null;
 
@@ -80,6 +82,14 @@ class SetoranController extends Controller
             $pekanNumber = PekanHelper::pekanNumberInMonth($senin);
             $tasmiPekan = $bulanan?->{'tasmi_pekan_'.$pekanNumber};
             $ujianBulanan = $bulanan?->ujian_bulanan;
+            $ujianSoal = [
+                $bulanan?->ujian_soal_1,
+                $bulanan?->ujian_soal_2,
+                $bulanan?->ujian_soal_3,
+                $bulanan?->ujian_soal_4,
+                $bulanan?->ujian_soal_5,
+            ];
+            $ujianTotal = $bulanan?->ujianTotal() ?? 0;
             $catatanTasmi = $bulanan?->catatan_tasmi;
             $catatanUjian = $bulanan?->catatan_ujian;
 
@@ -112,6 +122,9 @@ class SetoranController extends Controller
             'tasmiPekan' => $tasmiPekan,
             'totalBulanan' => $totalBulanan,
             'ujianBulanan' => $ujianBulanan,
+            'targetHarian' => 3,
+            'ujianSoal' => $ujianSoal,
+            'ujianTotal' => $ujianTotal,
             'catatanTasmi' => $catatanTasmi,
             'catatanUjian' => $catatanUjian,
             'minggu' => $minggu,
@@ -132,6 +145,7 @@ class SetoranController extends Controller
         $harian = $validated['harian'] ?? [];
         $tasmiPekan = $validated['tasmi_pekan'] ?? null;
         $ujianBulanan = $validated['ujian_bulanan'] ?? null;
+        $ujianSoal = $validated['ujian_soal'] ?? null;
         $catatanTasmi = $validated['catatan_tasmi'] ?? null;
         $catatanUjian = $validated['catatan_ujian'] ?? null;
 
@@ -144,7 +158,7 @@ class SetoranController extends Controller
 
         $days = ['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'ahad'];
 
-        DB::transaction(function () use ($days, $harian, $senin, $santriId, $muhafidzId, $tahun, $bulan, $tasmiColumn, $tasmiPekan, $ujianBulanan, $catatanTasmi, $catatanUjian, $validated): void {
+        DB::transaction(function () use ($days, $harian, $senin, $santriId, $muhafidzId, $tahun, $bulan, $tasmiColumn, $tasmiPekan, $ujianBulanan, $ujianSoal, $catatanTasmi, $catatanUjian, $validated): void {
             foreach ($days as $idx => $dayName) {
                 $value = $harian[$dayName] ?? null;
                 $tanggal = $senin->copy()->addDays($idx)->toDateString();
@@ -179,6 +193,12 @@ class SetoranController extends Controller
             }
             if ($hasUjian) {
                 $payload['ujian_bulanan'] = $ujianBulanan !== null ? (int) $ujianBulanan : null;
+            }
+            if ($ujianSoal !== null) {
+                foreach (range(1, 5) as $i) {
+                    $payload['ujian_soal_'.$i] = $ujianSoal[$i - 1] ?? null;
+                }
+                $payload['ujian_bulanan'] = collect($ujianSoal)->filter(fn ($v) => $v === true)->count() * 20;
             }
             if ($hasCatatanTasmi) {
                 $payload['catatan_tasmi'] = $catatanTasmi;

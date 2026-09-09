@@ -47,14 +47,14 @@ it('rejects future minggu with 422', function (): void {
     $this->actingAs($user)->postJson('/_test-setoran', $payload)->assertStatus(422)->assertJsonValidationErrors(['minggu']);
 });
 
-it('rejects halaman 30 with 422', function (): void {
+it('rejects halaman 31 with 422', function (): void {
     $muhafidz = Muhafidz::factory()->create();
     $user = $muhafidz->user;
     $halaqah = Halaqah::factory()->create(['muhafidz_id' => $muhafidz->id]);
     $santri = Santri::factory()->create();
     HalaqahMember::factory()->create(['halaqah_id' => $halaqah->id, 'santri_id' => $santri->id]);
 
-    $payload = validSetoranPayload($halaqah, $santri, ['harian' => ['senin' => 30]]);
+    $payload = validSetoranPayload($halaqah, $santri, ['harian' => ['senin' => 31]]);
 
     $this->actingAs($user)->postJson('/_test-setoran', $payload)->assertStatus(422)->assertJsonValidationErrors(['harian.senin']);
 });
