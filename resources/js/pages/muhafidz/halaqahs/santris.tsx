@@ -27,7 +27,7 @@ import {
 import { keterangan, tambahHalaman, tambahJuz } from '@/lib/mutabaah-bulanan';
 import { index as halaqahIndex } from '@/routes/muhafidz/halaqahs';
 import { show as santrisShow } from '@/routes/muhafidz/halaqahs/santris';
-import { index as setoranIndex } from '@/routes/muhafidz/setoran';
+import { index as setoranHarianIndex } from '@/routes/muhafidz/setoran-harian';
 
 type SantriRow = {
     id: number;
@@ -431,7 +431,7 @@ export default function MuhafidzHalaqahSantris({
                         </Badge>
                     ) : (
                         <Link
-                            href={setoranIndex.url(halaqah.id, { query: { santri_id: row.id } })}
+                            href={setoranHarianIndex.url({ query: { santri_id: row.id } })}
                             className="inline-flex cursor-pointer items-center justify-center rounded-none border-[3px] border-black bg-primary px-3 py-1 text-xs font-black text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
                         >
                             Input Setoran

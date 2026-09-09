@@ -90,7 +90,7 @@ export default function MuhafidzHalaqahsIndex({
                 <CardContent className="flex flex-col gap-3 bg-[#FFF7E8] p-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <p className="font-head text-lg font-black uppercase">Semangat Menghafal Hari Ini! 📖</p>
-                        <p className="max-w-xl text-xs font-bold text-black/70">Input setoran harian, tasmi pekanan, dan ujian bulanan — semua dalam 1 layar per santri.</p>
+                        <p className="max-w-xl text-xs font-bold text-black/70">Input setoran harian, tasmi pekanan, dan ujian bulanan — satu layar satu tugas per santri.</p>
                     </div>
                     {halaqahs.data[0] && (
                         <Link

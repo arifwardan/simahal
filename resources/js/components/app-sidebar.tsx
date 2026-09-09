@@ -1,8 +1,10 @@
 import { Link, usePage } from '@inertiajs/react';
 import { edit as profileEdit } from '@/routes/profile';
 import {
+    Award,
     BookMarked,
     CalendarCheck,
+    CalendarDays,
     FileUp,
     FolderGit2,
     GraduationCap,
@@ -10,6 +12,7 @@ import {
     History,
     LayoutGrid,
     Library,
+    Mic,
     Settings,
     Target,
     Users,
@@ -37,6 +40,9 @@ import { index as usersIndex } from '@/routes/admin/users';
 import { index as muhafidzsIndex } from '@/routes/admin/muhafidzs';
 import { index as muhafidzHalaqahsIndex } from '@/routes/muhafidz/halaqahs';
 import { history as muhafidzMutabaahsHistory } from '@/routes/muhafidz/mutabaahs';
+import { index as setoranHarianIndex } from '@/routes/muhafidz/setoran-harian';
+import { index as tasmiIndex } from '@/routes/muhafidz/tasmi';
+import { index as ujianIndex } from '@/routes/muhafidz/ujian';
 import { index as muhafidzTargetsIndex } from '@/routes/muhafidz/targets';
 import type { NavItem } from '@/types';
 
@@ -53,6 +59,9 @@ const adminNavItems: NavItem[] = [
 
 const muhafidzNavItems: NavItem[] = [
     { title: 'Halaqah Saya', href: muhafidzHalaqahsIndex(), icon: Library },
+    { title: 'Setoran Harian', href: setoranHarianIndex(), icon: CalendarDays },
+    { title: 'Tasmi Pekanan', href: tasmiIndex(), icon: Mic },
+    { title: 'Ujian Bulanan', href: ujianIndex(), icon: Award },
     { title: 'Riwayat Mutabaah', href: muhafidzMutabaahsHistory(), icon: History },
     { title: 'Target Hafalan', href: muhafidzTargetsIndex(), icon: Target },
 ];
