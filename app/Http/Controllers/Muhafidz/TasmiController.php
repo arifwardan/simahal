@@ -25,6 +25,15 @@ class TasmiController extends Controller
         })->orderBy('nama')->get(['id', 'nama', 'nis']);
 
         $santriId = $request->query('santri_id', $santris->first()?->id);
+
+        if ($request->query('santri_id') !== null && $santriId !== null) {
+            $belongs = HalaqahMember::where('santri_id', $santriId)
+                ->whereHas('halaqah', fn ($q) => $q->where('muhafidz_id', $user->muhafidz->id))
+                ->exists();
+
+            abort_if(! $belongs, 403);
+        }
+
         $mingguParam = $request->query('minggu', now()->toDateString());
         $range = PekanHelper::weekRange(Carbon::parse($mingguParam));
         $senin = $range['senin'];

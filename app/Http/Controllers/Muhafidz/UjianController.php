@@ -23,6 +23,15 @@ class UjianController extends Controller
         })->orderBy('nama')->get(['id', 'nama', 'nis']);
 
         $santriId = $request->query('santri_id', $santris->first()?->id);
+
+        if ($request->query('santri_id') !== null && $santriId !== null) {
+            $belongs = HalaqahMember::where('santri_id', $santriId)
+                ->whereHas('halaqah', fn ($q) => $q->where('muhafidz_id', $user->muhafidz->id))
+                ->exists();
+
+            abort_if(! $belongs, 403);
+        }
+
         $tahun = (int) $request->query('tahun', now()->year);
         $bulan = (int) $request->query('bulan', now()->month);
 
@@ -85,6 +94,7 @@ class UjianController extends Controller
             'bulan' => ['required', 'integer', 'min:1', 'max:12'],
             'ujian_soal' => ['nullable', 'array', 'size:5'],
             'ujian_soal.*' => ['nullable', 'boolean'],
+            'ujian_bulanan' => ['nullable', 'integer', 'min:10', 'max:100'],
             'catatan_ujian' => ['nullable', 'string', 'max:1000'],
         ]);
 
@@ -95,6 +105,8 @@ class UjianController extends Controller
                 $payload['ujian_soal_'.$i] = $validated['ujian_soal'][$i - 1] ?? null;
             }
             $payload['ujian_bulanan'] = collect($validated['ujian_soal'])->filter(fn ($v) => $v === true)->count() * 20;
+        } elseif (array_key_exists('ujian_bulanan', $validated)) {
+            $payload['ujian_bulanan'] = $validated['ujian_bulanan'] !== null ? (int) $validated['ujian_bulanan'] : null;
         }
 
         if (array_key_exists('catatan_ujian', $validated)) {

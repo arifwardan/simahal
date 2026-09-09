@@ -91,3 +91,46 @@ it('legacy 5-panel routes are gone', function (): void {
     $muhafidz = Muhafidz::factory()->create();
     $this->actingAs($muhafidz->user)->get('/muhafidz/halaqahs/1/setoran')->assertNotFound();
 });
+
+it('returns 403 for tasmi index with foreign santri_id', function (): void {
+    $muhafidz = Muhafidz::factory()->create();
+    $other = Muhafidz::factory()->create();
+    $halaqah = Halaqah::factory()->create(['muhafidz_id' => $other->id]);
+    $santri = Santri::factory()->create();
+    HalaqahMember::factory()->create(['halaqah_id' => $halaqah->id, 'santri_id' => $santri->id]);
+
+    $this->actingAs($muhafidz->user)
+        ->get(route('muhafidz.tasmi.index', ['santri_id' => $santri->id]))
+        ->assertForbidden();
+});
+
+it('returns 403 for ujian index with foreign santri_id', function (): void {
+    $muhafidz = Muhafidz::factory()->create();
+    $other = Muhafidz::factory()->create();
+    $halaqah = Halaqah::factory()->create(['muhafidz_id' => $other->id]);
+    $santri = Santri::factory()->create();
+    HalaqahMember::factory()->create(['halaqah_id' => $halaqah->id, 'santri_id' => $santri->id]);
+
+    $this->actingAs($muhafidz->user)
+        ->get(route('muhafidz.ujian.index', ['santri_id' => $santri->id]))
+        ->assertForbidden();
+});
+
+it('stores legacy ujian_bulanan integer when ujian_soal absent', function (): void {
+    $muhafidz = Muhafidz::factory()->create();
+    $user = $muhafidz->user;
+    $halaqah = Halaqah::factory()->create(['muhafidz_id' => $muhafidz->id]);
+    $santri = Santri::factory()->create();
+    HalaqahMember::factory()->create(['halaqah_id' => $halaqah->id, 'santri_id' => $santri->id]);
+
+    $this->actingAs($user)->post(route('muhafidz.ujian.store'), [
+        'santri_id' => $santri->id,
+        'tahun' => 2026,
+        'bulan' => 9,
+        'ujian_bulanan' => 75,
+    ])->assertRedirect();
+
+    $mb = MutabaahBulanan::where('santri_id', $santri->id)->where('tahun', 2026)->where('bulan', 9)->first();
+    expect($mb->ujian_bulanan)->toBe(75);
+    expect($mb->ujian_soal_1)->toBeNull();
+});
