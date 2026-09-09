@@ -69,6 +69,21 @@ it('rejects future date', function (): void {
     ])->assertSessionHasErrors('tanggal');
 });
 
+it('rejects baris above 30 per surah', function (): void {
+    $muhafidz = Muhafidz::factory()->create();
+    $user = $muhafidz->user;
+    $halaqah = Halaqah::factory()->create(['muhafidz_id' => $muhafidz->id]);
+    $santri = Santri::factory()->create();
+    HalaqahMember::factory()->create(['halaqah_id' => $halaqah->id, 'santri_id' => $santri->id]);
+    $id = Surah::where('nomor', 112)->first()->id;
+
+    $this->actingAs($user)->post(route('muhafidz.setoran-harian.store'), [
+        'santri_id' => $santri->id,
+        'tanggal' => '2026-09-09',
+        'details' => [['surah_id' => $id, 'baris' => 31]],
+    ])->assertSessionHasErrors('details.0.baris');
+});
+
 it('deletes the day when details are emptied', function (): void {
     $muhafidz = Muhafidz::factory()->create();
     $user = $muhafidz->user;
