@@ -33,7 +33,7 @@ class JoinPondokController extends Controller
     {
         $validated = $request->validate([
             'pondok_id' => ['required', 'integer', Rule::exists('pondoks', 'id')],
-            'role' => ['required', Rule::in([UserRole::Muhafidz->value, UserRole::Santri->value])],
+            'role' => ['required', Rule::in([UserRole::Muhafidz->value, UserRole::Santri->value, UserRole::OrangTua->value])],
             'name' => $this->nameRules(),
             'email' => $this->emailRules(),
             'password' => $this->passwordRules(),

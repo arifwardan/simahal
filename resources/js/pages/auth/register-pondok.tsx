@@ -1,4 +1,5 @@
 import { Form, Head } from '@inertiajs/react';
+import AuthRegisterTabs from '@/components/auth-register-tabs';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
 import TextLink from '@/components/text-link';
@@ -11,6 +12,7 @@ export default function RegisterPondok() {
     return (
         <>
             <Head title="Daftarkan Pondok" />
+            <AuthRegisterTabs active="register" />
             <Form
                 action="/register-pondok"
                 method="post"

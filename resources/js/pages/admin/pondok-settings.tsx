@@ -1,5 +1,5 @@
 import { Form, router } from '@inertiajs/react';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import PondokSettingsController from '@/actions/App/Http/Controllers/Admin/PondokSettingsController';
 import Heading from '@/components/heading';
 import PageContainer from '@/components/page-container';
@@ -25,6 +25,11 @@ type PersonRow = {
     role_label: string;
 };
 
+type SantriOption = {
+    id: number;
+    nama: string;
+};
+
 type Props = {
     pondok: {
         id: number;
@@ -34,9 +39,31 @@ type Props = {
     };
     pendings: PersonRow[];
     users: PersonRow[];
+    santris: SantriOption[];
 };
 
-export default function PondokSettings({ pondok, pendings, users }: Props) {
+export default function PondokSettings({ pondok, pendings, users, santris = [] }: Props) {
+    const [selected, setSelected] = useState<Record<number, number[]>>({});
+
+    function toggleSantri(rowId: number, santriId: number) {
+        setSelected((prev) => {
+            const current = prev[rowId] ?? [];
+            return {
+                ...prev,
+                [rowId]: current.includes(santriId)
+                    ? current.filter((id) => id !== santriId)
+                    : [...current, santriId],
+            };
+        });
+    }
+
+    function approve(row: PersonRow) {
+        const payload =
+            row.role === 'orang_tua' ? { santri_ids: selected[row.id] ?? [] } : {};
+        router.post(PondokSettingsController.approve.url({ user: row.id }), payload, {
+            preserveScroll: true,
+        });
+    }
     const pendingColumns = useMemo<DataTableColumn<PersonRow>[]>(
         () => [
             {
@@ -64,17 +91,32 @@ export default function PondokSettings({ pondok, pendings, users }: Props) {
                 headerClassName: 'text-right',
                 className: 'text-right',
                 cell: (row) => (
-                    <div className="flex items-center justify-end gap-2">
+                    <div className="flex flex-col items-end gap-2">
+                        {row.role === 'orang_tua' && (
+                            <div className="grid max-h-32 w-full gap-1 overflow-y-auto border-[2.5px] border-black bg-white p-2 text-left">
+                                {santris.length === 0 && (
+                                    <span className="text-xs font-bold">Belum ada santri.</span>
+                                )}
+                                {santris.map((s) => (
+                                    <label
+                                        key={s.id}
+                                        className="flex cursor-pointer items-center gap-2 text-xs font-bold text-black"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            checked={(selected[row.id] ?? []).includes(s.id)}
+                                            onChange={() => toggleSantri(row.id, s.id)}
+                                        />
+                                        {s.nama}
+                                    </label>
+                                ))}
+                            </div>
+                        )}
+                        <div className="flex items-center justify-end gap-2">
                         <Button
                             size="sm"
                             className="cursor-pointer border-[2.5px] border-black font-black"
-                            onClick={() =>
-                                router.post(
-                                    PondokSettingsController.approve.url({ user: row.id }),
-                                    {},
-                                    { preserveScroll: true },
-                                )
-                            }
+                            onClick={() => approve(row)}
                         >
                             Setujui
                         </Button>
@@ -92,11 +134,12 @@ export default function PondokSettings({ pondok, pendings, users }: Props) {
                         >
                             Tolak
                         </Button>
+                        </div>
                     </div>
                 ),
             },
         ],
-        [],
+        [santris, selected],
     );
 
     const userColumns = useMemo<DataTableColumn<PersonRow>[]>(

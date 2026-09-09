@@ -7,6 +7,7 @@ use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Muhafidz;
+use App\Models\OrangTua;
 use App\Models\Santri;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -36,7 +37,14 @@ class PondokSettingsController extends Controller
             ->orderBy('name')
             ->get(['id', 'name', 'email', 'role']);
 
+        $santris = Santri::query()
+            ->withoutGlobalScope('pondok')
+            ->where('pondok_id', $pondok->id)
+            ->orderBy('nama')
+            ->get(['id', 'nama']);
+
         return Inertia::render('admin/pondok-settings', [
+            'santris' => $santris,
             'pondok' => [
                 'id' => $pondok->id,
                 'nama_yayasan' => $pondok->nama_yayasan,
@@ -96,7 +104,26 @@ class PondokSettingsController extends Controller
 
         abort_unless($pending->pondok_id === $admin->pondok_id, 403);
 
-        DB::transaction(function () use ($pending): void {
+        $validated = $request->validate([
+            'santri_ids' => ['nullable', 'array'],
+            'santri_ids.*' => ['integer', 'exists:santris,id'],
+        ]);
+
+        $santriIds = $validated['santri_ids'] ?? [];
+
+        if ($pending->role === UserRole::OrangTua) {
+            abort_unless(count($santriIds) >= 1, 422);
+
+            $count = Santri::query()
+                ->withoutGlobalScope('pondok')
+                ->whereIn('id', $santriIds)
+                ->where('pondok_id', $admin->pondok_id)
+                ->count();
+
+            abort_unless($count === count(array_unique($santriIds)), 403);
+        }
+
+        DB::transaction(function () use ($pending, $santriIds): void {
             $pending->update(['status' => UserStatus::Active]);
 
             if ($pending->role === UserRole::Muhafidz) {
@@ -114,6 +141,19 @@ class PondokSettingsController extends Controller
                     'status' => SantriStatus::Aktif,
                     'pondok_id' => $pending->pondok_id,
                 ]);
+            }
+
+            if ($pending->role === UserRole::OrangTua) {
+                $orangTua = OrangTua::create([
+                    'user_id' => $pending->id,
+                    'nama' => $pending->name,
+                    'pondok_id' => $pending->pondok_id,
+                ]);
+
+                Santri::query()
+                    ->withoutGlobalScope('pondok')
+                    ->whereIn('id', $santriIds)
+                    ->update(['orang_tua_id' => $orangTua->id]);
             }
         });
 

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Form, Head } from '@inertiajs/react';
+import AuthRegisterTabs from '@/components/auth-register-tabs';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
 import TextLink from '@/components/text-link';
@@ -29,6 +30,7 @@ export default function JoinPondok({ pondoks }: Props) {
     return (
         <>
             <Head title="Gabung Pondok" />
+            <AuthRegisterTabs active="join" />
             <Form
                 action="/join-pondok"
                 method="post"
@@ -102,6 +104,14 @@ export default function JoinPondok({ pondoks }: Props) {
                                             value="muhafidz"
                                         />
                                         Muhafidz
+                                    </label>
+                                    <label className="flex items-center gap-2">
+                                        <input
+                                            type="radio"
+                                            name="role"
+                                            value="orang_tua"
+                                        />
+                                        Orang Tua
                                     </label>
                                 </div>
                                 <InputError message={errors.role} />

@@ -92,12 +92,8 @@ export default function Login({ status, canResetPassword }: Props) {
                         </div>
 
                         <div className="text-center text-sm text-muted-foreground">
-                            <TextLink href="/register-pondok" tabIndex={5}>
-                                Daftarkan Pondok
-                            </TextLink>
-                            {' · '}
-                            <TextLink href="/join-pondok" tabIndex={6}>
-                                Gabung Pondok
+                            <TextLink href="/join-pondok" tabIndex={5}>
+                                Daftar / Gabung Pondok
                             </TextLink>
                         </div>
                     </>
