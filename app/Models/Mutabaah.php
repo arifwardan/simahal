@@ -23,7 +23,7 @@ use Illuminate\Support\Carbon;
  * @property int|null $nilai
  * @property MutabaahStatus $status
  * @property string|null $catatan
- * @property int|null $halaman
+ * @property int|null $halaman Satuan baris (nama kolom historis, isi = jumlah baris)
  */
 #[Fillable(['santri_id', 'muhafidz_id', 'tanggal', 'jenis', 'surah', 'ayat_mulai', 'ayat_selesai', 'nilai', 'status', 'catatan', 'halaman'])]
 class Mutabaah extends Model
