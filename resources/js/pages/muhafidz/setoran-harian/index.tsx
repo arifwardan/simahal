@@ -1,5 +1,6 @@
 import { router } from '@inertiajs/react';
 import { useMemo, useState } from 'react';
+import { toast } from 'sonner';
 import { BookOpen, CalendarDays, Plus, Save, Search, Trash2 } from 'lucide-react';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
@@ -52,7 +53,6 @@ export default function SetoranHarianIndex({ santris, santriId, tanggal, details
 
     const liveTotal = useMemo(() => rows.reduce((acc, r) => acc + (parseInt(r.baris) || 0), 0), [rows]);
     const filledCount = useMemo(() => rows.filter((r) => r.surah_id !== null).length, [rows]);
-    const isDirtyPicker = santriValue !== (santriId?.toString() ?? '') || tanggalValue !== tanggal;
     const hasExisting = details.length > 0;
 
     function navigate(url: string) {
@@ -95,11 +95,15 @@ export default function SetoranHarianIndex({ santris, santriId, tanggal, details
         const payload = rows
             .filter((r) => r.surah_id !== null)
             .map((r) => ({ surah_id: r.surah_id as number, baris: Math.min(30, Math.max(1, parseInt(r.baris) || 1)) }));
+        const santriName = santris.find((s) => s.id.toString() === santriValue)?.nama ?? 'Santri';
+        const tanggalId = new Date(`${tanggalValue}T00:00:00`).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+        const totalBaris = payload.reduce((acc, r) => acc + r.baris, 0);
+        const successMessage = `Setoran ${santriName} ${tanggalId} disimpan: ${totalBaris} baris, ${payload.length} surah`;
         setProcessing(true);
         router.post(
             setoranHarianStore.url(),
             { santri_id: santriValue ? parseInt(santriValue) : null, tanggal: tanggalValue, details: payload },
-            { onFinish: () => setProcessing(false) },
+            { onSuccess: () => toast.success(successMessage), onFinish: () => setProcessing(false) },
         );
     }
 
