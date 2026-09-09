@@ -16,7 +16,7 @@ import {
     Target,
     Users,
 } from 'lucide-react';
-import AppLogo from '@/components/app-logo';
+import AppLogoIcon from '@/components/app-logo-icon';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -48,6 +48,12 @@ import { index as santriTargetIndex } from '@/routes/santri/targets';
 import { index as santriPrestasiIndex } from '@/routes/santri/prestasi';
 import type { NavItem } from '@/types';
 
+type PondokSharedProp = {
+    nama_yayasan: string;
+    slug: string;
+    logo_url: string | null;
+} | null;
+
 const adminNavItems: NavItem[] = [
     { title: 'Manajemen User', href: usersIndex(), icon: Users },
     { title: 'Manajemen Santri', href: santrisIndex(), icon: GraduationCap },
@@ -78,7 +84,8 @@ const santriNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
-    const { auth } = usePage().props;
+    const { auth, name } = usePage().props;
+    const pondok = (usePage().props as unknown as { pondok?: PondokSharedProp }).pondok ?? null;
 
     const mainNavItems: NavItem[] = [
         {
@@ -99,7 +106,20 @@ export function AppSidebar() {
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild className="font-head font-black">
                             <Link href={dashboard()} prefetch>
-                                <AppLogo />
+                                {pondok?.logo_url ? (
+                                    <div className="flex aspect-square size-8 items-center justify-center overflow-hidden rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
+                                        <img src={pondok.logo_url} alt={pondok.nama_yayasan} className="size-8 object-cover" />
+                                    </div>
+                                ) : (
+                                    <div className="flex aspect-square size-8 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
+                                        <AppLogoIcon className="size-5 fill-current text-sidebar-primary-foreground" />
+                                    </div>
+                                )}
+                                <div className="ml-1 grid flex-1 text-left text-sm">
+                                    <span className="mb-0.5 truncate leading-tight font-semibold">
+                                        {pondok?.nama_yayasan ?? name}
+                                    </span>
+                                </div>
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>

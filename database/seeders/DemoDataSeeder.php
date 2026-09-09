@@ -15,6 +15,7 @@ use App\Models\Mutabaah;
 use App\Models\MutabaahBulanan;
 use App\Models\MutabaahSetting;
 use App\Models\OrangTua;
+use App\Models\Pondok;
 use App\Models\Santri;
 use App\Models\TargetHafalan;
 use App\Models\User;
@@ -25,6 +26,11 @@ class DemoDataSeeder extends Seeder
 {
     public function run(): void
     {
+        $pondok = Pondok::firstOrCreate(
+            ['slug' => 'pondokit'],
+            ['nama_yayasan' => 'PondokIT']
+        );
+
         // 4 muhafidz tambahan (total jadi 5 incl Ahmad dari DatabaseSeeder)
         $muhafidzData = [
             ['name' => 'Muhafidzah Fatimah', 'email' => 'fatimah@simahal.test', 'nama' => 'Muhafidzah Fatimah'],
@@ -38,16 +44,22 @@ class DemoDataSeeder extends Seeder
         foreach ($muhafidzData as $d) {
             $user = User::firstOrCreate(
                 ['email' => $d['email']],
-                ['name' => $d['name'], 'password' => 'password', 'role' => UserRole::Muhafidz]
+                ['name' => $d['name'], 'password' => 'password', 'role' => UserRole::Muhafidz, 'pondok_id' => $pondok->id]
             );
             // ensure role
             if ($user->role !== UserRole::Muhafidz) {
                 $user->update(['role' => UserRole::Muhafidz]);
             }
+            if ($user->pondok_id === null) {
+                $user->update(['pondok_id' => $pondok->id]);
+            }
             $m = Muhafidz::firstOrCreate(
                 ['user_id' => $user->id],
-                ['nama' => $d['nama'], 'kontak' => '08'.fake()->numerify('##########')]
+                ['nama' => $d['nama'], 'kontak' => '08'.fake()->numerify('##########'), 'pondok_id' => $pondok->id]
             );
+            if ($m->pondok_id === null) {
+                $m->update(['pondok_id' => $pondok->id]);
+            }
             $muhafidzs->push($m);
         }
 
@@ -72,6 +84,7 @@ class DemoDataSeeder extends Seeder
                     'jam_mulai' => $def['jam_mulai'],
                     'jam_selesai' => $def['jam_selesai'],
                     'status' => HalaqahStatus::Aktif,
+                    'pondok_id' => $pondok->id,
                 ]
             );
             $halaqahs->push($h);
@@ -92,8 +105,11 @@ class DemoDataSeeder extends Seeder
             $email = 'santri'.($i + 2).'@simahal.test';
             $user = User::firstOrCreate(
                 ['email' => $email],
-                ['name' => $nama, 'password' => 'password', 'role' => UserRole::Santri]
+                ['name' => $nama, 'password' => 'password', 'role' => UserRole::Santri, 'pondok_id' => $pondok->id]
             );
+            if ($user->pondok_id === null) {
+                $user->update(['pondok_id' => $pondok->id]);
+            }
             $jenis = $i % 2 === 0 ? SantriJenis::Ikhwan : SantriJenis::Akhwat;
             $santri = Santri::firstOrCreate(
                 ['nis' => $nis],
@@ -104,18 +120,28 @@ class DemoDataSeeder extends Seeder
                     'status' => SantriStatus::Aktif,
                     'jenis' => $jenis,
                     'halaman_awal' => fake()->numberBetween(0, 30),
+                    'pondok_id' => $pondok->id,
                 ]
             );
+            if ($santri->pondok_id === null) {
+                $santri->update(['pondok_id' => $pondok->id]);
+            }
             // orang tua
             if (! $santri->orang_tua_id) {
                 $ortuUser = User::firstOrCreate(
                     ['email' => 'ortu'.($i + 2).'@simahal.test'],
-                    ['name' => 'Ortu '.$nama, 'password' => 'password', 'role' => UserRole::OrangTua]
+                    ['name' => 'Ortu '.$nama, 'password' => 'password', 'role' => UserRole::OrangTua, 'pondok_id' => $pondok->id]
                 );
+                if ($ortuUser->pondok_id === null) {
+                    $ortuUser->update(['pondok_id' => $pondok->id]);
+                }
                 $ortu = OrangTua::firstOrCreate(
                     ['user_id' => $ortuUser->id],
-                    ['nama' => 'Ortu '.$nama, 'kontak' => '08'.fake()->numerify('##########')]
+                    ['nama' => 'Ortu '.$nama, 'kontak' => '08'.fake()->numerify('##########'), 'pondok_id' => $pondok->id]
                 );
+                if ($ortu->pondok_id === null) {
+                    $ortu->update(['pondok_id' => $pondok->id]);
+                }
                 $santri->update(['orang_tua_id' => $ortu->id]);
             }
             $santris->push($santri);
@@ -151,6 +177,7 @@ class DemoDataSeeder extends Seeder
                     'target' => 30,
                     'progress' => $topProgressHalaman[$i],
                     'status' => $topProgressHalaman[$i] >= 600 ? TargetHafalanStatus::Selesai : TargetHafalanStatus::Berlangsung,
+                    'pondok_id' => $pondok->id,
                 ]
             );
         }
@@ -163,6 +190,7 @@ class DemoDataSeeder extends Seeder
                     'target' => 30,
                     'progress' => fake()->numberBetween(120, 360),
                     'status' => TargetHafalanStatus::Berlangsung,
+                    'pondok_id' => $pondok->id,
                 ]);
             }
         }
@@ -172,7 +200,7 @@ class DemoDataSeeder extends Seeder
         $allMuhafidzIds = $muhafidzs->pluck('id')->all();
         $allSantriIds = $santris->pluck('id')->all();
 
-        $createMutabaah = function (Carbon $date) use ($surahs, $allSantriIds, $allMuhafidzIds): void {
+        $createMutabaah = function (Carbon $date) use ($surahs, $allSantriIds, $allMuhafidzIds, $pondok): void {
             $mulai = rand(1, 200);
             $attempts = 0;
             $tanggal = $date->toDateString();
@@ -194,6 +222,7 @@ class DemoDataSeeder extends Seeder
                 'status' => fake()->randomElement([MutabaahStatus::Lulus, MutabaahStatus::Lulus, MutabaahStatus::Lulus, MutabaahStatus::Mengulang, MutabaahStatus::PerluMurajaah]),
                 'catatan' => fake()->optional()->sentence(),
                 'halaman' => fake()->numberBetween(1, 12),
+                'pondok_id' => $pondok->id,
             ];
             if ($existing) {
                 $existing->update($payload);
@@ -217,6 +246,9 @@ class DemoDataSeeder extends Seeder
 
         // --- Mutabaah Bulanan dummy untuk Rekap Halaqah (3 bulan terakhir) ---
         $setting = MutabaahSetting::setting();
+        if ($setting->pondok_id === null) {
+            $setting->update(['pondok_id' => $pondok->id]);
+        }
         $tahunAktif = $setting->tahun_aktif;
         $bulanIni = (int) now()->month;
         $bulanList = [$bulanIni, $bulanIni - 1, $bulanIni - 2];
@@ -250,6 +282,7 @@ class DemoDataSeeder extends Seeder
                         'ujian_bulanan' => $isLow ? fake()->numberBetween(55, 72) : fake()->numberBetween(78, 98),
                         'catatan_tasmi' => fake()->optional()->sentence(),
                         'catatan_ujian' => fake()->optional()->sentence(),
+                        'pondok_id' => $pondok->id,
                     ]
                 );
             }
@@ -270,6 +303,7 @@ class DemoDataSeeder extends Seeder
                     'nilai' => fake()->numberBetween(85, 100),
                     'status' => MutabaahStatus::Lulus,
                     'halaman' => fake()->numberBetween(8, 15),
+                    'pondok_id' => $pondok->id,
                 ];
                 if ($existing) {
                     $existing->update($payload);
