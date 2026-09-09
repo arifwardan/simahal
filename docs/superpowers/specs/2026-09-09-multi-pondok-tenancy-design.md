@@ -23,7 +23,7 @@
 - `nama_yayasan VARCHAR`, `slug VARCHAR unique` (lowercase, alpha-dash; terkunci setelah dibuat), `logo_path VARCHAR nullable`, timestamps.
 
 ### 2.2 `pondok_id` di tabel tenant
-- Tambah `pondok_id FK → pondoks ON DELETE RESTRICT` (nullable dulu saat migrasi, backfill, lalu NOT NULL) ke: users, santris, muhafidzs, orang_tuas, halaqahs, mutabaahs, mutabaah_bulanans, target_hafalans, setoran_details, mutabaah_settings.
+- Tambah `pondok_id FK → pondoks ON DELETE RESTRICT` (tetap NULLABLE di DB untuk kompatibilitas SQLite-test/Postgres; non-null ditegakkan di aplikasi oleh trait: auto-fill dari auth, throw bila kosong di luar console/testing) ke: users, santris, muhafidzs, orang_tuas, halaqahs, mutabaahs, mutabaah_bulanans, target_hafalans, setoran_details, mutabaah_settings.
 - `surahs` tetap GLOBAL (referensi bersama, tanpa pondok_id).
 
 ### 2.3 Trait `BelongsToPondok`
