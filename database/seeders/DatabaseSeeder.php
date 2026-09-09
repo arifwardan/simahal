@@ -100,6 +100,7 @@ class DatabaseSeeder extends Seeder
         // hitung progress Budi yang benar (halaman)
         RecalculateTargetProgress::run($santri);
 
+        $this->call(SurahSeeder::class);
         $this->call(DemoDataSeeder::class);
     }
 }
