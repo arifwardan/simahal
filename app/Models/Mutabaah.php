@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -58,5 +59,36 @@ class Mutabaah extends Model
     public function muhafidz(): BelongsTo
     {
         return $this->belongsTo(Muhafidz::class);
+    }
+
+    /** @return HasMany<SetoranDetail, $this> */
+    public function details(): HasMany
+    {
+        return $this->hasMany(SetoranDetail::class);
+    }
+
+    public function buildSurahSummary(): string
+    {
+        $names = $this->details()->with('surah')
+            ->get()
+            ->sortBy(fn (SetoranDetail $d) => $d->surah->nomor)
+            ->map(fn (SetoranDetail $d) => ['nomor' => $d->surah->nomor, 'nama' => $d->surah->nama_latin])
+            ->values();
+
+        if ($names->isEmpty()) {
+            return '-';
+        }
+
+        $numbers = $names->pluck('nomor')->all();
+        $isRange = $numbers === range(min($numbers), max($numbers));
+
+        if ($isRange && $names->count() > 1) {
+            return $names->first()['nama'].' – '.$names->last()['nama'];
+        }
+
+        $shown = $names->take(3)->pluck('nama')->all();
+        $rest = $names->count() - count($shown);
+
+        return implode(', ', $shown).($rest > 0 ? ', +'.$rest : '');
     }
 }
