@@ -16,7 +16,7 @@ return new class extends Migration
         $duplicates = DB::table('mutabaahs')
             ->select('santri_id', 'tanggal', DB::raw('COUNT(*) as cnt'))
             ->groupBy('santri_id', 'tanggal')
-            ->having('cnt', '>', 1)
+            ->having(DB::raw('COUNT(*)'), '>', 1)
             ->get();
 
         foreach ($duplicates as $dup) {
