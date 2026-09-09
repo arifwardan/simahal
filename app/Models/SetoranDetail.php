@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Concerns\BelongsToPondok;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SetoranDetail extends Model
 {
-    protected $fillable = ['mutabaah_id', 'surah_id', 'baris'];
+    use BelongsToPondok;
+
+    protected $fillable = ['mutabaah_id', 'surah_id', 'baris', 'pondok_id'];
 
     protected function casts(): array
     {

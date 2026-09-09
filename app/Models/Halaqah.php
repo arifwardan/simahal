@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Concerns\BelongsToPondok;
 use App\Enums\HalaqahStatus;
 use Database\Factories\HalaqahFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -20,11 +21,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $jam_selesai
  * @property HalaqahStatus $status
  */
-#[Fillable(['nama', 'muhafidz_id', 'jadwal', 'jam_mulai', 'jam_selesai', 'status'])]
+#[Fillable(['nama', 'muhafidz_id', 'jadwal', 'jam_mulai', 'jam_selesai', 'status', 'pondok_id'])]
 class Halaqah extends Model
 {
     /** @use HasFactory<HalaqahFactory> */
-    use HasFactory;
+    use BelongsToPondok, HasFactory;
 
     /**
      * @return array<string, string>

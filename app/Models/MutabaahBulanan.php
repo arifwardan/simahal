@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Concerns\BelongsToPondok;
 use Database\Factories\MutabaahBulananFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -20,12 +21,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'santri_id', 'tahun', 'bulan', 'halaman_awal_bulan', 'halaman_kumulatif',
     'juz_dihafal', 'tasmi_pekan_1', 'tasmi_pekan_2', 'tasmi_pekan_3', 'tasmi_pekan_4', 'tasmi_pekan_5',
     'ujian_soal_1', 'ujian_soal_2', 'ujian_soal_3', 'ujian_soal_4', 'ujian_soal_5',
-    'ujian_bulanan', 'catatan_tasmi', 'catatan_ujian',
+    'ujian_bulanan', 'catatan_tasmi', 'catatan_ujian', 'pondok_id',
 ])]
 class MutabaahBulanan extends Model
 {
     /** @use HasFactory<MutabaahBulananFactory> */
-    use HasFactory;
+    use BelongsToPondok, HasFactory;
 
     /**
      * @return array<string, string>

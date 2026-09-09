@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Concerns\BelongsToPondok;
 use Database\Factories\MuhafidzFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,11 +16,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $nama
  * @property string|null $kontak
  */
-#[Fillable(['user_id', 'nama', 'kontak'])]
+#[Fillable(['user_id', 'nama', 'kontak', 'pondok_id'])]
 class Muhafidz extends Model
 {
     /** @use HasFactory<MuhafidzFactory> */
-    use HasFactory;
+    use BelongsToPondok, HasFactory;
 
     /**
      * @return BelongsTo<User, $this>

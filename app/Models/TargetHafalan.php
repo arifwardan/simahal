@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Concerns\BelongsToPondok;
 use App\Enums\TargetHafalanStatus;
 use Database\Factories\TargetHafalanFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -17,11 +18,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $progress
  * @property TargetHafalanStatus $status
  */
-#[Fillable(['santri_id', 'periode', 'target', 'progress', 'status'])]
+#[Fillable(['santri_id', 'periode', 'target', 'progress', 'status', 'pondok_id'])]
 class TargetHafalan extends Model
 {
     /** @use HasFactory<TargetHafalanFactory> */
-    use HasFactory;
+    use BelongsToPondok, HasFactory;
 
     /**
      * @return array<string, string>

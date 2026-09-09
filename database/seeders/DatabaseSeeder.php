@@ -12,6 +12,7 @@ use App\Models\Halaqah;
 use App\Models\Muhafidz;
 use App\Models\Mutabaah;
 use App\Models\OrangTua;
+use App\Models\Pondok;
 use App\Models\Santri;
 use App\Models\TargetHafalan;
 use App\Models\User;
@@ -24,44 +25,56 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $pondok = Pondok::firstOrCreate(
+            ['slug' => 'pondokit'],
+            ['nama_yayasan' => 'PondokIT']
+        );
+
         $admin = User::factory()->role(UserRole::Admin)->create([
             'name' => 'Admin SIMAHAL',
             'email' => 'admin@simahal.test',
             'password' => 'password',
+            'pondok_id' => $pondok->id,
         ]);
 
         $muhafidzUser = User::factory()->role(UserRole::Muhafidz)->create([
             'name' => 'Muhafidz Ahmad',
             'email' => 'muhafidz@simahal.test',
             'password' => 'password',
+            'pondok_id' => $pondok->id,
         ]);
         $muhafidz = Muhafidz::factory()->create([
             'user_id' => $muhafidzUser->id,
             'nama' => 'Muhafidz Ahmad',
             'kontak' => '081234567890',
+            'pondok_id' => $pondok->id,
         ]);
 
         $santriUser = User::factory()->role(UserRole::Santri)->create([
             'name' => 'Santri Budi',
             'email' => 'santri@simahal.test',
             'password' => 'password',
+            'pondok_id' => $pondok->id,
         ]);
         $santri = Santri::factory()->create([
             'user_id' => $santriUser->id,
             'nis' => '2024001',
             'nama' => 'Santri Budi',
             'tanggal_lahir' => '2012-05-14',
+            'pondok_id' => $pondok->id,
         ]);
 
         $orangTuaUser = User::factory()->role(UserRole::OrangTua)->create([
             'name' => 'Bapak Budi',
             'email' => 'ortu@simahal.test',
             'password' => 'password',
+            'pondok_id' => $pondok->id,
         ]);
         $orangTua = OrangTua::factory()->create([
             'user_id' => $orangTuaUser->id,
             'nama' => 'Bapak Budi',
             'kontak' => '089876543210',
+            'pondok_id' => $pondok->id,
         ]);
 
         $santri->update(['orang_tua_id' => $orangTua->id]);
@@ -71,6 +84,7 @@ class DatabaseSeeder extends Seeder
             'muhafidz_id' => $muhafidz->id,
             'jadwal' => 'Setiap pagi setelah Subuh, Masjid PondokIT',
             'status' => HalaqahStatus::Aktif,
+            'pondok_id' => $pondok->id,
         ]);
 
         $halaqah->santris()->attach($santri->id, ['joined_at' => now(), 'status' => 'aktif']);
@@ -81,6 +95,7 @@ class DatabaseSeeder extends Seeder
             'target' => 6,
             'progress' => 0,
             'status' => TargetHafalanStatus::Berlangsung,
+            'pondok_id' => $pondok->id,
         ]);
 
         Mutabaah::factory()->create([
@@ -95,6 +110,7 @@ class DatabaseSeeder extends Seeder
             'status' => MutabaahStatus::Lulus,
             'catatan' => 'Lancar, tajwid baik.',
             'halaman' => 2,
+            'pondok_id' => $pondok->id,
         ]);
 
         // hitung progress Budi yang benar (halaman)

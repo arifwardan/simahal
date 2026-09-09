@@ -4,10 +4,12 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -29,7 +31,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['name', 'email', 'password', 'role'])]
+#[Fillable(['name', 'email', 'password', 'role', 'pondok_id', 'status'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements PasskeyUser
 {
@@ -44,6 +46,7 @@ class User extends Authenticatable implements PasskeyUser
      */
     protected $attributes = [
         'role' => 'santri',
+        'status' => 'active',
     ];
 
     /**
@@ -58,6 +61,8 @@ class User extends Authenticatable implements PasskeyUser
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
             'role' => UserRole::class,
+            'pondok_id' => 'integer',
+            'status' => UserStatus::class,
         ];
     }
 
@@ -69,6 +74,14 @@ class User extends Authenticatable implements PasskeyUser
     public function roleLabel(): string
     {
         return $this->role->label();
+    }
+
+    /**
+     * @return BelongsTo<Pondok, $this>
+     */
+    public function pondok(): BelongsTo
+    {
+        return $this->belongsTo(Pondok::class);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Concerns\BelongsToPondok;
 use App\Enums\SantriJenis;
 use App\Enums\SantriStatus;
 use Database\Factories\SantriFactory;
@@ -24,11 +25,11 @@ use Illuminate\Support\Carbon;
  * @property int|null $halaman_awal
  * @property SantriJenis|null $jenis
  */
-#[Fillable(['user_id', 'orang_tua_id', 'nis', 'nama', 'tanggal_lahir', 'status', 'halaman_awal', 'jenis'])]
+#[Fillable(['user_id', 'orang_tua_id', 'nis', 'nama', 'tanggal_lahir', 'status', 'halaman_awal', 'jenis', 'pondok_id'])]
 class Santri extends Model
 {
     /** @use HasFactory<SantriFactory> */
-    use HasFactory;
+    use BelongsToPondok, HasFactory;
 
     /**
      * @return array<string, string>

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Concerns\BelongsToPondok;
 use App\Enums\MutabaahJenis;
 use App\Enums\MutabaahStatus;
 use Database\Factories\MutabaahFactory;
@@ -26,11 +27,11 @@ use Illuminate\Support\Carbon;
  * @property string|null $catatan
  * @property int|null $halaman Satuan baris (nama kolom historis, isi = jumlah baris)
  */
-#[Fillable(['santri_id', 'muhafidz_id', 'tanggal', 'jenis', 'surah', 'ayat_mulai', 'ayat_selesai', 'nilai', 'status', 'catatan', 'halaman'])]
+#[Fillable(['santri_id', 'muhafidz_id', 'tanggal', 'jenis', 'surah', 'ayat_mulai', 'ayat_selesai', 'nilai', 'status', 'catatan', 'halaman', 'pondok_id'])]
 class Mutabaah extends Model
 {
     /** @use HasFactory<MutabaahFactory> */
-    use HasFactory;
+    use BelongsToPondok, HasFactory;
 
     /**
      * @return array<string, string>
