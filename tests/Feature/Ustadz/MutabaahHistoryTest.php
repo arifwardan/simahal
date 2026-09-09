@@ -19,9 +19,13 @@ function makingMuhafidz(TestCase $test): Muhafidz
 test('muhafidz sees mutabaah history for mutabaah they recorded', function () {
     $muhafidz = makingMuhafidz($this);
     $santri = Santri::factory()->create();
-    Mutabaah::factory()->count(3)->create(['muhafidz_id' => $muhafidz->id, 'santri_id' => $santri->id]);
+    Mutabaah::factory()->count(3)->sequence(
+        ['tanggal' => '2026-08-01'],
+        ['tanggal' => '2026-08-02'],
+        ['tanggal' => '2026-08-03'],
+    )->create(['muhafidz_id' => $muhafidz->id, 'santri_id' => $santri->id]);
     $other = Muhafidz::factory()->create();
-    Mutabaah::factory()->create(['muhafidz_id' => $other->id, 'santri_id' => $santri->id]);
+    Mutabaah::factory()->create(['muhafidz_id' => $other->id, 'santri_id' => $santri->id, 'tanggal' => '2026-08-04']);
 
     $this->get(route('muhafidz.mutabaahs.history'))
         ->assertOk()
