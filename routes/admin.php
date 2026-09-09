@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\MutabaahBulananDashboardController;
 use App\Http\Controllers\Admin\MutabaahHistoryController;
 use App\Http\Controllers\Admin\MutabaahSettingController;
 use App\Http\Controllers\Admin\OrangTuaController;
+use App\Http\Controllers\Admin\PondokSettingsController;
 use App\Http\Controllers\Admin\SantriController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
@@ -46,4 +47,9 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::get('excel-import', [ExcelImportController::class, 'index'])->name('excel-import.index');
     Route::post('excel-import/preview', [ExcelImportController::class, 'preview'])->name('excel-import.preview');
     Route::post('excel-import/execute', [ExcelImportController::class, 'execute'])->name('excel-import.execute');
+
+    Route::get('pondok-settings', [PondokSettingsController::class, 'edit'])->name('pondok-settings.edit');
+    Route::patch('pondok-settings', [PondokSettingsController::class, 'update'])->name('pondok-settings.update');
+    Route::post('approvals/{user}/approve', [PondokSettingsController::class, 'approve'])->name('approvals.approve');
+    Route::delete('approvals/{user}/reject', [PondokSettingsController::class, 'reject'])->name('approvals.reject');
 });
