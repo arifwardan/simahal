@@ -50,7 +50,7 @@ Halaman 5-panel lama dihapus. UI ikut pendapat ui-ux-pro-max: satu layar satu tu
   "details": [{"surah_id": 112, "baris": 4}, {"surah_id": 113, "baris": 5}, {"surah_id": 114, "baris": 6}]
 }
 ```
-- Validasi: santri milik halaqah pengampu, `tanggal date ≤ today`, `details array min:1`, `details.*.surah_id exists:surahs,id distinct`, `details.*.baris integer 1..30`.
+- Validasi: santri milik halaqah pengampu, `tanggal date ≤ today`, `details` array (boleh kosong = hapus hari itu), tiap `surah_id exists + distinct`, tiap `baris 1–30`.
 - Transaksi: `updateOrCreate` header + sync details (delete yang dibuang, upsert sisanya) + tulis total + ringkasan nama.
 - Kosongkan semua surah = hapus mutabaah hari itu (dengan konfirmasi di client).
 
