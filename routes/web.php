@@ -14,3 +14,7 @@ require __DIR__.'/settings.php';
 require __DIR__.'/admin.php';
 
 require __DIR__.'/muhafidz.php';
+
+require __DIR__.'/orang-tua.php';
+
+require __DIR__.'/santri.php';

@@ -90,6 +90,7 @@ test('progress is capped at target', function () {
 
     Mutabaah::factory()->create([
         'santri_id' => $santri->id,
+        'tanggal' => '2026-07-03',
         'jenis' => MutabaahJenis::Setoran,
         'status' => MutabaahStatus::Lulus,
         'ayat_mulai' => 1,
@@ -98,6 +99,7 @@ test('progress is capped at target', function () {
     ]);
     Mutabaah::factory()->create([
         'santri_id' => $santri->id,
+        'tanggal' => '2026-07-04',
         'jenis' => MutabaahJenis::Setoran,
         'status' => MutabaahStatus::Lulus,
         'ayat_mulai' => 31,

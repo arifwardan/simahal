@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\ExcelImportController;
 use App\Http\Controllers\Admin\HalaqahController;
 use App\Http\Controllers\Admin\MuhafidzController;
 use App\Http\Controllers\Admin\MutabaahBulananDashboardController;
+use App\Http\Controllers\Admin\MutabaahHistoryController;
 use App\Http\Controllers\Admin\MutabaahSettingController;
 use App\Http\Controllers\Admin\OrangTuaController;
 use App\Http\Controllers\Admin\SantriController;
@@ -38,6 +39,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::delete('halaqahs/{halaqah}', [HalaqahController::class, 'destroy'])->name('halaqahs.destroy');
 
     Route::get('mutabaah-bulanan', [MutabaahBulananDashboardController::class, 'index'])->name('mutabaah-bulanan.index');
+    Route::get('mutabaah/riwayat', [MutabaahHistoryController::class, 'index'])->name('mutabaahs.history');
     Route::get('mutabaah-settings', [MutabaahSettingController::class, 'edit'])->name('mutabaah-settings.edit');
     Route::put('mutabaah-settings', [MutabaahSettingController::class, 'update'])->name('mutabaah-settings.update');
 

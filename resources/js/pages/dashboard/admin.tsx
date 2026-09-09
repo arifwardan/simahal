@@ -62,6 +62,10 @@ type PageProps = {
     santriByJenis: ChartSlice[];
     mutabaahsThisMonth: number;
     mutabaahsLastMonth: number;
+    mutabaahsThisWeek: number;
+    mutabaahsLastWeek: number;
+    weeklyTrend: { label: string; week_start: string; week_end: string; count: number }[];
+    bulanan: { total: number; bulanIni: number; bulanLalu: number; tahun: number; bulan: number; recent: { id: number; santri: { nama: string } | null; tahun: number; bulan: number; halaman_kumulatif: number | null }[] };
     santrisThisMonth: number;
     topSantris: TopSantri[];
     topHalaqahs: TopHalaqah[];
@@ -76,6 +80,10 @@ export default function AdminDashboard({
     santriByJenis,
     mutabaahsThisMonth,
     mutabaahsLastMonth,
+    mutabaahsThisWeek,
+    mutabaahsLastWeek,
+    weeklyTrend,
+    bulanan,
     santrisThisMonth,
     topSantris,
     topHalaqahs,
@@ -128,6 +136,38 @@ export default function AdminDashboard({
                     delta={mutabaahDelta}
                 />
             </div>
+
+            {/* Ringkasan Harian / Mingguan / Bulanan — Global */}
+            <section>
+                <SectionHeading title="Ringkasan Mutabaah" description="Global — harian, mingguan, bulanan (keseluruhan santri)" />
+                <div className="mt-4 grid gap-4 lg:grid-cols-3">
+                    <Card className="border-[3px] border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+                        <CardHeader className="bg-[#FFD600] py-3"><CardTitle className="text-xs font-black uppercase">Harian</CardTitle></CardHeader>
+                        <CardContent className="bg-[#FFF7E8] pt-4 space-y-1">
+                            <p className="font-head text-3xl font-black">{hariIni.mutabaahHariIni}<span className="text-sm font-bold"> hari ini</span></p>
+                            <p className="text-xs font-bold">kemarin {hariIni.mutabaahKemarin} · bulan ini {mutabaahsThisMonth}</p>
+                        </CardContent>
+                    </Card>
+                    <Card className="border-[3px] border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+                        <CardHeader className="bg-[#5CE1E6] py-3"><CardTitle className="text-xs font-black uppercase">Mingguan</CardTitle></CardHeader>
+                        <CardContent className="bg-[#FFF7E8] pt-4 space-y-2">
+                            <p className="font-head text-3xl font-black">{mutabaahsThisWeek}<span className="text-sm font-bold"> pekan ini</span></p>
+                            <p className="text-xs font-bold">{mutabaahsLastWeek} pekan lalu</p>
+                            <div className="flex items-end gap-1 border-2 border-black bg-white p-2">
+                                {weeklyTrend.map(w=>{const max=Math.max(...weeklyTrend.map(x=>x.count),1); return <div key={w.week_start} className="flex flex-1 flex-col items-center gap-1"><div className="w-full bg-black" style={{height:`${Math.max(4,(w.count/max)*40)}px`}}/><span className="text-[9px] font-black">{w.count}</span></div>})}
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card className="border-[3px] border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+                        <CardHeader className="bg-[#FF90E8] py-3"><CardTitle className="text-xs font-black uppercase">Bulanan</CardTitle></CardHeader>
+                        <CardContent className="bg-[#FFF7E8] pt-4 space-y-2">
+                            <p className="font-head text-3xl font-black">{bulanan.bulanIni}<span className="text-xs font-bold"> {bulanan.bulan}/{bulanan.tahun}</span></p>
+                            <p className="text-xs font-bold">{bulanan.total} total · {bulanan.bulanLalu} bulan lalu</p>
+                            {bulanan.recent.length>0?<ul className="divide-y border-2 border-black bg-white text-xs font-bold">{bulanan.recent.slice(0,3).map(b=><li key={b.id} className="flex justify-between px-2 py-1"><span>{b.santri?.nama??'-'}</span><span>{b.bulan}/{b.tahun} {b.halaman_kumulatif??'-'} hal</span></li>)}</ul>:<p className="border-2 border-dashed border-black p-2 text-center text-xs font-bold">Belum ada bulanan</p>}
+                        </CardContent>
+                    </Card>
+                </div>
+            </section>
 
             {/* Hari ini + Perhatian + Top Halaqah */}
             <section>

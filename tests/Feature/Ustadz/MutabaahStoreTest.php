@@ -70,7 +70,7 @@ test('muhafidz can record a mutabaah for a member santri of their halaqah', func
         'halaman' => 3,
     ]);
 
-    expect($santri->targetHafalans()->first()->progress)->toBe(7);
+    expect($santri->targetHafalans()->first()->progress)->toBe(3);
 });
 
 test('muhafidz cannot set muhafidz_id for a mutabaah they do not own', function () {

@@ -138,7 +138,7 @@ export default function AdminHalaqahsIndex({ halaqahs, muhafidzs, statuses }: Pr
                                 Tambah Halaqah
                             </Button>
                         </DialogTrigger>
-                        <DialogContent className="max-h-[calc(100%-2rem)] overflow-y-auto">
+                        <DialogContent className="max-h-[85vh] overflow-hidden">
                             <DialogHeader>
                                 <DialogTitle>Tambah Halaqah</DialogTitle>
                                 <DialogDescription>
@@ -164,7 +164,7 @@ export default function AdminHalaqahsIndex({ halaqahs, muhafidzs, statuses }: Pr
             </Card>
 
             <Dialog open={editing !== null} onOpenChange={(open) => !open && setEditing(null)}>
-                <DialogContent key={editing?.id} className="max-h-[calc(100%-2rem)] overflow-y-auto">
+                <DialogContent key={editing?.id} className="max-h-[85vh] overflow-hidden">
                     <DialogHeader>
                         <DialogTitle>Edit Halaqah</DialogTitle>
                         <DialogDescription>Perbarui penugasan muhafidz/pembimbing dan jam halaqah.</DialogDescription>

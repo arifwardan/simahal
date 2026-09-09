@@ -3,7 +3,6 @@ import { edit as profileEdit } from '@/routes/profile';
 import {
     Award,
     BookMarked,
-    CalendarCheck,
     CalendarDays,
     FileUp,
     FolderGit2,
@@ -32,7 +31,7 @@ import {
 import { dashboard } from '@/routes';
 import { index as excelImportIndex } from '@/routes/admin/excel-import';
 import { index as halaqahsIndex } from '@/routes/admin/halaqahs';
-import { index as mutabaahBulananIndex } from '@/routes/admin/mutabaah-bulanan';
+import { history as adminMutabaahHistory } from '@/routes/admin/mutabaahs';
 import { edit as mutabaahSettingsEdit } from '@/routes/admin/mutabaah-settings';
 import { index as orangTuasIndex } from '@/routes/admin/orang-tuas';
 import { index as santrisIndex } from '@/routes/admin/santris';
@@ -44,6 +43,9 @@ import { index as setoranHarianIndex } from '@/routes/muhafidz/setoran-harian';
 import { index as tasmiIndex } from '@/routes/muhafidz/tasmi';
 import { index as ujianIndex } from '@/routes/muhafidz/ujian';
 import { index as muhafidzTargetsIndex } from '@/routes/muhafidz/targets';
+import { index as prestasiIndex } from '@/routes/orang-tua/prestasi';
+import { index as santriTargetIndex } from '@/routes/santri/targets';
+import { index as santriPrestasiIndex } from '@/routes/santri/prestasi';
 import type { NavItem } from '@/types';
 
 const adminNavItems: NavItem[] = [
@@ -52,7 +54,7 @@ const adminNavItems: NavItem[] = [
     { title: 'Manajemen Muhafidz', href: muhafidzsIndex(), icon: BookMarked },
     { title: 'Manajemen Orang Tua', href: orangTuasIndex(), icon: HeartHandshake },
     { title: 'Manajemen Halaqah', href: halaqahsIndex(), icon: FolderGit2 },
-    { title: 'Mutabaah Bulanan', href: mutabaahBulananIndex(), icon: CalendarCheck },
+    { title: 'Mutabaah', href: adminMutabaahHistory(), icon: History },
     { title: 'Pengaturan Mutabaah', href: mutabaahSettingsEdit(), icon: Settings },
     { title: 'Import Excel', href: excelImportIndex(), icon: FileUp },
 ];
@@ -66,6 +68,15 @@ const muhafidzNavItems: NavItem[] = [
     { title: 'Target Hafalan', href: muhafidzTargetsIndex(), icon: Target },
 ];
 
+const orangTuaNavItems: NavItem[] = [
+    { title: 'Prestasi Ananda', href: prestasiIndex(), icon: Award },
+];
+
+const santriNavItems: NavItem[] = [
+    { title: 'Target Hafalan', href: santriTargetIndex(), icon: Target },
+    { title: 'Prestasiku', href: santriPrestasiIndex(), icon: Award },
+];
+
 export function AppSidebar() {
     const { auth } = usePage().props;
 
@@ -77,6 +88,8 @@ export function AppSidebar() {
         },
         ...(auth.user?.role === 'admin' ? adminNavItems : []),
         ...(auth.user?.role === 'muhafidz' ? muhafidzNavItems : []),
+        ...(auth.user?.role === 'orang_tua' ? orangTuaNavItems : []),
+        ...(auth.user?.role === 'santri' ? santriNavItems : []),
     ];
 
     return (

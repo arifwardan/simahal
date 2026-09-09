@@ -65,6 +65,26 @@ class DashboardController extends Controller
         $mutabaahHariIni = Mutabaah::query()->whereDate('tanggal', $now->toDateString())->count();
         $mutabaahKemarin = Mutabaah::query()->whereDate('tanggal', $now->copy()->subDay()->toDateString())->count();
 
+        // Harian / Mingguan / Bulanan global
+        $mutabaahsThisWeek = $this->mutabaahCountInWeek(Mutabaah::query(), $now);
+        $mutabaahsLastWeek = $this->mutabaahCountInWeek(Mutabaah::query(), $now->copy()->subWeek());
+        $weeklyTrend = collect(range(3, 0))->map(function (int $offset) use ($now) {
+            $date = $now->copy()->subWeeks($offset);
+
+            return [
+                'label' => $date->copy()->startOfWeek()->format('d/m').' - '.$date->copy()->endOfWeek()->format('d/m'),
+                'week_start' => $date->copy()->startOfWeek()->toDateString(),
+                'week_end' => $date->copy()->endOfWeek()->toDateString(),
+                'count' => $this->mutabaahCountInWeek(Mutabaah::query(), $date),
+            ];
+        })->all();
+
+        $bulananTotal = MutabaahBulanan::query()->count();
+        $bulananBulanIni = MutabaahBulanan::query()->where('tahun', (int) $now->year)->where('bulan', (int) $now->month)->count();
+        $bulananBulanLaluDate = $now->copy()->subMonth();
+        $bulananBulanLalu = MutabaahBulanan::query()->where('tahun', (int) $bulananBulanLaluDate->year)->where('bulan', (int) $bulananBulanLaluDate->month)->count();
+        $recentBulanan = MutabaahBulanan::query()->with('santri:id,nama')->orderByDesc('tahun')->orderByDesc('bulan')->limit(5)->get();
+
         return Inertia::render('dashboard/admin', [
             'counts' => [
                 'santris' => Santri::count(),
@@ -82,6 +102,17 @@ class DashboardController extends Controller
             'santriByJenis' => $this->santriJenisDistribution(),
             'mutabaahsThisMonth' => $this->mutabaahCountInMonth(Mutabaah::query(), $now),
             'mutabaahsLastMonth' => $this->mutabaahCountInMonth(Mutabaah::query(), $now->copy()->subMonth()),
+            'mutabaahsThisWeek' => $mutabaahsThisWeek,
+            'mutabaahsLastWeek' => $mutabaahsLastWeek,
+            'weeklyTrend' => $weeklyTrend,
+            'bulanan' => [
+                'total' => $bulananTotal,
+                'bulanIni' => $bulananBulanIni,
+                'bulanLalu' => $bulananBulanLalu,
+                'tahun' => (int) $now->year,
+                'bulan' => (int) $now->month,
+                'recent' => $recentBulanan,
+            ],
             'santrisThisMonth' => Santri::query()
                 ->whereYear('created_at', $now->year)
                 ->whereMonth('created_at', $now->month)
@@ -125,6 +156,45 @@ class DashboardController extends Controller
             ->unique()
             ->values()
             ->all();
+
+        // Ringkasan harian / mingguan / bulanan (mutabaah harian)
+        $weekStart = $now->copy()->startOfWeek();
+        $weekEnd = $now->copy()->endOfWeek();
+        $lastWeekStart = $now->copy()->subWeek()->startOfWeek();
+        $lastWeekEnd = $now->copy()->subWeek()->endOfWeek();
+
+        $mutabaahsThisWeek = $this->mutabaahCountInWeek($muhafidz->mutabaahs(), $now);
+        $mutabaahsLastWeek = $this->mutabaahCountInWeek($muhafidz->mutabaahs(), $now->copy()->subWeek());
+
+        // 4 minggu terakhir untuk sparkline
+        $weeklyTrend = collect(range(3, 0))->map(function (int $offset) use ($muhafidz, $now) {
+            $date = $now->copy()->subWeeks($offset);
+            $start = $date->copy()->startOfWeek()->toDateString();
+            $end = $date->copy()->endOfWeek()->toDateString();
+
+            return [
+                'label' => $date->copy()->startOfWeek()->format('d/m').' - '.$date->copy()->endOfWeek()->format('d/m'),
+                'week_start' => $start,
+                'week_end' => $end,
+                'count' => $this->mutabaahCountInWeek($muhafidz->mutabaahs(), $date),
+            ];
+        })->all();
+
+        // Mutabaah bulanan (tabel mutabaah_bulanans)
+        $currentTahun = (int) $now->year;
+        $currentBulan = (int) $now->month;
+        $bulananQuery = MutabaahBulanan::query()->whereIn('santri_id', $santriIds);
+        $totalBulanan = (clone $bulananQuery)->count();
+        $bulananBulanIni = (clone $bulananQuery)->where('tahun', $currentTahun)->where('bulan', $currentBulan)->count();
+        $bulananBulanLaluDate = $now->copy()->subMonth();
+        $bulananBulanLalu = (clone $bulananQuery)->where('tahun', (int) $bulananBulanLaluDate->year)->where('bulan', (int) $bulananBulanLaluDate->month)->count();
+        $recentBulanan = MutabaahBulanan::query()
+            ->whereIn('santri_id', $santriIds)
+            ->with('santri:id,nama')
+            ->orderByDesc('tahun')
+            ->orderByDesc('bulan')
+            ->limit(5)
+            ->get();
 
         // Hari ini
         $today = $now->toDateString();
@@ -189,6 +259,17 @@ class DashboardController extends Controller
             'mutabaahByStatus' => $this->mutabaahStatusDistribution($muhafidz->mutabaahs()),
             'mutabaahsThisMonth' => $this->mutabaahCountInMonth($muhafidz->mutabaahs(), $now),
             'mutabaahsLastMonth' => $this->mutabaahCountInMonth($muhafidz->mutabaahs(), $now->copy()->subMonth()),
+            'mutabaahsThisWeek' => $mutabaahsThisWeek,
+            'mutabaahsLastWeek' => $mutabaahsLastWeek,
+            'weeklyTrend' => $weeklyTrend,
+            'bulanan' => [
+                'total' => $totalBulanan,
+                'bulanIni' => $bulananBulanIni,
+                'bulanLalu' => $bulananBulanLalu,
+                'tahun' => $currentTahun,
+                'bulan' => $currentBulan,
+                'recent' => $recentBulanan,
+            ],
             'topSantris' => $this->topSantris($santriIds, 5),
             'hariIni' => $hariIni,
             'perhatian' => $perhatian,
@@ -216,16 +297,40 @@ class DashboardController extends Controller
         $children = $orangTua->santris()
             ->orderBy('nama')
             ->get()
-            ->map(fn (Santri $santri) => [
-                'id' => $santri->id,
-                'nama' => $santri->nama,
-                'nis' => $santri->nis,
-                'progress' => $this->progressData($santri),
-            ]);
+            ->map(function (Santri $santri) {
+                $progress = $this->progressData($santri);
+                $halqahs = $santri->halaqahs()->get(['halaqahs.id', 'halaqahs.nama', 'halaqahs.jam_mulai', 'halaqahs.jam_selesai']);
+                $riwayat = $santri->mutabaahs()->orderBy('tanggal', 'desc')->limit(6)->get(['id', 'tanggal', 'jenis', 'surah', 'ayat_mulai', 'ayat_selesai', 'status', 'nilai']);
+                $mutabaahByStatus = $this->mutabaahStatusDistribution($santri->mutabaahs());
+                $recentBulanan = MutabaahBulanan::query()->where('santri_id', $santri->id)->orderByDesc('tahun')->orderByDesc('bulan')->limit(3)->get();
+                $totalMutabaah = $santri->mutabaahs()->count();
+
+                return [
+                    'id' => $santri->id,
+                    'nama' => $santri->nama,
+                    'nis' => $santri->nis,
+                    'progress' => $progress,
+                    'halaqahs' => $halqahs,
+                    'riwayat' => $riwayat,
+                    'mutabaahByStatus' => $mutabaahByStatus,
+                    'recentBulanan' => $recentBulanan,
+                    'totalMutabaah' => $totalMutabaah,
+                ];
+            });
+
+        $avgPercent = $children->count() > 0 ? (int) round($children->avg(fn ($c) => $c['progress']['percent'] ?? 0)) : 0;
+        $bestChild = $children->sortByDesc(fn ($c) => $c['progress']['percent'] ?? 0)->first();
+        $totalMutabaahAll = $children->sum(fn ($c) => $c['totalMutabaah'] ?? 0);
 
         return Inertia::render('dashboard/orang-tua', [
             'children' => $children,
             'childrenProgress' => $this->childrenProgressDistribution($children),
+            'stats' => [
+                'total' => $children->count(),
+                'avgPercent' => $avgPercent,
+                'bestChild' => $bestChild ? ['nama' => $bestChild['nama'], 'percent' => $bestChild['progress']['percent']] : null,
+                'totalMutabaah' => $totalMutabaahAll,
+            ],
         ]);
     }
 
@@ -296,6 +401,20 @@ class DashboardController extends Controller
         return (clone $query)
             ->whereYear('tanggal', $month->year)
             ->whereMonth('tanggal', $month->month)
+            ->count();
+    }
+
+    /**
+     * @param  Builder<mixed>|Relation  $query
+     */
+    private function mutabaahCountInWeek(Builder|Relation $query, CarbonInterface $date): int
+    {
+        $start = $date->copy()->startOfWeek()->toDateString();
+        $end = $date->copy()->endOfWeek()->toDateString();
+
+        return (clone $query)
+            ->whereDate('tanggal', '>=', $start)
+            ->whereDate('tanggal', '<=', $end)
             ->count();
     }
 

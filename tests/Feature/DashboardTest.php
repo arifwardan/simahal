@@ -72,14 +72,14 @@ test('muhafidz dashboard renders the muhafidz component with their halaqah', fun
 test('santri dashboard renders the santri component with progress', function () {
     $user = User::factory()->create(['role' => UserRole::Santri]);
     $santri = Santri::factory()->create(['user_id' => $user->id]);
-    TargetHafalan::factory()->create(['santri_id' => $santri->id, 'target' => 40, 'progress' => 10]);
+    TargetHafalan::factory()->create(['santri_id' => $santri->id, 'target' => 2, 'progress' => 10]);
     Mutabaah::factory()->count(2)->create(['santri_id' => $santri->id]);
 
     $this->actingAs($user)->get(route('dashboard'))
         ->assertOk()
         ->assertInertia(fn ($page) => $page
             ->component('dashboard/santri')
-            ->where('progress.target', 40)
+            ->where('progress.target', 2)
             ->where('progress.progress', 10)
             ->where('progress.percent', 25)
             ->has('riwayat', 2));

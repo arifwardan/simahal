@@ -1,11 +1,12 @@
 import { Head, Link } from '@inertiajs/react';
 import { Badge } from '@/components/ui/badge';
 import { formatTanggal } from '@/lib/utils';
-import { ClipboardCheck, FolderGit2, GraduationCap, Trophy } from 'lucide-react';
+import { CalendarDays, ClipboardCheck, FolderGit2, GraduationCap, Trophy } from 'lucide-react';
 import MutabaahStatusDonut from '@/components/dashboard/charts/mutabaah-status-donut';
 import DashboardHero from '@/components/dashboard/dashboard-hero';
 import SectionHeading from '@/components/dashboard/section-heading';
 import StatCard from '@/components/dashboard/stat-card';
+import OnboardingTour, { DEFAULT_MUHAFIDZ_STEPS } from '@/components/onboarding-tour';
 import PageContainer from '@/components/page-container';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -45,6 +46,17 @@ type PageProps = {
     mutabaahByStatus: ChartSlice[];
     mutabaahsThisMonth: number;
     mutabaahsLastMonth: number;
+    mutabaahsThisWeek: number;
+    mutabaahsLastWeek: number;
+    weeklyTrend: { label: string; week_start: string; week_end: string; count: number }[];
+    bulanan: {
+        total: number;
+        bulanIni: number;
+        bulanLalu: number;
+        tahun: number;
+        bulan: number;
+        recent: { id: number; santri: { nama: string } | null; tahun: number; bulan: number; halaman_kumulatif: number | null }[];
+    };
     topSantris: TopSantri[];
     hariIni: HariIni;
     perhatian: PerhatianRow[];
@@ -58,6 +70,10 @@ export default function MuhafidzDashboard({
     mutabaahByStatus,
     mutabaahsThisMonth,
     mutabaahsLastMonth,
+    mutabaahsThisWeek,
+    mutabaahsLastWeek,
+    weeklyTrend,
+    bulanan,
     topSantris,
     hariIni,
     perhatian,
@@ -65,6 +81,12 @@ export default function MuhafidzDashboard({
     recentMutabaahs,
 }: PageProps) {
     const totalSantri = halaqahs.reduce((sum, h) => sum + h.santris_count, 0);
+    const onboardingSteps = DEFAULT_MUHAFIDZ_STEPS({
+        hasHalaqah: halaqahs.length > 0,
+        hasTarget: topSantris.length > 0,
+        hasSetoran: recentMutabaahs.length > 0,
+        hasPrestasi: false,
+    });
 
     const mutabaahDelta = {
         direction: mutabaahsThisMonth >= mutabaahsLastMonth ? 'up' : 'down',
@@ -74,6 +96,7 @@ export default function MuhafidzDashboard({
     return (
         <PageContainer className="space-y-8">
             <Head title="Dashboard Muhafidz" />
+            <OnboardingTour steps={onboardingSteps} />
             <DashboardHero subtitle="Pantau halaqah, mutabaah harian & santri berprestasi Anda." />
 
             <div className="grid gap-4 sm:grid-cols-3 auto-rows-fr items-stretch">
@@ -99,6 +122,81 @@ export default function MuhafidzDashboard({
                     delta={mutabaahDelta}
                 />
             </div>
+
+            {/* Ringkasan Harian / Mingguan / Bulanan */}
+            <section>
+                <SectionHeading title="Ringkasan Mutabaah" description="Harian · Mingguan · Bulanan — pantau semua periode" />
+                <div className="mt-4 grid gap-4 lg:grid-cols-3">
+                    <Card className="border-[3px] border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+                        <CardHeader className="bg-[#FFD600] py-3">
+                            <CardTitle className="flex items-center gap-2 text-xs font-black uppercase">
+                                <CalendarDays className="h-4 w-4" /> Harian
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-2 bg-[#FFF7E8] pt-4">
+                            <p className="font-head text-3xl font-black">{hariIni.sudah}<span className="text-sm font-bold">/{hariIni.total} hari ini</span></p>
+                            <p className="text-xs font-bold">{mutabaahsThisMonth} bulan ini · {mutabaahsLastMonth} bulan lalu</p>
+                            <div className="flex gap-1 text-xs font-black">
+                                <span className={`border-2 border-black px-2 py-1 ${mutabaahsThisMonth >= mutabaahsLastMonth ? 'bg-emerald-400' : 'bg-red-400'}`}>
+                                    {mutabaahsThisMonth >= mutabaahsLastMonth ? '↑' : '↓'} {Math.abs(mutabaahsThisMonth - mutabaahsLastMonth)} vs bulan lalu
+                                </span>
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card className="border-[3px] border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+                        <CardHeader className="bg-[#5CE1E6] py-3">
+                            <CardTitle className="flex items-center gap-2 text-xs font-black uppercase">
+                                <ClipboardCheck className="h-4 w-4" /> Mingguan
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-2 bg-[#FFF7E8] pt-4">
+                            <p className="font-head text-3xl font-black">{mutabaahsThisWeek}<span className="text-sm font-bold"> pekan ini</span></p>
+                            <p className="text-xs font-bold">{mutabaahsLastWeek} pekan lalu</p>
+                            <div className="flex gap-1">
+                                <span className={`border-2 border-black px-2 py-1 text-xs font-black ${mutabaahsThisWeek >= mutabaahsLastWeek ? 'bg-emerald-400' : 'bg-red-400'}`}>
+                                    {mutabaahsThisWeek >= mutabaahsLastWeek ? '↑' : '↓'} {Math.abs(mutabaahsThisWeek - mutabaahsLastWeek)} vs pekan lalu
+                                </span>
+                            </div>
+                            {weeklyTrend.length > 0 && (
+                                <div className="mt-2 flex items-end gap-1 border-2 border-black bg-white p-2">
+                                    {weeklyTrend.map((w) => {
+                                        const max = Math.max(...weeklyTrend.map((x) => x.count), 1);
+                                        return (
+                                            <div key={w.week_start} className="flex flex-1 flex-col items-center gap-1">
+                                                <div className="w-full bg-black" style={{ height: `${Math.max(4, (w.count / max) * 40)}px` }} />
+                                                <span className="text-[9px] font-black">{w.count}</span>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                    <Card className="border-[3px] border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+                        <CardHeader className="bg-[#FF90E8] py-3">
+                            <CardTitle className="flex items-center gap-2 text-xs font-black uppercase text-black">
+                                <GraduationCap className="h-4 w-4" /> Bulanan
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-2 bg-[#FFF7E8] pt-4">
+                            <p className="font-head text-3xl font-black">{bulanan.bulanIni}<span className="text-xs font-bold"> catatan {bulanan.bulan}/{bulanan.tahun}</span></p>
+                            <p className="text-xs font-bold">{bulanan.total} total bulanan · {bulanan.bulanLalu} bulan lalu</p>
+                            {bulanan.recent.length > 0 ? (
+                                <ul className="divide-y border-2 border-black bg-white text-xs font-bold">
+                                    {bulanan.recent.slice(0, 3).map((b) => (
+                                        <li key={b.id} className="flex justify-between px-2 py-1">
+                                            <span>{b.santri?.nama ?? '-'}</span>
+                                            <span>{b.bulan}/{b.tahun} · {b.halaman_kumulatif ?? '-'} hal</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p className="border-2 border-dashed border-black p-2 text-center text-xs font-bold">Belum ada data bulanan</p>
+                            )}
+                        </CardContent>
+                    </Card>
+                </div>
+            </section>
 
             {/* Hari ini + Perhatian */}
             <section>

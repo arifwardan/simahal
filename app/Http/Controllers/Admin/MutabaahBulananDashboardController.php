@@ -9,13 +9,19 @@ use App\Http\Controllers\Controller;
 use App\Models\Halaqah;
 use App\Models\MutabaahBulanan;
 use App\Models\MutabaahSetting;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class MutabaahBulananDashboardController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(Request $request): RedirectResponse
+    {
+        return to_route('admin.mutabaahs.history', ['rekap_bulan' => $request->integer('bulan', now()->month)]);
+    }
+
+    public function legacyIndex(Request $request): Response
     {
         $settings = MutabaahSetting::setting();
         $tahun = $settings->tahun_aktif;

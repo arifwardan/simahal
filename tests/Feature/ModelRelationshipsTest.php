@@ -50,7 +50,7 @@ test('target hafalan belongs to santri and reports progress percent', function (
     $santri = Santri::factory()->create();
     $target = TargetHafalan::factory()->create([
         'santri_id' => $santri->id,
-        'target' => 120,
+        'target' => 6,
         'progress' => 30,
     ]);
 

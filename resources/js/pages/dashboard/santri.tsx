@@ -1,11 +1,16 @@
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
+import { Award, Target } from 'lucide-react';
 import MutabaahStatusDonut from '@/components/dashboard/charts/mutabaah-status-donut';
 import DashboardHero from '@/components/dashboard/dashboard-hero';
 import SectionHeading from '@/components/dashboard/section-heading';
 import PageContainer from '@/components/page-container';
+import OnboardingTour, { DEFAULT_SANTRI_STEPS } from '@/components/onboarding-tour';
 import SantriProgressView from '@/components/santri-progress-view';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { dashboard } from '@/routes';
+import { index as prestasiIndex } from '@/routes/santri/prestasi';
+import { index as targetIndex } from '@/routes/santri/targets';
 
 type ChartSlice = {
     key: string;
@@ -39,14 +44,26 @@ type PageProps = {
 };
 
 export default function SantriDashboard({ progress, riwayat, halaqahs, mutabaahByStatus }: PageProps) {
+    const onboardingSteps = DEFAULT_SANTRI_STEPS({
+        hasHalaqah: halaqahs.length > 0,
+        hasTarget: progress.target >= 1 && progress.target <= 30,
+        hasSetoran: riwayat.length > 0,
+        hasPrestasi: false,
+    });
+
     return (
         <PageContainer className="space-y-6">
             <Head title="Dashboard Santri" />
+            <OnboardingTour steps={onboardingSteps} />
             <DashboardHero subtitle="Progres hafalan Anda — semangat mengejar target juz!" />
             <div className="grid gap-4 sm:grid-cols-3">
-                <Card className="border-[3px] border-black bg-[#FFD600] shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"><CardContent className="bg-[#FFF7E8] p-4 text-center"><p className="text-xs font-black uppercase">Progress</p><p className="font-head text-3xl font-black">{progress.progress}/{progress.target}</p><p className="text-xs font-bold">juz · {progress.percent}%</p></CardContent></Card>
+                <Card className="border-[3px] border-black bg-[#FFD600] shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"><CardContent className="bg-[#FFF7E8] p-4 text-center"><p className="text-xs font-black uppercase">Progress</p><p className="font-head text-3xl font-black">{(progress.progress/20).toFixed(1)}/{progress.target}</p><p className="text-xs font-bold">juz · {progress.percent}%</p></CardContent></Card>
                 <Card className="border-[3px] border-black bg-[#5CE1E6] shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"><CardContent className="bg-[#FFF7E8] p-4 text-center"><p className="text-xs font-black uppercase">Halaqah</p><p className="font-head text-3xl font-black">{halaqahs.length}</p><p className="text-xs font-bold">terdaftar</p></CardContent></Card>
                 <Card className="border-[3px] border-black bg-[#FF90E8] shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"><CardContent className="bg-[#FFF7E8] p-4 text-center"><p className="text-xs font-black uppercase">Riwayat</p><p className="font-head text-3xl font-black">{riwayat.length}</p><p className="text-xs font-bold">mutabaah</p></CardContent></Card>
+            </div>
+            <div className="flex flex-wrap gap-2">
+                <Button asChild className="cursor-pointer border-[3px] border-black bg-black font-black text-white shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"><Link href={targetIndex()}><Target className="h-4 w-4"/> Kelola Target Hafalan Saya</Link></Button>
+                <Button asChild variant="outline" className="cursor-pointer border-[3px] border-black bg-[#FFD600] font-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"><Link href={prestasiIndex()}><Award className="h-4 w-4"/> Lihat Prestasiku</Link></Button>
             </div>
             <SantriProgressView progress={progress} riwayat={riwayat} halaqahs={halaqahs} />
             <section>

@@ -23,13 +23,9 @@ test('admin can view mutabaah bulanan dashboard', function () {
         'halaman_kumulatif' => 40,
     ]);
 
+    // legacy route now redirects to unified Mutabaah history (Rekap tab)
     $this->get(route('admin.mutabaah-bulanan.index', ['bulan' => 1]))
-        ->assertOk()
-        ->assertInertia(fn ($page) => $page
-            ->component('admin/mutabaah-bulanan/index')
-            ->where('bulan', 1)
-            ->has('rows', 1)
-            ->has('distribusi', 22));
+        ->assertRedirect(route('admin.mutabaahs.history', ['rekap_bulan' => 1]));
 });
 
 test('non-admin cannot access mutabaah bulanan dashboard', function () {
