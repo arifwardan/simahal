@@ -9,12 +9,17 @@ it('has ujian_bulanan and catatan columns', function (): void {
     expect(Schema::hasColumn('mutabaah_bulanans', 'catatan_ujian'))->toBeTrue();
 });
 
-it('drops legacy ujian_soal columns', function (): void {
-    expect(Schema::hasColumn('mutabaah_bulanans', 'ujian_soal_1'))->toBeFalse();
-    expect(Schema::hasColumn('mutabaah_bulanans', 'ujian_soal_2'))->toBeFalse();
-    expect(Schema::hasColumn('mutabaah_bulanans', 'ujian_soal_3'))->toBeFalse();
-    expect(Schema::hasColumn('mutabaah_bulanans', 'ujian_soal_4'))->toBeFalse();
-    expect(Schema::hasColumn('mutabaah_bulanans', 'ujian_soal_5'))->toBeFalse();
+it('has boolean ujian_soal columns (benar/salah per soal, 20 poin)', function (): void {
+    foreach (['ujian_soal_1', 'ujian_soal_2', 'ujian_soal_3', 'ujian_soal_4', 'ujian_soal_5'] as $col) {
+        expect(Schema::hasColumn('mutabaah_bulanans', $col))->toBeTrue();
+    }
+
+    $model = new MutabaahBulanan;
+
+    foreach (['ujian_soal_1', 'ujian_soal_2', 'ujian_soal_3', 'ujian_soal_4', 'ujian_soal_5'] as $col) {
+        expect($model->getFillable())->toContain($col);
+        expect($model->getCasts())->toHaveKey($col);
+    }
 });
 
 it('allows fillable ujian_bulanan and catatan fields', function (): void {
