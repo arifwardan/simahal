@@ -8,6 +8,7 @@ use App\Models\Muhafidz;
 use App\Models\Santri;
 use App\Models\TargetHafalan;
 use App\Models\User;
+use Illuminate\Support\Facades\Route;
 
 function makeMuhafidzForFlowTest(): Muhafidz
 {
@@ -31,8 +32,12 @@ test('legacy Tambah Mutabaah hidden from halaqah santris page', function () {
     $content = $response->getContent();
     expect($content)->not->toContain('Tambah Mutabaah');
     expect($content)->not->toContain('Catat Mutabaah');
-    // Primary flow remains
-    expect($content)->toContain('Input Setoran');
+    // Primary flow remains: santris page loads with the santri row
+    // (link label is client-rendered without SSR, so assert props instead)
+    $response->assertInertia(fn ($page) => $page
+        ->component('muhafidz/halaqahs/santris')
+        ->has('santris.data', 1));
+    expect(Route::has('muhafidz.setoran-harian.index'))->toBeTrue();
 });
 
 test('legacy POST mutabaah still works', function () {

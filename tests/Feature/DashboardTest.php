@@ -196,7 +196,12 @@ test('santri dashboard includes only their mutabaah status distribution', functi
     Mutabaah::factory()->create(['santri_id' => $santri->id, 'tanggal' => '2024-05-15', 'status' => MutabaahStatus::PerluMurajaah]);
 
     $other = Santri::factory()->create();
-    Mutabaah::factory()->count(4)->create(['santri_id' => $other->id, 'status' => MutabaahStatus::Lulus]);
+    Mutabaah::factory()->count(4)->sequence(
+        ['tanggal' => '2024-06-01'],
+        ['tanggal' => '2024-06-02'],
+        ['tanggal' => '2024-06-03'],
+        ['tanggal' => '2024-06-04'],
+    )->create(['santri_id' => $other->id, 'status' => MutabaahStatus::Lulus]);
 
     $this->actingAs($user)->get(route('dashboard'))
         ->assertOk()
