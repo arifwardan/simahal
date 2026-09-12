@@ -1,5 +1,1 @@
-{
-  "name": "@simahal/config",
-  "version": "0.0.0",
-  "private": true
-}
+{ "name": "@simahal/config", "version": "0.0.1", "private": true, "type": "module", "main": "./tailwind.preset.js" }
