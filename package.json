@@ -1,17 +1,21 @@
 {
   "name": "simahal",
   "private": true,
+  "version": "0.0.1",
+  "packageManager": "bun@1.4.0",
+  "workspaces": ["apps/*", "packages/*"],
   "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "clean": "turbo clean && rimraf node_modules"
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "db:generate": "turbo run db:generate",
+    "db:push": "turbo run db:push",
+    "db:migrate": "turbo run db:migrate",
+    "db:studio": "turbo run db:studio"
   },
   "devDependencies": {
-    "prettier": "^3.2.5",
-    "rimraf": "^5.0.5",
-    "turbo": "^2.0.0"
-  },
-  "packageManager": "pnpm@9.0.0"
+    "turbo": "^2.5.0",
+    "typescript": "^5.6.0"
+  }
 }

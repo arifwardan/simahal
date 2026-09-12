@@ -1,27 +1,14 @@
-version: '3.8'
-
 services:
-  # Database PostgreSQL
-  postgres:
-    image: postgres:16-alpine
-    container_name: simahal_postgres
-    restart: always
+  db:
+    image: postgres:16
+    restart: unless-stopped
     environment:
-      POSTGRES_USER: simahal_user
-      POSTGRES_PASSWORD: simahal_password
-      POSTGRES_DB: simahal_db
+      POSTGRES_USER: simahal
+      POSTGRES_PASSWORD: simahal
+      POSTGRES_DB: simahal
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-  # GUI Pengelola Database (Adminer / PgAdmin alternatif yang ringan)
-  adminer:
-    image: adminer
-    container_name: simahal_adminer
-    restart: always
-    ports:
-      - '8080:8080'
-
+      - pgdata:/var/lib/postgresql/data
 volumes:
-  postgres_data:
+  pgdata:
