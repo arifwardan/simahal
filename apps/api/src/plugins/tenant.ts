@@ -1,7 +1,6 @@
 import { Elysia } from "elysia";
-import { eq } from "drizzle-orm";
 import { resolveTenantSlug } from "@simahal/shared";
-import { db } from "@simahal/db";
+import { db, eq } from "@simahal/db";
 import { tenants } from "@simahal/db";
 
 export const tenantPlugin = new Elysia({ name: "tenant" })
