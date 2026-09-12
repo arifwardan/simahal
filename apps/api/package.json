@@ -1,25 +1,15 @@
 {
-  "name": "@simahal/api",
-  "version": "0.0.1",
-  "private": true,
+  "name": "@simahal/api", "version": "0.0.1", "private": true, "type": "module",
   "scripts": {
-    "dev": "nest start --watch",
-    "build": "nest build",
-    "start": "node dist/main"
+    "dev": "bun run src/index.ts",
+    "build": "bun build src/index.ts --outdir dist --target bun",
+    "lint": "bunx tsc --noEmit",
+    "typecheck": "bunx tsc --noEmit"
   },
   "dependencies": {
-    "@nestjs/common": "^11.1.28",
-    "@nestjs/core": "^11.1.28",
-    "@nestjs/platform-express": "^11.1.28",
-    "@prisma/client": "^7.9.1",
-    "@simahal/types": "workspace:*",
-    "@simahal/utils": "workspace:*",
-    "dotenv": "^17.4.2"
+    "@simahal/db": "workspace:*",
+    "@simahal/shared": "workspace:*",
+    "elysia": "^1.1.0"
   },
-  "devDependencies": {
-    "@types/dotenv": "^8.2.3",
-    "@types/express": "^5.0.6",
-    "@types/node": "^20.0.0",
-    "prisma": "^7.9.1"
-  }
+  "devDependencies": { "typescript": "^5.6.0" }
 }
