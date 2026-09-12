@@ -7,7 +7,7 @@
     "lint": "svelte-check --tsconfig ./tsconfig.json",
     "typecheck": "svelte-check --tsconfig ./tsconfig.json"
   },
-  "dependencies": { "elysia": "^1.1.0" },
+  "dependencies": { "elysia": "^1.1.0", "@elysiajs/eden": "^1.1.0" },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^3.0.0",
     "@sveltejs/kit": "^2.0.0",
