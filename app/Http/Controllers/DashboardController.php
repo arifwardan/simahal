@@ -137,6 +137,7 @@ class DashboardController extends Controller
         abort_unless($muhafidz !== null, 403, __('You do not have a muhafidz profile.'));
 
         $halaqahs = $muhafidz->halaqahs()
+            ->with('santris:id,nama')
             ->withCount('santris')
             ->orderBy('nama')
             ->get();
@@ -211,10 +212,10 @@ class DashboardController extends Controller
         // Perlu perhatian: progress <30% atau status mengulang/perlu
         $perhatian = Santri::query()
             ->whereIn('id', $santriIds)
-            ->with(['targetHafalans', 'mutabaahs' => fn ($q) => $q->latest('tanggal')->limit(1)])
+            ->with(['targetHafalans:id,santri_id,target,progress,status,periode', 'mutabaahs' => fn ($q) => $q->select('id', 'santri_id', 'status', 'tanggal')->latest('tanggal')->limit(1)])
             ->get()
             ->filter(function (Santri $s) {
-                $p = $this->progressData($s);
+                $p = $this->progressDataFromRelations($s);
                 $lastStatus = $s->mutabaahs->first()?->status?->value;
 
                 return $p['percent'] < 30 || in_array($lastStatus, ['mengulang', 'perlu_murajaah'], true);
@@ -224,22 +225,30 @@ class DashboardController extends Controller
                 'id' => $s->id,
                 'nama' => $s->nama,
                 'nis' => $s->nis,
-                'percent' => $this->progressData($s)['percent'],
+                'percent' => $this->progressDataFromRelations($s)['percent'],
                 'lastStatus' => $s->mutabaahs->first()?->status?->label() ?? '-',
             ])
             ->values()
             ->all();
 
-        // Halaqah performance: avg progress per halaqah
-        $halaqahPerf = $halaqahs->map(function (Halaqah $h) {
+        // Halaqah performance: avg progress per halaqah (1 query batch, bukan per-halaqah)
+        $allSantriTargets = Santri::query()
+            ->whereIn('id', $santriIds)
+            ->with('targetHafalans:id,santri_id,target,progress,status,periode')
+            ->get()
+            ->keyBy('id');
+        $halaqahPerf = $halaqahs->map(function (Halaqah $h) use ($allSantriTargets) {
             $ids = $h->santris->pluck('id')->all();
             $avg = 0;
             if (count($ids) > 0) {
                 $total = 0;
                 $count = 0;
-                foreach (Santri::whereIn('id', $ids)->get() as $s) {
-                    $total += $this->progressData($s)['percent'];
-                    $count++;
+                foreach ($ids as $id) {
+                    $s = $allSantriTargets->get($id);
+                    if ($s !== null) {
+                        $total += $this->progressDataFromRelations($s)['percent'];
+                        $count++;
+                    }
                 }
                 $avg = $count > 0 ? (int) round($total / $count) : 0;
             }
@@ -427,19 +436,26 @@ class DashboardController extends Controller
     private function topSantris(?array $santriIds, int $limit = 5): array
     {
         $query = Santri::query()
-            ->with(['targetHafalans', 'halaqahs:id,nama'])
+            ->select('id', 'nama', 'nis')
+            ->with(['targetHafalans:id,santri_id,target,progress,status,periode', 'halaqahs:id,nama'])
             ->when($santriIds !== null, fn (Builder $q) => $q->whereIn('id', $santriIds));
 
         $santris = $query->get();
 
+        // Bulk fetch latest MutabaahBulanan (1 query, bukan N query)
+        $latestBulanans = MutabaahBulanan::query()
+            ->select('id', 'santri_id', 'tahun', 'bulan', 'halaman_kumulatif')
+            ->whereIn('santri_id', $santris->pluck('id')->all())
+            ->orderByDesc('tahun')
+            ->orderByDesc('bulan')
+            ->get()
+            ->groupBy('santri_id')
+            ->map(fn ($g) => $g->first());
+
         return $santris
-            ->map(function (Santri $s) {
-                $progressData = $this->progressData($s);
-                $mb = MutabaahBulanan::query()
-                    ->where('santri_id', $s->id)
-                    ->orderByDesc('tahun')
-                    ->orderByDesc('bulan')
-                    ->first();
+            ->map(function (Santri $s) use ($latestBulanans) {
+                $progressData = $this->progressDataFromRelations($s);
+                $mb = $latestBulanans->get($s->id);
 
                 return [
                     'id' => $s->id,
@@ -470,9 +486,9 @@ class DashboardController extends Controller
      */
     private function progressData(Santri $santri): array
     {
-        $target = $santri->targetHafalans()
-            ->orderBy('id', 'desc')
-            ->first();
+        $target = $santri->relationLoaded('targetHafalans')
+            ? $santri->targetHafalans->sortByDesc('id')->first()
+            : $santri->targetHafalans()->orderBy('id', 'desc')->first();
 
         if ($target === null) {
             return ['target' => 0, 'progress' => 0, 'percent' => 0, 'status' => '', 'status_label' => '', 'periode' => null];
@@ -486,5 +502,10 @@ class DashboardController extends Controller
             'status_label' => $target->status->label(),
             'periode' => $target->periode,
         ];
+    }
+
+    private function progressDataFromRelations(Santri $santri): array
+    {
+        return $this->progressData($santri);
     }
 }

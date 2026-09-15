@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Concerns\BelongsToPondok;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,10 +12,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $ambang_hadiah_juz
  * @property int $tahun_aktif
  */
-#[Fillable(['konversi_juz_halaman', 'ambang_hadiah_juz', 'tahun_aktif', 'pondok_id'])]
+#[Fillable(['konversi_juz_halaman', 'ambang_hadiah_juz', 'tahun_aktif'])]
 class MutabaahSetting extends Model
 {
-    use BelongsToPondok, HasFactory;
+    use HasFactory;
 
     /**
      * @return array<string, string>

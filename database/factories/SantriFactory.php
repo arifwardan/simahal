@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Enums\SantriStatus;
 use App\Enums\UserRole;
-use App\Models\Pondok;
 use App\Models\Santri;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -28,20 +27,6 @@ class SantriFactory extends Factory
             'status' => SantriStatus::Aktif,
             'jenis' => null,
             'halaman_awal' => null,
-            // Adopt the linked user's pondok so factory graphs stay within one pondok.
-            'pondok_id' => function (array $attributes) {
-                $userId = $attributes['user_id'] ?? null;
-
-                if (is_numeric($userId)) {
-                    $pondokId = User::whereKey($userId)->value('pondok_id');
-
-                    if ($pondokId !== null) {
-                        return $pondokId;
-                    }
-                }
-
-                return PondokFactory::shared();
-            },
         ];
     }
 }

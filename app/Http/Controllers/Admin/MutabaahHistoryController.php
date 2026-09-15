@@ -29,7 +29,7 @@ class MutabaahHistoryController extends Controller
 
         // Harian: semua mutabaah
         $harianQuery = Mutabaah::query()
-            ->with(['santri:id,nama,nis', 'muhafidz:id,nama'])
+            ->with(['santri:id,nama,nis', 'santri.halaqahs:id,nama', 'muhafidz:id,nama'])
             ->when($santriFilter, fn ($q) => $q->where('santri_id', $santriFilter))
             ->when($halaqahFilter, function ($q) use ($halaqahFilter) {
                 $ids = Halaqah::find($halaqahFilter)?->santris()->pluck('santris.id')->all() ?? [];
@@ -39,8 +39,13 @@ class MutabaahHistoryController extends Controller
 
         $mutabaahs = $harianQuery->paginate(8, ['*'], 'page_harian')->withQueryString();
 
-        // Mingguan: agregasi per pekan dari mutabaah harian
-        $allForWeekly = (clone $harianQuery)->get();
+        // Mingguan: agregasi per pekan dari mutabaah harian (batasi 1 tahun terakhir agar tidak full-scan)
+        $allForWeekly = (clone $harianQuery)
+            ->with('santri.halaqahs:id,nama')
+            ->whereDate('tanggal', '>=', now()->subYear()->toDateString())
+            ->orderBy('tanggal', 'desc')
+            ->limit(5000)
+            ->get();
         $grouped = $allForWeekly->groupBy(fn ($m) => Carbon::parse($m->tanggal)->copy()->startOfWeek()->toDateString());
 
         $weeklyRows = $grouped->map(function ($items, $weekStart) {

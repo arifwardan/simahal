@@ -37,11 +37,14 @@ class MutabaahHistoryController extends Controller
             ->paginate(6, ['*'], 'page_harian')
             ->withQueryString();
 
-        // Mingguan: agregasi per pekan (Senin-Minggu) dari mutabaahs
+        // Mingguan: agregasi per pekan (batasi 1 tahun + 5000 baris agar tidak full-scan)
         $allForWeekly = $muhafidz->mutabaahs()
-            ->with('santri')
+            ->select('id', 'santri_id', 'tanggal', 'jenis', 'status')
+            ->with('santri:id,nama')
             ->when($santriFilter, fn ($q) => $q->where('santri_id', $santriFilter))
+            ->whereDate('tanggal', '>=', now()->subYear()->toDateString())
             ->orderBy('tanggal', 'desc')
+            ->limit(5000)
             ->get();
 
         $grouped = $allForWeekly->groupBy(function ($m) {

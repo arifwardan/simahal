@@ -9,11 +9,6 @@
                 "artisan",
                 "boost:mcp"
             ]
-        },
-        "neobrutalism": {
-            "type": "remote",
-            "enabled": true,
-            "url": "https://neobrutalism.com/api/mcp?token=c0536d045dc0881016500cd16a26b0ae7e1d808fdb5f13e3a50c5cc1beed3d5e"
         }
     },
     "plugin": ["superpowers@git+https://github.com/obra/superpowers.git"],

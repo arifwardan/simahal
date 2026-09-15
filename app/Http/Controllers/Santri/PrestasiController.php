@@ -8,6 +8,7 @@ use App\Models\MutabaahBulanan;
 use App\Models\MutabaahSetting;
 use App\Models\Santri;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -50,10 +51,14 @@ class PrestasiController extends Controller
             ];
         }
 
-        $all = Santri::with('targetHafalans')->get()->map(fn ($s) => [
-            'id' => $s->id,
-            'percent' => $s->targetHafalans->sortByDesc('id')->first()?->progressPercent() ?? 0,
-        ])->sortByDesc('percent')->values();
+        $all = Cache::remember('prestasi-ranking', 300, fn () => Santri::query()
+            ->select('id')
+            ->with('targetHafalans:id,santri_id,progress,target,status')
+            ->get()
+            ->map(fn ($s) => [
+                'id' => $s->id,
+                'percent' => $s->targetHafalans->sortByDesc('id')->first()?->progressPercent() ?? 0,
+            ])->sortByDesc('percent')->values());
         $rank = $all->search(fn ($r) => $r['id'] === $santri->id);
         $rank = $rank !== false ? $rank + 1 : null;
 

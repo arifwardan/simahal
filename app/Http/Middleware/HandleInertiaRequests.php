@@ -42,11 +42,11 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
-            'pondok' => fn () => $request->user() && $request->user()->pondok ? [
-                'nama_yayasan' => $request->user()->pondok->nama_yayasan,
-                'slug' => $request->user()->pondok->slug,
-                'logo_url' => $request->user()->pondok->logoUrl(),
-            ] : null,
+            'pondok' => [
+                'nama_yayasan' => 'PondokIT',
+                'slug' => 'pondokit',
+                'logo_url' => null,
+            ],
         ];
     }
 }

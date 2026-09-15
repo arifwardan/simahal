@@ -16,7 +16,6 @@ class MutabaahSettingFactory extends Factory
             'konversi_juz_halaman' => 20,
             'ambang_hadiah_juz' => 1.5,
             'tahun_aktif' => 2026,
-            'pondok_id' => PondokFactory::shared(),
         ];
     }
 }

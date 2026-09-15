@@ -19,11 +19,7 @@ class EnsureActiveUser
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
-            return redirect()->route('login')->withErrors(['email' => 'Akun menunggu persetujuan admin pondok.']);
-        }
-
-        if ($user !== null && $user->pondok_id === null) {
-            abort(403);
+            return redirect()->route('login')->withErrors(['email' => 'Akun nonaktif. Hubungi admin.']);
         }
 
         return $next($request);

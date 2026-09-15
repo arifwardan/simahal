@@ -8,6 +8,7 @@ use App\Models\MutabaahBulanan;
 use App\Models\MutabaahSetting;
 use App\Models\Santri;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -21,7 +22,17 @@ class PrestasiController extends Controller
         $setting = MutabaahSetting::setting();
         $calculator = app(MutabaahBulananCalculator::class);
 
-        $children = $orangTua->santris()->orderBy('nama')->get()->map(function ($santri) use ($calculator, $setting) {
+        // Ranking global dihitung sekali (bukan per-anak) + cache 5 menit
+        $allProgress = Cache::remember('prestasi-ranking', 300, fn () => Santri::query()
+            ->select('id')
+            ->with('targetHafalans:id,santri_id,progress,target,status')
+            ->get()
+            ->map(fn ($s) => [
+                'id' => $s->id,
+                'percent' => $s->targetHafalans->sortByDesc('id')->first()?->progressPercent() ?? 0,
+            ])->sortByDesc('percent')->values());
+
+        $children = $orangTua->santris()->orderBy('nama')->get()->map(function ($santri) use ($calculator, $setting, $allProgress) {
             $target = $santri->targetHafalans()->orderByDesc('id')->first();
             $progress = $target ? ['target' => $target->target, 'progress' => $target->progress, 'percent' => $target->progressPercent(), 'status' => $target->status->value, 'label' => $target->status->label(), 'periode' => $target->periode] : null;
 
@@ -47,11 +58,7 @@ class PrestasiController extends Controller
 
             $halaqahs = $santri->halaqahs()->get(['halaqahs.id', 'halaqahs.nama']);
 
-            // ranking global vs semua santri by progress percent
-            $allProgress = Santri::with('targetHafalans')->get()->map(fn ($s) => [
-                'id' => $s->id,
-                'percent' => $s->targetHafalans->sortByDesc('id')->first()?->progressPercent() ?? 0,
-            ])->sortByDesc('percent')->values();
+            // ranking global vs semua santri by progress percent (dari cache di atas)
             $rank = $allProgress->search(fn ($r) => $r['id'] === $santri->id);
             $rank = $rank !== false ? $rank + 1 : null;
 

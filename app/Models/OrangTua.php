@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Concerns\BelongsToPondok;
 use Database\Factories\OrangTuaFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,11 +15,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $nama
  * @property string|null $kontak
  */
-#[Fillable(['user_id', 'nama', 'kontak', 'pondok_id'])]
+#[Fillable(['user_id', 'nama', 'kontak'])]
 class OrangTua extends Model
 {
     /** @use HasFactory<OrangTuaFactory> */
-    use BelongsToPondok, HasFactory;
+    use HasFactory;
 
     /**
      * @return BelongsTo<User, $this>
