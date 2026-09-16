@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Santri\AssignOrangTuaRequest;
 use App\Http\Requests\Admin\User\StoreUserRequest;
@@ -29,14 +30,34 @@ class UserController extends Controller
                 'email' => $user->email,
                 'role' => $user->role->value,
                 'role_label' => $user->roleLabel(),
+                'status' => $user->status->value,
+                'status_label' => $user->status === UserStatus::Active ? 'Aktif' : 'Menunggu',
+            ]);
+
+        $pendingCount = User::query()->where('status', UserStatus::Pending)->count();
+
+        $pendingUsers = User::query()
+            ->where('status', UserStatus::Pending)
+            ->orderBy('created_at')
+            ->get(['id', 'name', 'email'])
+            ->map(fn (User $user) => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
             ]);
 
         return Inertia::render('admin/users/index', [
             'users' => $users,
+            'pendingCount' => $pendingCount,
+            'pendingUsers' => $pendingUsers,
             'roles' => collect(UserRole::cases())->map(fn (UserRole $role) => [
                 'value' => $role->value,
                 'label' => $role->label(),
             ]),
+            'statuses' => [
+                ['value' => UserStatus::Active->value, 'label' => 'Aktif'],
+                ['value' => UserStatus::Pending->value, 'label' => 'Menunggu'],
+            ],
             'assignOptions' => [
                 'santris' => Santri::query()->orderBy('nama')->get(['id', 'nama', 'nis', 'orang_tua_id']),
                 'orangTuas' => OrangTua::query()->orderBy('nama')->get(['id', 'nama']),
@@ -82,6 +103,23 @@ class UserController extends Controller
         $user->update($request->validated());
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('User updated.')]);
+
+        return to_route('admin.users.index');
+    }
+
+    public function approve(Request $request, User $user): RedirectResponse
+    {
+        if ($user->id === $request->user()->id) {
+            abort(403, __('You cannot approve your own account.'));
+        }
+
+        if ($user->status !== UserStatus::Pending) {
+            abort(403, __('Only pending accounts can be approved.'));
+        }
+
+        $user->update(['status' => UserStatus::Active]);
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('Akun :name disetujui dan diaktifkan.', ['name' => $user->name])]);
 
         return to_route('admin.users.index');
     }

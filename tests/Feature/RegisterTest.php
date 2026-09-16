@@ -52,6 +52,40 @@ it('flashes a status message after registration', function (): void {
     $this->assertGuest();
 });
 
+it('requires email verification after approval before dashboard access', function (): void {
+    $admin = User::factory()->role(UserRole::Admin)->create(['status' => UserStatus::Active]);
+    $pending = User::factory()->create([
+        'role' => UserRole::Admin,
+        'status' => UserStatus::Pending,
+        'email_verified_at' => null,
+    ]);
+
+    $this->actingAs($admin)->patch(route('admin.users.approve', $pending));
+
+    $this->actingAs($pending->fresh())->get(route('dashboard'))
+        ->assertRedirect(route('verification.notice'));
+});
+
+it('throttles repeated registration attempts', function (): void {
+    foreach (range(1, 5) as $i) {
+        $this->post(route('register.store'), [
+            'name' => "User {$i}",
+            'email' => "user{$i}@simahal.test",
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ])->assertRedirect(route('login'));
+    }
+
+    $this->post(route('register.store'), [
+        'name' => 'Blocked User',
+        'email' => 'blocked@simahal.test',
+        'password' => 'password',
+        'password_confirmation' => 'password',
+    ])->assertTooManyRequests();
+
+    expect(User::where('email', 'blocked@simahal.test')->exists())->toBeFalse();
+});
+
 it('validates registration input', function (): void {
     $response = $this->post(route('register.store'), [
         'name' => '',

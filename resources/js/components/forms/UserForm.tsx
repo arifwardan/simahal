@@ -18,6 +18,8 @@ export type UserRow = {
     email: string;
     role: string;
     role_label: string;
+    status: string;
+    status_label: string;
 };
 
 type Option = { value: string; label: string };
@@ -25,17 +27,21 @@ type Option = { value: string; label: string };
 type Props = {
     nilaiAwal?: UserRow | null;
     roles: Option[];
+    statuses: Option[];
     onSuccess?: () => void;
 };
 
-export default function UserForm({ nilaiAwal, roles, onSuccess }: Props) {
+export default function UserForm({ nilaiAwal, roles, statuses, onSuccess }: Props) {
     const isEdit = nilaiAwal !== null && nilaiAwal !== undefined;
 
     return (
         <Form
-            {...(isEdit
-                ? UserController.update.form({ user: nilaiAwal!.id })
-                : UserController.store.form())}
+            action={
+                isEdit
+                    ? UserController.update.url({ user: nilaiAwal!.id })
+                    : UserController.store.url()
+            }
+            method={isEdit ? 'patch' : 'post'}
             onSuccess={onSuccess}
             className="space-y-4"
         >
@@ -93,8 +99,7 @@ export default function UserForm({ nilaiAwal, roles, onSuccess }: Props) {
                             htmlFor={`role-${isEdit ? nilaiAwal!.id : 'new'}`}
                         >
                             Role
-                        </Label>
-                        <Select
+                        </Label><Select
                             name="role"
                             defaultValue={nilaiAwal?.role ?? 'santri'}
                         >
@@ -116,6 +121,25 @@ export default function UserForm({ nilaiAwal, roles, onSuccess }: Props) {
                         </Select>
                         <InputError message={errors.role} />
                     </div>
+
+                    {isEdit && (
+                        <div className="grid gap-2">
+                            <Label htmlFor={`status-${nilaiAwal!.id}`}>Status</Label>
+                            <Select name="status" defaultValue={nilaiAwal?.status ?? 'active'}>
+                                <SelectTrigger id={`status-${nilaiAwal!.id}`}>
+                                    <SelectValue placeholder="Pilih status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {statuses.map((status) => (
+                                        <SelectItem key={status.value} value={status.value}>
+                                            {status.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <InputError message={errors.status} />
+                        </div>
+                    )}
 
                     <div className="flex justify-end gap-2 pt-2">
                         <Button type="submit">

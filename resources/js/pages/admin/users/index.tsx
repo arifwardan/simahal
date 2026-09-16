@@ -47,10 +47,13 @@ type Props = {
         last_page: number;
     };
     roles: { value: string; label: string }[];
+    statuses: { value: string; label: string }[];
+    pendingCount: number;
+    pendingUsers: { id: number; name: string; email: string }[];
     assignOptions: AssignOption;
 };
 
-export default function AdminUsersIndex({ users, roles, assignOptions }: Props) {
+export default function AdminUsersIndex({ users, roles, statuses, pendingCount, pendingUsers, assignOptions }: Props) {
     const { auth } = usePage().props;
     const [editing, setEditing] = useState<UserRow | null>(null);
     const [assignSantriId, setAssignSantriId] = useState<string>('');
@@ -76,12 +79,36 @@ export default function AdminUsersIndex({ users, roles, assignOptions }: Props) 
                 ),
             },
             {
+                id: 'status',
+                header: 'Status',
+                cell: (row) =>
+                    row.status === 'pending' ? (
+                        <Badge className="border-2 border-black bg-[#FFD600] text-black">Menunggu</Badge>
+                    ) : (
+                        <Badge className="border-2 border-black bg-[#7CFC00] text-black">Aktif</Badge>
+                    ),
+            },
+            {
                 id: 'aksi',
                 header: 'Aksi',
                 headerClassName: 'text-right',
                 className: 'text-right',
                 cell: (row) => (
                     <div className="flex items-center justify-end gap-2">
+                        {row.status === 'pending' && auth.user.id !== row.id && (
+                            <Form
+                                action={UserController.approve.url({ user: row.id })}
+                                method="patch"
+                            >
+                                <Button
+                                    type="submit"
+                                    size="sm"
+                                    className="cursor-pointer border-[2.5px] border-black bg-[#7CFC00] font-black text-black"
+                                >
+                                    Setujui
+                                </Button>
+                            </Form>
+                        )}
                         <Button
                             variant="outline"
                             size="sm"
@@ -195,6 +222,65 @@ export default function AdminUsersIndex({ users, roles, assignOptions }: Props) 
                 </CardContent>
             </Card>
 
+            {/* Menunggu Persetujuan */}
+            {pendingUsers.length > 0 && (
+                <Card className="overflow-hidden bg-[#FFD600]">
+                    <CardHeader className="bg-black text-[#FFF7E8]">
+                        <CardTitle className="font-head font-black uppercase">
+                            Menunggu Persetujuan ({pendingCount})
+                        </CardTitle>
+                        <CardDescription className="font-bold text-[#FFF7E8]/80">
+                            Akun baru hasil registrasi mandiri. Setujui untuk mengaktifkan, atau Tolak (hapus) untuk
+                            menolak.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3 bg-[#FFF7E8] pt-6">
+                        {pendingUsers.map((user) => (
+                            <div
+                                key={user.id}
+                                className="flex flex-col gap-3 border-[3px] border-black bg-white p-3 sm:flex-row sm:items-center"
+                            >
+                                <div className="flex-1">
+                                    <p className="font-black text-black">{user.name}</p>
+                                    <p className="text-sm font-bold text-black/70">{user.email}</p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    {auth.user.id !== user.id && (
+                                        <Form
+                                            action={UserController.approve.url({ user: user.id })}
+                                            method="patch"
+                                        >
+                                            <Button
+                                                type="submit"
+                                                size="sm"
+                                                className="cursor-pointer border-[2.5px] border-black bg-[#7CFC00] font-black text-black"
+                                            >
+                                                Setujui
+                                            </Button>
+                                        </Form>
+                                    )}
+                                    {auth.user.id !== user.id && (
+                                        <Form
+                                            action={UserController.destroy.url({ user: user.id })}
+                                            method="delete"
+                                        >
+                                            <Button
+                                                type="submit"
+                                                variant="destructive"
+                                                size="sm"
+                                                className="cursor-pointer border-[2.5px] border-black font-black"
+                                            >
+                                                Tolak
+                                            </Button>
+                                        </Form>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </CardContent>
+                </Card>
+            )}
+
             {/* Assign Orang Tua ↔ Santri */}
             <Card className="overflow-hidden bg-[#5CE1E6]">
                 <CardHeader className="bg-black text-[#FFF7E8]">
@@ -278,7 +364,12 @@ export default function AdminUsersIndex({ users, roles, assignOptions }: Props) 
                         <DialogDescription>Perbarui akun pengguna.</DialogDescription>
                     </DialogHeader>
                     {editing && (
-                        <UserForm roles={roles} nilaiAwal={editing} onSuccess={() => setEditing(null)} />
+                        <UserForm
+                            roles={roles}
+                            statuses={statuses}
+                            nilaiAwal={editing}
+                            onSuccess={() => setEditing(null)}
+                        />
                     )}
                 </DialogContent>
             </Dialog>

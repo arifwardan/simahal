@@ -93,11 +93,10 @@ export default function Login({ status, canResetPassword }: Props) {
                         </div>
 
                         <div className="text-center text-sm text-muted-foreground">
-                            Hubungi admin PondokIT untuk akun baru.
-                        </div>
-
-                        <div className="text-center text-sm text-muted-foreground">
-                            <TextLink href={register()}>Daftar akun baru</TextLink>
+                            Belum punya akun?{' '}
+                            <TextLink href={register()} tabIndex={6}>
+                                Daftar akun baru
+                            </TextLink>
                         </div>
                     </>
                 )}

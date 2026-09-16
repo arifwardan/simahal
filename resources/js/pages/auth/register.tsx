@@ -1,4 +1,5 @@
 import { Form, Head } from '@inertiajs/react';
+import { useState } from 'react';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
 import TextLink from '@/components/text-link';
@@ -6,10 +7,32 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
+import { cn } from '@/lib/utils';
 import { login } from '@/routes';
 import { store } from '@/routes/register';
 
+const strengthChecks = [
+    { label: 'Minimal 8 karakter', test: (v: string) => v.length >= 8 },
+    { label: 'Huruf kecil', test: (v: string) => /[a-z]/.test(v) },
+    { label: 'Huruf besar', test: (v: string) => /[A-Z]/.test(v) },
+    { label: 'Angka', test: (v: string) => /[0-9]/.test(v) },
+    { label: 'Simbol', test: (v: string) => /[^a-zA-Z0-9]/.test(v) },
+];
+
+const strengthMeta = [
+    { label: 'Sangat lemah', className: 'bg-red-500' },
+    { label: 'Lemah', className: 'bg-red-500' },
+    { label: 'Cukup', className: 'bg-amber-500' },
+    { label: 'Kuat', className: 'bg-lime-500' },
+    { label: 'Sangat kuat', className: 'bg-green-600' },
+    { label: 'Sangat kuat', className: 'bg-green-600' },
+];
+
 export default function Register() {
+    const [password, setPassword] = useState('');
+    const score = strengthChecks.reduce((acc, check) => acc + (check.test(password) ? 1 : 0), 0);
+    const meta = strengthMeta[score];
+
     return (
         <>
             <Head title="Register" />
@@ -62,7 +85,26 @@ export default function Register() {
                                     autoComplete="new-password"
                                     name="password"
                                     placeholder="Password"
+                                    onChange={(e) => setPassword(e.target.value)}
                                 />
+                                {password.length > 0 && (
+                                    <div className="space-y-1.5" aria-live="polite">
+                                        <div className="flex gap-1">
+                                            {strengthChecks.map((_, i) => (
+                                                <div
+                                                    key={i}
+                                                    className={cn(
+                                                        'h-1.5 flex-1 rounded-full bg-muted',
+                                                        i < score && meta.className,
+                                                    )}
+                                                />
+                                            ))}
+                                        </div>
+                                        <p className="text-xs font-bold text-muted-foreground">
+                                            Kekuatan: {meta.label} ({score}/5)
+                                        </p>
+                                    </div>
+                                )}
                                 <InputError message={errors.password} />
                             </div>
 
