@@ -1,0 +1,20 @@
+
+> dev
+> vite
+
+Inertia SSR dev endpoint: /__inertia_ssr
+[2m11.26.41[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m info: Types generated for actions, routes, form variants
+  Plugin: [35m@laravel/vite-plugin-wayfinder[39m
+Port 5173 is in use, trying another one...
+Warming up Inertia SSR module graph...
+
+  [32m[1mVITE[22m v8.2.1[39m  [2mready in [0m[1m38504[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5174[22m/[39m
+[2m  [32m➜[39m  [1mNetwork[22m[2m: use [22m[1m--host[22m[2m to expose[22m
+[2m[32m  ➜[39m[22m[2m  press [22m[1mh + enter[22m[2m to show help[22m
+[laravel:fonts] Optimized font fallbacks require the optional "fontaine" package. Install it, or set "optimizedFallbacks: false" on your fonts to disable the feature.
+
+  [31m[1mLARAVEL[22m v13.24.0[39m  [2mplugin[22m [1mv3.1.3[22m
+
+  [32m➜[39m  [1mAPP_URL[22m: [36mhttp://localhost:[1m8000[22m[39m
