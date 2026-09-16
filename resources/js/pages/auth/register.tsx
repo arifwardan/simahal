@@ -35,7 +35,12 @@ export default function Register() {
 
     return (
         <>
-            <Head title="Register" />
+            <Head title="Daftar Akun" />
+
+            <div className="rounded-md border border-dashed p-3 text-center text-sm text-muted-foreground">
+                Setelah mendaftar, akun berstatus <span className="font-bold">Menunggu</span> dan baru bisa
+                digunakan setelah disetujui admin.
+            </div>
 
             <Form
                 action={store().url}
@@ -48,7 +53,7 @@ export default function Register() {
                     <>
                         <div className="grid gap-6">
                             <div className="grid gap-2">
-                                <Label htmlFor="name">Full name</Label>
+                                <Label htmlFor="name">Nama lengkap</Label>
                                 <Input
                                     id="name"
                                     type="text"
@@ -57,13 +62,13 @@ export default function Register() {
                                     tabIndex={1}
                                     autoComplete="name"
                                     name="name"
-                                    placeholder="Full name"
+                                    placeholder="Nama lengkap"
                                 />
                                 <InputError message={errors.name} />
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
+                                <Label htmlFor="email">Alamat email</Label>
                                 <Input
                                     id="email"
                                     type="email"
@@ -77,14 +82,14 @@ export default function Register() {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="password">Password</Label>
+                                <Label htmlFor="password">Kata sandi</Label>
                                 <PasswordInput
                                     id="password"
                                     required
                                     tabIndex={3}
                                     autoComplete="new-password"
                                     name="password"
-                                    placeholder="Password"
+                                    placeholder="Minimal 8 karakter"
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
                                 {password.length > 0 && (
@@ -109,14 +114,14 @@ export default function Register() {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="password_confirmation">Confirm password</Label>
+                                <Label htmlFor="password_confirmation">Konfirmasi kata sandi</Label>
                                 <PasswordInput
                                     id="password_confirmation"
                                     required
                                     tabIndex={4}
                                     autoComplete="new-password"
                                     name="password_confirmation"
-                                    placeholder="Confirm password"
+                                    placeholder="Ulangi kata sandi"
                                 />
                                 <InputError message={errors.password_confirmation} />
                             </div>
@@ -146,4 +151,7 @@ export default function Register() {
     );
 }
 
-Register.layout = 'auth';
+Register.layout = {
+    title: 'Daftar akun baru',
+    description: 'Isi formulir di bawah untuk mengajukan akun admin. Akun aktif setelah disetujui admin.',
+};
