@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import { store } from '@/routes/login';
+import { register } from '@/routes';
 import { request } from '@/routes/password';
 
 type Props = {
@@ -93,6 +94,10 @@ export default function Login({ status, canResetPassword }: Props) {
 
                         <div className="text-center text-sm text-muted-foreground">
                             Hubungi admin PondokIT untuk akun baru.
+                        </div>
+
+                        <div className="text-center text-sm text-muted-foreground">
+                            <TextLink href={register()}>Daftar akun baru</TextLink>
                         </div>
                     </>
                 )}
