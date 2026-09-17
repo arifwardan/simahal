@@ -39,7 +39,7 @@ export function NavUser() {
                         </SidebarMenuButton>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
-                        className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-none border-[3px] border-black bg-[#FFF7E8] dark:bg-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)]"
+                        className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-none border-[3px] border-black dark:border-[#FFF7E8] bg-[#FFF7E8] dark:bg-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)]"
                         align="end"
                         side={isMobile ? 'bottom' : state === 'collapsed' ? 'left' : 'bottom'}
                     >

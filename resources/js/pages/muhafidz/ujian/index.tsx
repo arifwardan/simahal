@@ -62,12 +62,12 @@ export default function UjianIndex({ santris, santriId, tahun, bulan, totalBulan
             />
 
             {/* Month + santri picker */}
-            <Card className="overflow-hidden border-[3px] border-black bg-[#FF3B30] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                <CardContent className="flex flex-col gap-3 bg-[#FFF7E8] p-4 sm:flex-row sm:items-end">
+            <Card className="overflow-hidden border-[3px] border-black dark:border-[#FFF7E8] bg-[#FF3B30] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]">
+                <CardContent className="flex flex-col gap-3 bg-[#FFF7E8] dark:bg-zinc-900 p-4 sm:flex-row sm:items-end">
                     <div className="flex-1 space-y-1">
                         <Label htmlFor="santri">Santri</Label>
                         <Select value={santriId?.toString() ?? ''} onValueChange={(v) => navigate(v, tahun, bulan)}>
-                            <SelectTrigger id="santri" className="cursor-pointer border-[3px] border-black bg-white font-black">
+                            <SelectTrigger id="santri" className="cursor-pointer border-[3px] border-black dark:border-[#FFF7E8] bg-white dark:bg-zinc-900 font-black">
                                 <SelectValue placeholder="Pilih santri..." />
                             </SelectTrigger>
                             <SelectContent>
@@ -92,7 +92,7 @@ export default function UjianIndex({ santris, santriId, tahun, bulan, totalBulan
                                 const [y, m] = e.target.value.split('-').map(Number);
                                 navigate(santriId, y, m);
                             }}
-                            className="cursor-pointer border-[3px] border-black bg-white font-black"
+                            className="cursor-pointer border-[3px] border-black dark:border-[#FFF7E8] bg-white dark:bg-zinc-900 font-black"
                         />
                     </div>
                 </CardContent>
@@ -100,42 +100,42 @@ export default function UjianIndex({ santris, santriId, tahun, bulan, totalBulan
 
             <div className="grid gap-4 md:grid-cols-2">
                 {/* Total bulanan read-only */}
-                <Card className="overflow-hidden border-[3px] border-black bg-[#FFF7E8] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <Card className="overflow-hidden border-[3px] border-black dark:border-[#FFF7E8] bg-[#FFF7E8] dark:bg-zinc-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]">
                     <CardHeader className="flex-row items-center gap-2 bg-[#22c55e] py-3 text-white">
                         <Library className="h-4 w-4" />
                         <CardTitle className="text-sm font-black uppercase text-white">Total Bulanan</CardTitle>
                     </CardHeader>
                     <CardContent className="flex flex-col items-center justify-center py-6">
-                        <div className="flex h-24 w-24 items-center justify-center rounded-none border-[3px] border-black bg-black text-4xl font-black text-[#FFF7E8] shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+                        <div className="flex h-24 w-24 items-center justify-center rounded-none border-[3px] border-black dark:border-[#FFF7E8] bg-black text-4xl font-black text-[#FFF7E8] shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)]">
                             {totalBulanan}
                         </div>
-                        <div className="mt-2 text-xs font-black uppercase text-black/60">baris</div>
-                        <p className="mt-3 text-center text-[10px] font-bold text-black/50">Rekap total hafalan bulan ini</p>
+                        <div className="mt-2 text-xs font-black uppercase text-black/60 dark:text-[#FFF7E8]/60">baris</div>
+                        <p className="mt-3 text-center text-[10px] font-bold text-black/50 dark:text-[#FFF7E8]/50">Rekap total hafalan bulan ini</p>
                     </CardContent>
                 </Card>
 
                 {/* 5 soal */}
-                <Card className="overflow-hidden border-[3px] border-black bg-[#FFF7E8] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <Card className="overflow-hidden border-[3px] border-black dark:border-[#FFF7E8] bg-[#FFF7E8] dark:bg-zinc-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]">
                     <CardHeader className="flex-row items-center gap-2 bg-[#FF3B30] py-3 text-white">
                         <Award className="h-4 w-4" />
                         <CardTitle className="text-sm font-black uppercase text-white">Soal Ujian (5 × 20)</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3 pt-4">
                         {[0, 1, 2, 3, 4].map((i) => (
-                            <label key={i} htmlFor={`soal-${i}`} className="flex cursor-pointer items-center gap-2 rounded-none border-2 border-black bg-white p-2">
+                            <label key={i} htmlFor={`soal-${i}`} className="flex cursor-pointer items-center gap-2 rounded-none border-2 border-black dark:border-[#FFF7E8] bg-white dark:bg-zinc-900 p-2">
                                 <input
                                     id={`soal-${i}`}
                                     type="checkbox"
                                     checked={soal[i] === true}
                                     onChange={(e) => setSoal((prev) => prev.map((v, idx) => (idx === i ? e.target.checked : v)))}
-                                    className="h-5 w-5 cursor-pointer accent-black"
+                                    className="h-5 w-5 cursor-pointer accent-black dark:accent-[#FFF7E8]"
                                 />
                                 <span className="text-xs font-black uppercase">Soal {i + 1}</span>
-                                <span className="ml-auto text-[10px] font-bold text-black/50">{soal[i] === true ? '20 ✓' : '0 ○'}</span>
+                                <span className="ml-auto text-[10px] font-bold text-black/50 dark:text-[#FFF7E8]/50">{soal[i] === true ? '20 ✓' : '0 ○'}</span>
                             </label>
                         ))}
                         <InputError message={errors.ujian_soal} />
-                        <div className="flex items-center justify-between rounded-none border-[3px] border-black bg-black px-3 py-2 text-[#FFF7E8]">
+                        <div className="flex items-center justify-between rounded-none border-[3px] border-black dark:border-[#FFF7E8] bg-black px-3 py-2 text-[#FFF7E8]">
                             <span className="text-xs font-black uppercase">Total Ujian</span>
                             <span className="font-head text-lg font-black">{liveTotal}/100</span>
                         </div>
@@ -146,7 +146,7 @@ export default function UjianIndex({ santris, santriId, tahun, bulan, totalBulan
                                 value={catatan}
                                 onChange={(e) => setCatatan(e.target.value)}
                                 placeholder="Catatan optional..."
-                                className="h-20 cursor-pointer resize-none border-2 border-black bg-white text-sm"
+                                className="h-20 cursor-pointer resize-none border-2 border-black dark:border-[#FFF7E8] bg-white dark:bg-zinc-900 text-sm"
                             />
                         </div>
                         <InputError message={errors.catatan_ujian} />
@@ -155,7 +155,7 @@ export default function UjianIndex({ santris, santriId, tahun, bulan, totalBulan
             </div>
 
             {/* Sticky footer */}
-            <div className="fixed inset-x-0 bottom-0 z-10 border-t-[3px] border-black bg-black p-3">
+            <div className="fixed inset-x-0 bottom-0 z-10 border-t-[3px] border-black dark:border-[#FFF7E8] bg-black p-3">
                 <div className="mx-auto flex max-w-5xl items-center justify-between gap-3">
                     <div className="text-[#FFF7E8]">
                         <p className="font-head text-xl leading-none font-black">{liveTotal}/100</p>

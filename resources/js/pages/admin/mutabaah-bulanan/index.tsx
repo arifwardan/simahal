@@ -173,14 +173,14 @@ export default function AdminMutabaahBulananDashboard({ rows, distribusi, bulan,
                 description={`Ringkasan mutabaah bulanan santri tahun ${tahun}.`}
             />
 
-            <Card className="overflow-hidden bg-[#FFE7A3]">
+            <Card className="overflow-hidden bg-[#FFE7A3] dark:bg-zinc-900">
                 <CardHeader className="bg-primary">
                     <CardTitle className="font-head font-black uppercase">Ringkasan per Kelompok</CardTitle>
                     <CardDescription className="font-bold text-black">
                         Pilih bulan untuk melihat data mutabaah bulanan — paginasi otomatis jika &gt;10 kelompok.
                     </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4 bg-[#FFF7E8] pt-6">
+                <CardContent className="space-y-4 bg-[#FFF7E8] dark:bg-zinc-900 pt-6">
                     <Select
                         value={selectedBulan}
                         onValueChange={(value) => {
@@ -188,7 +188,7 @@ export default function AdminMutabaahBulananDashboard({ rows, distribusi, bulan,
                             router.get(index(), { bulan: value }, { preserveState: true, replace: true });
                         }}
                     >
-                        <SelectTrigger className="w-[200px] border-[3px] border-black font-bold">
+                        <SelectTrigger className="w-[200px] border-[3px] border-black dark:border-[#FFF7E8] font-bold">
                             <SelectValue placeholder="Pilih bulan" />
                         </SelectTrigger>
                         <SelectContent>
@@ -216,7 +216,7 @@ export default function AdminMutabaahBulananDashboard({ rows, distribusi, bulan,
                         Jumlah santri per kategori hafalan, dibedakan ikhwan dan akhwat.
                     </CardDescription>
                 </CardHeader>
-                <CardContent className="bg-[#FFF7E8] pt-6">
+                <CardContent className="bg-[#FFF7E8] dark:bg-zinc-900 pt-6">
                     <DataTable
                         columns={distribusiColumns}
                         data={distribusi}

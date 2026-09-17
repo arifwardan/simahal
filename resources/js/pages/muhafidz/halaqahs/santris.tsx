@@ -426,13 +426,13 @@ export default function MuhafidzHalaqahSantris({
                 className: 'text-right',
                 cell: (row) =>
                     row.mutabaah_hari_ini ? (
-                        <Badge variant="secondary" className="shrink-0 border-2 border-black">
+                        <Badge variant="secondary" className="shrink-0 border-2 border-black dark:border-[#FFF7E8]">
                             Sudah dicatat ✓
                         </Badge>
                     ) : (
                         <Link
                             href={setoranHarianIndex.url({ query: { santri_id: row.id } })}
-                            className="inline-flex cursor-pointer items-center justify-center rounded-none border-[3px] border-black bg-primary px-3 py-1 text-xs font-black text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
+                            className="inline-flex cursor-pointer items-center justify-center rounded-none border-[3px] border-black dark:border-[#FFF7E8] bg-primary px-3 py-1 text-xs font-black text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)]"
                         >
                             Input Setoran
                         </Link>
@@ -453,7 +453,7 @@ export default function MuhafidzHalaqahSantris({
                 <CardHeader className="flex-row items-center justify-between">
                     <CardTitle>Santri ({santris.total})</CardTitle>
                     <div className="flex gap-2">
-                        <Button variant="outline" onClick={() => setShowTambah(true)} className="cursor-pointer border-[3px] border-black bg-[#FFF7E8]">
+                        <Button variant="outline" onClick={() => setShowTambah(true)} className="cursor-pointer border-[3px] border-black dark:border-[#FFF7E8] bg-[#FFF7E8] dark:bg-zinc-900">
                             Tambah Santri
                         </Button>
                         <Button variant="outline" onClick={() => setShowRekap(true)} className="cursor-pointer">
@@ -494,7 +494,7 @@ export default function MuhafidzHalaqahSantris({
                         <div className="grid gap-2">
                             <Label>Santri</Label>
                             <Select value={selectedSantriId} onValueChange={setSelectedSantriId}>
-                                <SelectTrigger className="cursor-pointer border-[3px] border-black bg-[#FFF7E8]">
+                                <SelectTrigger className="cursor-pointer border-[3px] border-black dark:border-[#FFF7E8] bg-[#FFF7E8] dark:bg-zinc-900">
                                     <SelectValue placeholder="Pilih santri..." />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -528,7 +528,7 @@ export default function MuhafidzHalaqahSantris({
                                         },
                                     );
                                 }}
-                                className="cursor-pointer border-[3px] border-black"
+                                className="cursor-pointer border-[3px] border-black dark:border-[#FFF7E8]"
                             >
                                 Tambahkan
                             </Button>

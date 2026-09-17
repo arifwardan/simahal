@@ -49,7 +49,7 @@ export default function AdminOrangTuasIndex({ orangTuas }: Props) {
                 id: 'anak',
                 header: 'Anak',
                 cell: (row) => (
-                    <Badge className="border-2 border-black bg-[#FFD600] font-black text-black">
+                    <Badge className="border-2 border-black dark:border-[#FFF7E8] bg-[#FFD600] font-black text-black">
                         {row.santris_count} anak
                     </Badge>
                 ),
@@ -65,7 +65,7 @@ export default function AdminOrangTuasIndex({ orangTuas }: Props) {
                             variant="outline"
                             size="sm"
                             onClick={() => setEditing(row)}
-                            className="cursor-pointer border-[2.5px] border-black font-black"
+                            className="cursor-pointer border-[2.5px] border-black dark:border-[#FFF7E8] font-black"
                         >
                             Edit
                         </Button>
@@ -74,7 +74,7 @@ export default function AdminOrangTuasIndex({ orangTuas }: Props) {
                                 type="submit"
                                 variant="destructive"
                                 size="sm"
-                                className="cursor-pointer border-[2.5px] border-black font-black"
+                                className="cursor-pointer border-[2.5px] border-black dark:border-[#FFF7E8] font-black"
                             >
                                 Hapus
                             </Button>
@@ -90,7 +90,7 @@ export default function AdminOrangTuasIndex({ orangTuas }: Props) {
         <PageContainer>
             <Heading title="Manajemen Orang Tua" description="Kelola akun orang tua santri." />
 
-            <Card className="overflow-hidden bg-[#FFE7A3]">
+            <Card className="overflow-hidden bg-[#FFE7A3] dark:bg-zinc-900">
                 <CardHeader className="bg-primary">
                     <CardTitle className="font-head font-black uppercase">
                         Daftar Orang Tua ({orangTuas.total})
@@ -101,10 +101,10 @@ export default function AdminOrangTuasIndex({ orangTuas }: Props) {
                             : 'Klik "Tambah Orang Tua" untuk menambah data baru.'}
                     </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4 bg-[#FFF7E8] pt-6">
+                <CardContent className="space-y-4 bg-[#FFF7E8] dark:bg-zinc-900 pt-6">
                     <Dialog open={showCreate} onOpenChange={setShowCreate}>
                         <DialogTrigger asChild>
-                            <Button className="cursor-pointer border-[3px] border-black font-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+                            <Button className="cursor-pointer border-[3px] border-black dark:border-[#FFF7E8] font-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)]">
                                 Tambah Orang Tua
                             </Button>
                         </DialogTrigger>

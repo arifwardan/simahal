@@ -11,7 +11,7 @@ export default function DashboardHero({ subtitle }: { subtitle: string }) {
     }).format(new Date());
 
     return (
-        <div className="relative overflow-hidden border-[3px] border-black bg-primary p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] md:p-8">
+        <div className="relative overflow-hidden border-[3px] border-black dark:border-[#FFF7E8] bg-primary p-6 text-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] md:p-8">
             {/* pattern */}
             <div
                 aria-hidden
@@ -22,7 +22,7 @@ export default function DashboardHero({ subtitle }: { subtitle: string }) {
                 }}
             />
             <div className="relative flex flex-col gap-3">
-                <div className="inline-flex w-fit items-center gap-2 border-2 border-black bg-black px-3 py-1 text-xs font-black uppercase tracking-widest text-[#FFF7E8]">
+                <div className="inline-flex w-fit items-center gap-2 border-2 border-black dark:border-[#FFF7E8] bg-black px-3 py-1 text-xs font-black uppercase tracking-widest text-[#FFF7E8]">
                     <span className="size-2 animate-pulse rounded-full bg-primary" />
                     {dateLabel}
                 </div>
@@ -30,13 +30,13 @@ export default function DashboardHero({ subtitle }: { subtitle: string }) {
                     Selamat datang,{' '}
                     <span className="bg-black px-2 text-primary">{auth.user.name}</span>
                 </h1>
-                <p className="max-w-2xl border-l-4 border-black pl-3 text-sm font-bold leading-snug md:text-base">
+                <p className="max-w-2xl border-l-4 border-black dark:border-[#FFF7E8] pl-3 text-sm font-bold leading-snug md:text-base">
                     {subtitle}
                 </p>
             </div>
             {/* corner accent */}
-            <div className="absolute -bottom-6 -right-6 size-24 rotate-12 border-[3px] border-black bg-secondary" aria-hidden />
-            <div className="absolute -bottom-6 -right-6 size-24 rotate-12 border-[3px] border-black bg-secondary opacity-0" />
+            <div className="absolute -bottom-6 -right-6 size-24 rotate-12 border-[3px] border-black dark:border-[#FFF7E8] bg-secondary" aria-hidden />
+            <div className="absolute -bottom-6 -right-6 size-24 rotate-12 border-[3px] border-black dark:border-[#FFF7E8] bg-secondary opacity-0" />
         </div>
     );
 }

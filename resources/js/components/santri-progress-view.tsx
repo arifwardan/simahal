@@ -35,35 +35,35 @@ export default function SantriProgressView({
     return (
         <>
             {headline && (
-                <div className="flex items-center gap-3 border-l-[6px] border-black pl-3">
+                <div className="flex items-center gap-3 border-l-[6px] border-black dark:border-[#FFF7E8] pl-3">
                     <h2 className="font-head text-lg font-black uppercase tracking-tight">{headline}</h2>
                 </div>
             )}
 
-            <Card className="mt-4 overflow-hidden border-[3px] border-black bg-[#FFF7E8] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+            <Card className="mt-4 overflow-hidden border-[3px] border-black dark:border-[#FFF7E8] bg-[#FFF7E8] dark:bg-zinc-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]">
                 <CardHeader className="bg-[#FFD600] py-3">
                     <CardTitle className="flex items-center gap-2 font-head font-black uppercase">
-                        <span className="flex h-6 w-6 items-center justify-center border-2 border-black bg-black text-xs text-white">★</span>
+                        <span className="flex h-6 w-6 items-center justify-center border-2 border-black dark:border-[#FFF7E8] bg-black text-xs text-white">★</span>
                         Target Hafalan {progress.periode ? `· Periode ${progress.periode}` : ''} · Juz
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 pt-4">
                     <div className="flex flex-wrap items-center justify-between gap-3">
-                        <p className="border-[3px] border-black bg-black px-3 py-1 text-sm font-black text-[#FFF7E8] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                        <p className="border-[3px] border-black dark:border-[#FFF7E8] bg-black px-3 py-1 text-sm font-black text-[#FFF7E8] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]">
                             {progress.target > 0 ? (progress.progress / 20).toFixed(1) : '0.0'}/{progress.target} Juz · {progress.progress}/{progress.target * 20} hal · {progress.percent}%
                         </p>
                         {progress.status && (
-                            <Badge className="border-[3px] border-black bg-[#5CE1E6] font-black text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                            <Badge className="border-[3px] border-black dark:border-[#FFF7E8] bg-[#5CE1E6] font-black text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]">
                                 {progress.status_label}
                             </Badge>
                         )}
                     </div>
-                    <div className="h-5 w-full border-[3px] border-black bg-white p-1">
+                    <div className="h-5 w-full border-[3px] border-black dark:border-[#FFF7E8] bg-white dark:bg-zinc-900 p-1">
                         <div className="h-full bg-black transition-all" style={{ width: `${Math.min(100, progress.percent)}%` }} />
                     </div>
                     <div className="flex items-center justify-between">
                         <p className="text-xs font-black uppercase">{progress.percent >= 100 ? 'Alhamdulillah tercapai!' : `${100 - progress.percent}% lagi`}</p>
-                        <span className="border-2 border-black bg-[#FF90E8] px-2 py-1 text-xs font-black">Target {progress.target}/30 Juz · ~{progress.target > 0 ? progress.target * 20 : 0} hal</span>
+                        <span className="border-2 border-black dark:border-[#FFF7E8] bg-[#FF90E8] px-2 py-1 text-xs font-black">Target {progress.target}/30 Juz · ~{progress.target > 0 ? progress.target * 20 : 0} hal</span>
                     </div>
                 </CardContent>
             </Card>
@@ -77,13 +77,13 @@ export default function SantriProgressView({
                         {halaqahs.length === 0 ? (
                             <p className="p-6 text-sm font-bold">Belum terdaftar di halaqah.</p>
                         ) : (
-                            <ul className="flex-1 divide-y-[3px] divide-black border-t-[3px] border-black">
+                            <ul className="flex-1 divide-y-[3px] divide-black dark:divide-[#FFF7E8] border-t-[3px] border-black dark:border-[#FFF7E8]">
                                 {halaqahs.map((h, idx) => (
                                     <li
                                         key={h.id}
-                                        className={`p-4 text-sm font-black uppercase ${idx % 2 === 0 ? 'bg-[#FFF7E8]' : 'bg-accent'}`}
+                                        className={`p-4 text-sm font-black uppercase ${idx % 2 === 0 ? 'bg-[#FFF7E8] dark:bg-zinc-900' : 'bg-accent'}`}
                                     >
-                                        <span className="border-2 border-black bg-primary px-2 py-1">{h.nama}</span>
+                                        <span className="border-2 border-black dark:border-[#FFF7E8] bg-primary px-2 py-1">{h.nama}</span>
                                     </li>
                                 ))}
                             </ul>
@@ -99,23 +99,23 @@ export default function SantriProgressView({
                         {riwayat.length === 0 ? (
                             <p className="p-6 text-sm font-bold">Belum ada mutabaah.</p>
                         ) : (
-                            <ul className="flex-1 divide-y-[3px] divide-black border-t-[3px] border-black">
+                            <ul className="flex-1 divide-y-[3px] divide-black dark:divide-[#FFF7E8] border-t-[3px] border-black dark:border-[#FFF7E8]">
                                 {riwayat.slice(0, 6).map((m) => (
                                     <li
                                         key={m.id}
-                                        className="flex items-center justify-between gap-4 bg-[#FFF7E8] p-3 font-bold hover:bg-accent"
+                                        className="flex items-center justify-between gap-4 bg-[#FFF7E8] dark:bg-zinc-900 p-3 font-bold hover:bg-accent"
                                     >
                                         <p className="text-xs leading-tight">
                                             <span className="bg-black px-1.5 py-0.5 text-[#FFF7E8]">{formatTanggal(m.tanggal)}</span>{' '}
                                             {m.jenis} · {m.surah} {m.ayat_mulai}-{m.ayat_selesai}
                                         </p>
-                                        <Badge className="shrink-0 border-2 border-black bg-black text-[#FFF7E8]">{m.status}</Badge>
+                                        <Badge className="shrink-0 border-2 border-black dark:border-[#FFF7E8] bg-black text-[#FFF7E8]">{m.status}</Badge>
                                     </li>
                                 ))}
                             </ul>
                         )}
                         {riwayat.length > 6 && (
-                            <p className="border-t-[3px] border-black bg-muted p-3 text-center text-xs font-black uppercase">
+                            <p className="border-t-[3px] border-black dark:border-[#FFF7E8] bg-muted p-3 text-center text-xs font-black uppercase">
                                 + {riwayat.length - 6} lagi — lihat pagination
                             </p>
                         )}

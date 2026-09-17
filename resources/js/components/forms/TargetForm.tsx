@@ -89,7 +89,7 @@ export default function TargetForm({ nilaiAwal, santris, statuses, onSuccess }: 
                             defaultValue={nilaiAwal?.target}
                             required
                         />
-                        <p className="text-xs font-bold text-black/50">Maksimal 30 juz</p>
+                        <p className="text-xs font-bold text-black/50 dark:text-[#FFF7E8]/50">Maksimal 30 juz</p>
                         <InputError message={errors.target} />
                     </div>
 

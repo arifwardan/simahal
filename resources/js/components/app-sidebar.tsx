@@ -100,8 +100,8 @@ export function AppSidebar() {
     ];
 
     return (
-        <Sidebar collapsible="icon" variant="inset" className="border-r-2 border-black">
-            <SidebarHeader className="border-b-2 border-black bg-primary">
+        <Sidebar collapsible="icon" variant="inset" className="border-r-2 border-black dark:border-[#FFF7E8]">
+            <SidebarHeader className="border-b-2 border-black dark:border-[#FFF7E8] bg-primary">
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild className="font-head font-black">

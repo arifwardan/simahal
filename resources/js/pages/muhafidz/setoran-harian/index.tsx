@@ -127,12 +127,12 @@ export default function SetoranHarianIndex({ santris, santriId, tanggal, details
             />
 
             {/* Hero: santri + tanggal */}
-            <Card className="overflow-hidden border-[3px] border-black bg-[#FFD600] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                <CardContent className="flex flex-col gap-3 bg-[#FFF7E8] p-4 sm:flex-row sm:items-end">
+            <Card className="overflow-hidden border-[3px] border-black dark:border-[#FFF7E8] bg-[#FFD600] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]">
+                <CardContent className="flex flex-col gap-3 bg-[#FFF7E8] dark:bg-zinc-900 p-4 sm:flex-row sm:items-end">
                     <div className="flex-1 space-y-1">
                         <Label htmlFor="santri">Santri</Label>
                         <Select value={santriValue} onValueChange={handleSantriChange}>
-                            <SelectTrigger id="santri" className="cursor-pointer border-[3px] border-black bg-white font-black">
+                            <SelectTrigger id="santri" className="cursor-pointer border-[3px] border-black dark:border-[#FFF7E8] bg-white dark:bg-zinc-900 font-black">
                                 <SelectValue placeholder="Pilih santri..." />
                             </SelectTrigger>
                             <SelectContent>
@@ -152,22 +152,22 @@ export default function SetoranHarianIndex({ santris, santriId, tanggal, details
                             max={today}
                             value={tanggalValue}
                             onChange={(e) => handleTanggalChange(e.target.value)}
-                            className="cursor-pointer border-[3px] border-black bg-white font-black"
+                            className="cursor-pointer border-[3px] border-black dark:border-[#FFF7E8] bg-white dark:bg-zinc-900 font-black"
                         />
                     </div>
                 </CardContent>
             </Card>
 
             {(errors.santri_id || errors.tanggal) && (
-                <div className="border-[3px] border-black bg-[#FF3B30] p-3 text-sm font-black text-white">
+                <div className="border-[3px] border-black dark:border-[#FFF7E8] bg-[#FF3B30] p-3 text-sm font-black text-white">
                     {errors.santri_id && <InputError message={errors.santri_id} />}
                     {errors.tanggal && <InputError message={errors.tanggal} className="text-white" />}
                 </div>
             )}
 
             {/* Surah rows */}
-            <Card className="overflow-hidden border-[3px] border-black bg-[#FFF7E8] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                <CardHeader className="flex-row items-center gap-2 bg-[#FFD600] py-3">
+            <Card className="overflow-hidden border-[3px] border-black dark:border-[#FFF7E8] bg-[#FFF7E8] dark:bg-zinc-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]">
+                <CardHeader className="flex-row items-center gap-2 bg-[#FFD600] py-3 text-black">
                     <BookOpen className="h-4 w-4" />
                     <CardTitle className="text-sm font-black uppercase">Surah Hari Ini ({filledCount} surah)</CardTitle>
                 </CardHeader>
@@ -180,19 +180,19 @@ export default function SetoranHarianIndex({ santris, santriId, tanggal, details
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             placeholder="Cari surah (nama / nomor)..."
-                            className="border-2 border-black bg-white pl-9"
+                            className="border-2 border-black dark:border-[#FFF7E8] bg-white dark:bg-zinc-900 pl-9"
                         />
                     </div>
 
                     {rows.map((row, idx) => (
-                        <div key={idx} className="flex flex-col gap-2 border-[3px] border-black bg-white p-3 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] sm:flex-row sm:items-end">
+                        <div key={idx} className="flex flex-col gap-2 border-[3px] border-black dark:border-[#FFF7E8] bg-white dark:bg-zinc-900 p-3 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] sm:flex-row sm:items-end">
                             <div className="flex-1 space-y-1">
                                 <Label htmlFor={`surah-${idx}`}>Surah {idx + 1}</Label>
                                 <Select
                                     value={row.surah_id?.toString() ?? ''}
                                     onValueChange={(v) => updateRow(idx, { surah_id: v ? parseInt(v) : null })}
                                 >
-                                    <SelectTrigger id={`surah-${idx}`} className="cursor-pointer border-2 border-black bg-white font-bold">
+                                    <SelectTrigger id={`surah-${idx}`} className="cursor-pointer border-2 border-black dark:border-[#FFF7E8] bg-white dark:bg-zinc-900 font-bold">
                                         <SelectValue placeholder="Pilih surah..." />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -217,7 +217,7 @@ export default function SetoranHarianIndex({ santris, santriId, tanggal, details
                                         value={row.baris}
                                         onChange={(e) => updateRow(idx, { baris: e.target.value })}
                                         placeholder="3"
-                                        className="h-10 w-24 border-2 border-black bg-white text-center font-black"
+                                        className="h-10 w-24 border-2 border-black dark:border-[#FFF7E8] bg-white dark:bg-zinc-900 text-center font-black"
                                     />
                                     <Button
                                         type="button"
@@ -225,7 +225,7 @@ export default function SetoranHarianIndex({ santris, santriId, tanggal, details
                                         size="icon"
                                         onClick={() => removeRow(idx)}
                                         aria-label={`Hapus baris ${idx + 1}`}
-                                        className="cursor-pointer border-2 border-black bg-[#FF3B30] text-white hover:bg-[#d92d24]"
+                                        className="cursor-pointer border-2 border-black dark:border-[#FFF7E8] bg-[#FF3B30] text-white hover:bg-[#d92d24]"
                                     >
                                         <Trash2 className="h-4 w-4" />
                                     </Button>
@@ -239,7 +239,7 @@ export default function SetoranHarianIndex({ santris, santriId, tanggal, details
                         type="button"
                         variant="outline"
                         onClick={() => setRows((prev) => [...prev, { surah_id: null, baris: '' }])}
-                        className="w-full cursor-pointer border-[3px] border-dashed border-black bg-white font-black hover:bg-[#FFD600]/30"
+                        className="w-full cursor-pointer border-[3px] border-dashed border-black dark:border-[#FFF7E8] bg-white dark:bg-zinc-900 font-black hover:bg-[#FFD600]/30 dark:hover:bg-[#FFD600]/15"
                     >
                         <Plus className="h-4 w-4" /> Tambah Surah
                     </Button>
@@ -250,7 +250,7 @@ export default function SetoranHarianIndex({ santris, santriId, tanggal, details
                             variant="ghost"
                             onClick={handleDeleteDay}
                             disabled={processing}
-                            className="w-full cursor-pointer border-2 border-black bg-white font-black text-[#FF3B30] hover:bg-[#FF3B30] hover:text-white"
+                            className="w-full cursor-pointer border-2 border-black dark:border-[#FFF7E8] bg-white dark:bg-zinc-900 font-black text-[#FF3B30] hover:bg-[#FF3B30] hover:text-white"
                         >
                             <Trash2 className="h-4 w-4" /> Hapus setoran hari ini
                         </Button>
@@ -259,7 +259,7 @@ export default function SetoranHarianIndex({ santris, santriId, tanggal, details
             </Card>
 
             {/* Sticky footer */}
-            <div className="fixed inset-x-0 bottom-0 z-10 border-t-[3px] border-black bg-black p-3">
+            <div className="fixed inset-x-0 bottom-0 z-10 border-t-[3px] border-black dark:border-[#FFF7E8] bg-black p-3">
                 <div className="mx-auto flex max-w-5xl items-center justify-between gap-3">
                     <div className="text-[#FFF7E8]">
                         <p className="font-head text-xl leading-none font-black">{liveTotal} baris</p>

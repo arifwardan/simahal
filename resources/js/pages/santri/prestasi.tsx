@@ -61,41 +61,41 @@ export default function SantriPrestasi(props:Props){
                 <div><h1 className="font-head text-2xl font-black uppercase">Prestasiku</h1><p className="text-sm font-bold opacity-60">Bagikan sertifikat kebanggaanmu</p></div>
                 <Trophy className="h-8 w-8"/>
             </div>
-            <Card className="overflow-hidden border-[3px] border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
-                <div className={`border-b-[3px] border-black p-5 ${isTop3?'bg-[#FFD600]':isBerprestasi?'bg-[#FF90E8]':'bg-[#5CE1E6]'}`}>
+            <Card className="overflow-hidden border-[3px] border-black dark:border-[#FFF7E8] shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)]">
+                <div className={`border-b-[3px] border-black dark:border-[#FFF7E8] p-5 ${isTop3?'bg-[#FFD600]':isBerprestasi?'bg-[#FF90E8]':'bg-[#5CE1E6]'}`}>
                     <div className="flex items-center gap-3">
-                        <div className="flex h-14 w-14 items-center justify-center border-[3px] border-black bg-black text-xl font-black text-white">{props.santri.nama[0]}</div>
+                        <div className="flex h-14 w-14 items-center justify-center border-[3px] border-black dark:border-[#FFF7E8] bg-black text-xl font-black text-white">{props.santri.nama[0]}</div>
                         <div><p className="font-head font-black uppercase">{props.santri.nama}</p><p className="text-xs font-bold opacity-60">{props.santri.nis} • {props.halaqahs[0]?.nama ?? '-'} {props.rank && `• #${props.rank}/${props.totalSantri}`}</p></div>
-                        {isTop3 && <Badge className="ml-auto border-2 border-black bg-[#FF3B30] text-white"><Crown className="h-3 w-3"/> TOP {props.rank}</Badge>}
-                        {isBerprestasi && !isTop3 && <Badge className="ml-auto border-2 border-black bg-black text-[#FFD600]">★ Berprestasi</Badge>}
+                        {isTop3 && <Badge className="ml-auto border-2 border-black dark:border-[#FFF7E8] bg-[#FF3B30] text-white"><Crown className="h-3 w-3"/> TOP {props.rank}</Badge>}
+                        {isBerprestasi && !isTop3 && <Badge className="ml-auto border-2 border-black dark:border-[#FFF7E8] bg-black text-[#FFD600]">★ Berprestasi</Badge>}
                     </div>
                 </div>
-                <CardContent className="space-y-4 bg-[#FFFEF2] p-5">
+                <CardContent className="space-y-4 bg-[#FFFEF2] dark:bg-zinc-900 p-5">
                     {props.progress ? (
-                        <div className="border-[3px] border-black bg-white p-4">
+                        <div className="border-[3px] border-black dark:border-[#FFF7E8] bg-white dark:bg-zinc-900 p-4">
                             <div className="flex justify-between text-xs font-black uppercase"><span>{props.progress.periode}</span><span className="bg-black px-2 py-0.5 text-white">{props.progress.percent}%</span></div>
-                            <div className="mt-2 h-3 border-[3px] border-black bg-[#FFF7E8] p-1"><div className="h-full bg-black" style={{width:`${props.progress.percent}%`}}/></div>
+                            <div className="mt-2 h-3 border-[3px] border-black dark:border-[#FFF7E8] bg-[#FFF7E8] dark:bg-zinc-900 p-1"><div className="h-full bg-black" style={{width:`${props.progress.percent}%`}}/></div>
                             <p className="mt-2 text-xs font-black">{(props.progress.progress/20).toFixed(1)}/{props.progress.target} Juz · {props.progress.progress}/{props.progress.target*20} hal · {props.progress.label}</p>
                         </div>
-                    ): <p className="border-2 border-dashed border-black p-4 text-center font-bold">Belum ada target — buat di menu Target Hafalan</p>}
+                    ): <p className="border-2 border-dashed border-black dark:border-[#FFF7E8] p-4 text-center font-bold">Belum ada target — buat di menu Target Hafalan</p>}
                     {props.recentBulanan ? (
-                        <div className="border-[3px] border-black bg-[#FFF7E8] p-4">
+                        <div className="border-[3px] border-black dark:border-[#FFF7E8] bg-[#FFF7E8] dark:bg-zinc-900 p-4">
                             <p className="flex items-center gap-1 text-xs font-black uppercase"><Award className="h-3 w-3"/>{bulanNama[props.recentBulanan.bulan]} {props.recentBulanan.tahun} • {props.recentBulanan.kategori}</p>
                             <div className="mt-3 grid grid-cols-3 gap-2 text-center">
-                                <div className="border-2 border-black bg-white py-2"><p className="text-xs font-black">TAMBAH</p><p className="font-head font-black">{props.recentBulanan.tambah_juz}</p></div>
-                                <div className="border-2 border-black bg-black py-2 text-white"><p className="text-xs font-black">TOTAL</p><p className="font-head font-black">{props.recentBulanan.total_juz}</p></div>
-                                <div className={`border-2 border-black py-2 ${isBerprestasi?'bg-emerald-400':'bg-[#FFD600]'}`}><p className="text-xs font-black">{props.recentBulanan.keterangan}</p></div>
+                                <div className="border-2 border-black dark:border-[#FFF7E8] bg-white dark:bg-zinc-900 py-2"><p className="text-xs font-black">TAMBAH</p><p className="font-head font-black">{props.recentBulanan.tambah_juz}</p></div>
+                                <div className="border-2 border-black dark:border-[#FFF7E8] bg-black py-2 text-white"><p className="text-xs font-black">TOTAL</p><p className="font-head font-black">{props.recentBulanan.total_juz}</p></div>
+                                <div className={`border-2 border-black dark:border-[#FFF7E8] py-2 ${isBerprestasi?'bg-emerald-400':'bg-[#FFD600]'}`}><p className="text-xs font-black">{props.recentBulanan.keterangan}</p></div>
                             </div>
                         </div>
-                   ): <p className="border-2 border-dashed border-black p-4 text-center text-xs font-bold">Belum ada rekap bulanan</p>}
+                   ): <p className="border-2 border-dashed border-black dark:border-[#FFF7E8] p-4 text-center text-xs font-bold">Belum ada rekap bulanan</p>}
                     <div className="grid grid-cols-6 gap-1">
                         {props.historyBulanan.slice(0,6).map(h=>(
-                            <div key={h.id} className="border-2 border-black bg-white py-1 text-center text-[10px] font-black">{bulanNama[h.bulan]}<br/>{h.halaman_kumulatif ?? '-'}</div>
+                            <div key={h.id} className="border-2 border-black dark:border-[#FFF7E8] bg-white dark:bg-zinc-900 py-1 text-center text-[10px] font-black">{bulanNama[h.bulan]}<br/>{h.halaman_kumulatif ?? '-'}</div>
                         ))}
                     </div>
                     <div className="grid grid-cols-2 gap-2">
-                        <Button onClick={handle('share')} disabled={busy} className="cursor-pointer border-[3px] border-black bg-black font-black text-white"><Share2 className="h-4 w-4"/> Bagikan Gambar</Button>
-                        <Button variant="outline" onClick={handle('download')} disabled={busy} className="cursor-pointer border-[3px] border-black bg-white font-black"><Download className="h-4 w-4"/> Unduh</Button>
+                        <Button onClick={handle('share')} disabled={busy} className="cursor-pointer border-[3px] border-black dark:border-[#FFF7E8] bg-black font-black text-white"><Share2 className="h-4 w-4"/> Bagikan Gambar</Button>
+                        <Button variant="outline" onClick={handle('download')} disabled={busy} className="cursor-pointer border-[3px] border-black dark:border-[#FFF7E8] bg-white dark:bg-zinc-900 font-black"><Download className="h-4 w-4"/> Unduh</Button>
                     </div>
                     {isBerprestasi && <p className="text-center text-xs font-black flex justify-center gap-1"><Star className="h-3 w-3"/> Layak Hadiah — MasyaAllah!</p>}
                 </CardContent>

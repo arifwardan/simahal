@@ -67,7 +67,7 @@ export default function AdminHalaqahsIndex({ halaqahs, muhafidzs, statuses }: Pr
                 headerClassName: 'text-center',
                 className: 'text-center',
                 cell: (row) => (
-                    <Badge className="border-2 border-black bg-[#FFD600] font-black text-black">
+                    <Badge className="border-2 border-black dark:border-[#FFF7E8] bg-[#FFD600] font-black text-black">
                         {row.santris_count}
                     </Badge>
                 ),
@@ -76,7 +76,7 @@ export default function AdminHalaqahsIndex({ halaqahs, muhafidzs, statuses }: Pr
                 id: 'status',
                 header: 'Status',
                 cell: (row) => (
-                    <Badge className="border-2 border-black bg-black text-[#FFF7E8]">
+                    <Badge className="border-2 border-black dark:border-[#FFF7E8] bg-black text-[#FFF7E8]">
                         {statusLabel(row.status)}
                     </Badge>
                 ),
@@ -92,7 +92,7 @@ export default function AdminHalaqahsIndex({ halaqahs, muhafidzs, statuses }: Pr
                             variant="outline"
                             size="sm"
                             onClick={() => setEditing(row)}
-                            className="cursor-pointer border-[2.5px] border-black font-black"
+                            className="cursor-pointer border-[2.5px] border-black dark:border-[#FFF7E8] font-black"
                         >
                             Edit
                         </Button>
@@ -101,7 +101,7 @@ export default function AdminHalaqahsIndex({ halaqahs, muhafidzs, statuses }: Pr
                                 type="submit"
                                 variant="destructive"
                                 size="sm"
-                                className="cursor-pointer border-[2.5px] border-black font-black"
+                                className="cursor-pointer border-[2.5px] border-black dark:border-[#FFF7E8] font-black"
                             >
                                 Hapus
                             </Button>
@@ -120,7 +120,7 @@ export default function AdminHalaqahsIndex({ halaqahs, muhafidzs, statuses }: Pr
                 description="Kelola halaqah, penugasan muhafidz/pembimbing, dan jadwal halaqah."
             />
 
-            <Card className="overflow-hidden bg-[#FFE7A3]">
+            <Card className="overflow-hidden bg-[#FFE7A3] dark:bg-zinc-900">
                 <CardHeader className="bg-primary">
                     <CardTitle className="font-head font-black uppercase">
                         Daftar Halaqah ({halaqahs.total})
@@ -131,10 +131,10 @@ export default function AdminHalaqahsIndex({ halaqahs, muhafidzs, statuses }: Pr
                             : 'Klik "Tambah Halaqah" untuk menambah data baru.'}
                     </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4 bg-[#FFF7E8] pt-6">
+                <CardContent className="space-y-4 bg-[#FFF7E8] dark:bg-zinc-900 pt-6">
                     <Dialog open={showCreate} onOpenChange={setShowCreate}>
                         <DialogTrigger asChild>
-                            <Button className="cursor-pointer border-[3px] border-black font-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+                            <Button className="cursor-pointer border-[3px] border-black dark:border-[#FFF7E8] font-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)]">
                                 Tambah Halaqah
                             </Button>
                         </DialogTrigger>

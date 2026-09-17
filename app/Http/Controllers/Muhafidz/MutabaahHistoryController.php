@@ -88,24 +88,67 @@ class MutabaahHistoryController extends Controller
             ['path' => $request->url(), 'query' => $request->query()]
         );
 
-        // Bulanan: mutabaah_bulanans
+        // Bulanan: mutabaah_bulanans (dengan filter periode agar mudah dibaca)
+        $bulanFilter = $request->integer('bulan');
+        $bulanFilter = ($bulanFilter >= 1 && $bulanFilter <= 12) ? $bulanFilter : null;
+        $tahunFilter = $request->integer('tahun');
+        $tahunFilter = ($tahunFilter >= 2000 && $tahunFilter <= 2100) ? $tahunFilter : null;
+
         $santriIds = $santriOptions->pluck('id')->all();
         $bulananQuery = MutabaahBulanan::query()
             ->whereIn('santri_id', $santriIds)
             ->when($santriFilter, fn ($q) => $q->where('santri_id', $santriFilter))
+            ->when($bulanFilter, fn ($q) => $q->where('bulan', $bulanFilter))
+            ->when($tahunFilter, fn ($q) => $q->where('tahun', $tahunFilter))
             ->with('santri:id,nama,nis')
             ->orderByDesc('tahun')
             ->orderByDesc('bulan');
 
+        $tahunOptions = MutabaahBulanan::query()
+            ->whereIn('santri_id', $santriIds)
+            ->distinct()
+            ->orderByDesc('tahun')
+            ->pluck('tahun')
+            ->all();
+
+        // Ringkasan agregat atas seluruh baris terfilter (bukan cuma halaman aktif)
+        $ringkasanRows = (clone $bulananQuery)
+            ->withoutEagerLoads()
+            ->reorder()
+            ->select('tasmi_pekan_1', 'tasmi_pekan_2', 'tasmi_pekan_3', 'tasmi_pekan_4', 'tasmi_pekan_5', 'ujian_bulanan')
+            ->get();
+        $ringkasanTasmi = $ringkasanRows
+            ->flatMap(fn ($row) => [$row->tasmi_pekan_1, $row->tasmi_pekan_2, $row->tasmi_pekan_3, $row->tasmi_pekan_4, $row->tasmi_pekan_5])
+            ->filter(fn ($nilai) => $nilai !== null);
+        $ringkasanUjian = $ringkasanRows->pluck('ujian_bulanan')->filter(fn ($nilai) => $nilai !== null);
+        $ringkasanBulanan = [
+            'total' => $ringkasanRows->count(),
+            'rata_tasmi' => $ringkasanTasmi->isNotEmpty() ? round($ringkasanTasmi->avg(), 1) : null,
+            'rata_ujian' => $ringkasanUjian->isNotEmpty() ? round($ringkasanUjian->avg(), 1) : null,
+        ];
+
         $bulanan = $bulananQuery->paginate(6, ['*'], 'page_bulanan')->withQueryString();
+        $bulanan->through(function (MutabaahBulanan $row): array {
+            $tasmi = collect([$row->tasmi_pekan_1, $row->tasmi_pekan_2, $row->tasmi_pekan_3, $row->tasmi_pekan_4, $row->tasmi_pekan_5])
+                ->filter(fn ($nilai) => $nilai !== null);
+
+            return array_merge($row->toArray(), [
+                'rata_tasmi' => $tasmi->isNotEmpty() ? round($tasmi->avg(), 1) : null,
+                'tasmi_terisi' => $tasmi->count(),
+            ]);
+        });
 
         return Inertia::render('muhafidz/mutabaahs/history', [
             'mutabaahs' => $mutabaahs,
             'mingguan' => $mingguan,
             'bulanan' => $bulanan,
+            'ringkasanBulanan' => $ringkasanBulanan,
             'santriOptions' => $santriOptions,
+            'tahunOptions' => $tahunOptions,
             'filters' => [
                 'santri' => $santriFilter,
+                'bulan' => $bulanFilter,
+                'tahun' => $tahunFilter,
             ],
         ]);
     }

@@ -22,7 +22,7 @@ type StatCardProps = {
 const toneMap: Record<Tone, { bg: string; accent: string }> = {
     violet: { bg: 'bg-[#FF90E8]', accent: 'bg-[#FFD600]' },
     indigo: { bg: 'bg-[#5CE1E6]', accent: 'bg-[#FFD600]' },
-    fuchsia: { bg: 'bg-[#FF6B6B]', accent: 'bg-[#FFF7E8]' },
+    fuchsia: { bg: 'bg-[#FF6B6B]', accent: 'bg-[#FFF7E8] dark:bg-zinc-900' },
     teal: { bg: 'bg-[#7DF9FF]', accent: 'bg-black text-[#FFF7E8]' },
     amber: { bg: 'bg-[#FFD600]', accent: 'bg-black text-[#FFF7E8]' },
 };
@@ -41,7 +41,7 @@ export default function StatCard({
     const content = (
         <div
             className={cn(
-                'relative flex h-full min-h-[172px] w-full flex-col justify-between gap-3 border-[3px] border-black p-4 pt-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]',
+                'relative flex h-full min-h-[172px] w-full flex-col justify-between gap-3 border-[3px] border-black dark:border-[#FFF7E8] p-4 pt-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)]',
                 t.bg,
                 href && 'cursor-pointer'
             )}
@@ -56,12 +56,12 @@ export default function StatCard({
                     </span>
                 </div>
                 {Icon && (
-                    <span className="flex size-11 shrink-0 items-center justify-center border-[3px] border-black bg-[#FFF7E8] shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+                    <span className="flex size-11 shrink-0 items-center justify-center border-[3px] border-black dark:border-[#FFF7E8] bg-[#FFF7E8] dark:bg-zinc-900 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)]">
                         <Icon className="size-5 stroke-[2.5]" />
                     </span>
                 )}
             </div>
-            <div className="flex min-h-[48px] flex-col justify-end gap-1 border-t-[3px] border-black pt-3">
+            <div className="flex min-h-[48px] flex-col justify-end gap-1 border-t-[3px] border-black dark:border-[#FFF7E8] pt-3">
                 {subtitle ? (
                     <span className="line-clamp-1 text-xs font-bold leading-none text-black">{subtitle}</span>
                 ) : (
@@ -70,8 +70,8 @@ export default function StatCard({
                 {delta ? (
                     <span
                         className={cn(
-                            'inline-flex w-fit items-center gap-1 border-2 border-black px-2 py-0.5 text-[11px] font-black uppercase',
-                            delta.direction === 'up' ? 'bg-[#FFF7E8] text-black' : 'bg-black text-[#FFF7E8]'
+                            'inline-flex w-fit items-center gap-1 border-2 border-black dark:border-[#FFF7E8] px-2 py-0.5 text-[11px] font-black uppercase',
+                            delta.direction === 'up' ? 'bg-[#FFF7E8] dark:bg-zinc-900 text-black dark:text-[#FFF7E8]' : 'bg-black text-[#FFF7E8]'
                         )}
                     >
                         {delta.direction === 'up' ? '↗' : '↘'} {delta.value}
@@ -81,7 +81,7 @@ export default function StatCard({
                 )}
             </div>
             {/* accent stripe */}
-            <div className={cn('absolute left-0 top-0 h-2 w-full border-b-[3px] border-black', t.accent)} />
+            <div className={cn('absolute left-0 top-0 h-2 w-full border-b-[3px] border-black dark:border-[#FFF7E8]', t.accent)} />
         </div>
     );
 

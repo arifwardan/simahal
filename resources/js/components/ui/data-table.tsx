@@ -78,7 +78,7 @@ function ClientPagination({
     if (lastPage <= 1) return null;
 
     return (
-        <div className="flex flex-wrap items-center justify-between gap-2 border-[3px] border-black bg-[#FFF7E8] p-2">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-[3px] border-black dark:border-[#FFF7E8] bg-[#FFF7E8] dark:bg-zinc-900 p-2">
             <span className="px-2 text-xs font-black uppercase">
                 Hal {currentPage} dari {lastPage} · {total} data · {perPage}/hal
             </span>
@@ -87,7 +87,7 @@ function ClientPagination({
                     type="button"
                     disabled={currentPage === 1}
                     onClick={() => onPageChange(currentPage - 1)}
-                    className="cursor-pointer border-[3px] border-black px-3 py-1 text-xs font-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] disabled:opacity-40 disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] bg-[#FFF7E8] text-black"
+                    className="cursor-pointer border-[3px] border-black dark:border-[#FFF7E8] px-3 py-1 text-xs font-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] transition-all hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] disabled:opacity-40 disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:disabled:hover:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] bg-[#FFF7E8] dark:bg-zinc-900 text-black dark:text-[#FFF7E8]"
                 >
                     &laquo; Prev
                 </button>
@@ -97,8 +97,8 @@ function ClientPagination({
                         type="button"
                         onClick={() => onPageChange(p)}
                         className={cn(
-                            'cursor-pointer border-[3px] border-black px-3 py-1 text-xs font-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]',
-                            p === currentPage ? 'bg-primary text-black' : 'bg-[#FFF7E8] text-black hover:bg-accent',
+                            'cursor-pointer border-[3px] border-black dark:border-[#FFF7E8] px-3 py-1 text-xs font-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] transition-all hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)]',
+                            p === currentPage ? 'bg-primary text-black' : 'bg-[#FFF7E8] dark:bg-zinc-900 text-black dark:text-[#FFF7E8] hover:bg-accent',
                         )}
                     >
                         {p}
@@ -108,7 +108,7 @@ function ClientPagination({
                     type="button"
                     disabled={currentPage === lastPage}
                     onClick={() => onPageChange(currentPage + 1)}
-                    className="cursor-pointer border-[3px] border-black px-3 py-1 text-xs font-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] disabled:opacity-40 disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] bg-[#FFF7E8] text-black"
+                    className="cursor-pointer border-[3px] border-black dark:border-[#FFF7E8] px-3 py-1 text-xs font-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] transition-all hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] disabled:opacity-40 disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:disabled:hover:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] bg-[#FFF7E8] dark:bg-zinc-900 text-black dark:text-[#FFF7E8]"
                 >
                     Next &raquo;
                 </button>
@@ -120,7 +120,7 @@ function ClientPagination({
 function ServerPagination({ pagination }: { pagination: PaginationMeta }) {
     if (pagination.last_page <= 1) return null;
     return (
-        <div className="flex flex-wrap items-center justify-between gap-2 border-[3px] border-black bg-[#FFF7E8] p-2">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-[3px] border-black dark:border-[#FFF7E8] bg-[#FFF7E8] dark:bg-zinc-900 p-2">
             <span className="px-2 text-xs font-black uppercase">
                 Hal {pagination.current_page} dari {pagination.last_page} · {pagination.total} data
             </span>
@@ -130,7 +130,7 @@ function ServerPagination({ pagination }: { pagination: PaginationMeta }) {
                         return (
                             <span
                                 key={i}
-                                className="border-2 border-black bg-[#FFF7E8] px-3 py-1 text-xs font-black opacity-40"
+                                className="border-2 border-black dark:border-[#FFF7E8] bg-[#FFF7E8] dark:bg-zinc-900 px-3 py-1 text-xs font-black opacity-40"
                                 dangerouslySetInnerHTML={{ __html: link.label }}
                             />
                         );
@@ -142,8 +142,8 @@ function ServerPagination({ pagination }: { pagination: PaginationMeta }) {
                             preserveState
                             preserveScroll
                             className={cn(
-                                'cursor-pointer border-[3px] border-black px-3 py-1 text-xs font-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]',
-                                link.active ? 'bg-primary text-black' : 'bg-[#FFF7E8] text-black hover:bg-accent',
+                                'cursor-pointer border-[3px] border-black dark:border-[#FFF7E8] px-3 py-1 text-xs font-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] transition-all hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)]',
+                                link.active ? 'bg-primary text-black' : 'bg-[#FFF7E8] dark:bg-zinc-900 text-black dark:text-[#FFF7E8] hover:bg-accent',
                             )}
                             dangerouslySetInnerHTML={{ __html: link.label }}
                         />
@@ -232,24 +232,24 @@ export function DataTable<T>({
     return (
         <div className={cn('space-y-0', className)}>
             {totalLabel && (
-                <p className="pb-2 text-xs font-black uppercase tracking-wide text-black/70">{totalLabel}</p>
+                <p className="pb-2 text-xs font-black uppercase tracking-wide text-black/70 dark:text-[#FFF7E8]/70">{totalLabel}</p>
             )}
 
             {showSearch && (
                 <div className="mb-3 flex items-center gap-2">
                     <div className="relative flex-1">
-                        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-black/60" />
+                        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-black/60 dark:text-[#FFF7E8]/60" />
                         <input
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             placeholder={searchPlaceholder}
-                            className="h-10 w-full border-[3px] border-black bg-[#FFF7E8] pl-9 pr-9 text-sm font-bold placeholder:text-black/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-0"
+                            className="h-10 w-full border-[3px] border-black dark:border-[#FFF7E8] bg-[#FFF7E8] dark:bg-zinc-900 pl-9 pr-9 text-sm font-bold text-black dark:text-[#FFF7E8] placeholder:text-black/40 dark:placeholder:text-[#FFF7E8]/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black dark:focus-visible:ring-[#FFF7E8] focus-visible:ring-offset-0"
                         />
                         {search && (
                             <button
                                 type="button"
                                 onClick={() => setSearch('')}
-                                className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer border-2 border-black bg-[#FFD600] p-1 hover:bg-[#FF90E8]"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer border-2 border-black dark:border-[#FFF7E8] bg-[#FFD600] p-1 text-black hover:bg-[#FF90E8]"
                                 aria-label="Clear search"
                             >
                                 <X className="h-3 w-3" />
@@ -257,17 +257,17 @@ export function DataTable<T>({
                         )}
                     </div>
                     {search && (
-                        <span className="hidden sm:inline-flex items-center border-[3px] border-black bg-[#5CE1E6] px-2 py-1 text-xs font-black">
+                        <span className="hidden sm:inline-flex items-center border-[3px] border-black dark:border-[#FFF7E8] bg-[#5CE1E6] px-2 py-1 text-xs font-black text-black">
                             {useServerPagination ? `${visibleData.length} di hal ini` : `${filteredTotal} hasil`}
                         </span>
                     )}
                 </div>
             )}
 
-            <div className="overflow-x-auto border-[3px] border-black">
+            <div className="overflow-x-auto border-[3px] border-black dark:border-[#FFF7E8]">
                 <table className="w-full text-sm">
                     <thead>
-                        <tr className="border-b-[3px] border-black bg-black text-left text-[#FFF7E8]">
+                        <tr className="border-b-[3px] border-black dark:border-[#FFF7E8] bg-black text-left text-[#FFF7E8]">
                             {columns.map((col) => (
                                 <th
                                     key={col.id}
@@ -282,21 +282,21 @@ export function DataTable<T>({
                             ))}
                         </tr>
                     </thead>
-                    <tbody className="divide-y-[3px] divide-black">
+                    <tbody className="divide-y-[3px] divide-black dark:divide-[#FFF7E8]">
                         {visibleData.length === 0 ? (
                             <tr>
-                                <td colSpan={columns.length} className="bg-[#FFF7E8] px-6 py-12 text-center">
+                                <td colSpan={columns.length} className="bg-[#FFF7E8] dark:bg-zinc-900 px-6 py-12 text-center">
                                     {search ? (
                                         <>
-                                            <p className="font-black uppercase text-black/60">Tidak ada hasil</p>
-                                            <p className="mt-1 text-xs font-bold text-black/40">
+                                            <p className="font-black uppercase text-black/60 dark:text-[#FFF7E8]/60">Tidak ada hasil</p>
+                                            <p className="mt-1 text-xs font-bold text-black/40 dark:text-[#FFF7E8]/40">
                                                 Coba kata kunci lain — &quot;{search}&quot;
                                             </p>
                                         </>
                                     ) : (
                                         <>
-                                            <p className="font-black uppercase text-black/60">{emptyMessage}</p>
-                                            <p className="mt-1 text-xs font-bold text-black/40">
+                                            <p className="font-black uppercase text-black/60 dark:text-[#FFF7E8]/60">{emptyMessage}</p>
+                                            <p className="mt-1 text-xs font-bold text-black/40 dark:text-[#FFF7E8]/40">
                                                 Data akan muncul di sini setelah ditambahkan.
                                             </p>
                                         </>
@@ -309,12 +309,12 @@ export function DataTable<T>({
                                     variant === 'brutal'
                                         ? brutalRowColors[idx % brutalRowColors.length]
                                         : idx % 2 === 0
-                                          ? 'bg-[#FFF7E8]'
-                                          : 'bg-zinc-50';
+                                          ? 'bg-[#FFF7E8] dark:bg-zinc-900'
+                                          : 'bg-zinc-50 dark:bg-zinc-800';
                                 return (
                                     <tr key={idx} className={cn(rowBg, 'hover:brightness-95')}>
                                         {columns.map((col) => (
-                                            <td key={col.id} className={cn('px-3 py-3 text-black', col.className)}>
+                                            <td key={col.id} className={cn(variant === 'brutal' ? 'px-3 py-3 text-black' : 'px-3 py-3 text-black dark:text-[#FFF7E8]', col.className)}>
                                                 {col.cell(row, idx)}
                                             </td>
                                         ))}
@@ -355,7 +355,7 @@ export function DataTable<T>({
             )}
 
             {useServerPagination && search && visibleData.length > 0 && pagination && pagination.last_page > 1 && (
-                <p className="pt-2 text-[11px] font-bold text-black/50">Pencarian hanya memfilter halaman ini. Gunakan pagination untuk halaman lain.</p>
+                <p className="pt-2 text-[11px] font-bold text-black/50 dark:text-[#FFF7E8]/50">Pencarian hanya memfilter halaman ini. Gunakan pagination untuk halaman lain.</p>
             )}
         </div>
     );

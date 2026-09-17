@@ -75,7 +75,7 @@ export default function AdminUsersIndex({ users, roles, statuses, pendingCount, 
                 id: 'role',
                 header: 'Role',
                 cell: (row) => (
-                    <Badge className="border-2 border-black bg-black text-[#FFF7E8]">{row.role_label}</Badge>
+                    <Badge className="border-2 border-black dark:border-[#FFF7E8] bg-black text-[#FFF7E8]">{row.role_label}</Badge>
                 ),
             },
             {
@@ -83,9 +83,9 @@ export default function AdminUsersIndex({ users, roles, statuses, pendingCount, 
                 header: 'Status',
                 cell: (row) =>
                     row.status === 'pending' ? (
-                        <Badge className="border-2 border-black bg-[#FFD600] text-black">Menunggu</Badge>
+                        <Badge className="border-2 border-black dark:border-[#FFF7E8] bg-[#FFD600] text-black">Menunggu</Badge>
                     ) : (
-                        <Badge className="border-2 border-black bg-[#7CFC00] text-black">Aktif</Badge>
+                        <Badge className="border-2 border-black dark:border-[#FFF7E8] bg-[#7CFC00] text-black">Aktif</Badge>
                     ),
             },
             {
@@ -103,7 +103,7 @@ export default function AdminUsersIndex({ users, roles, statuses, pendingCount, 
                                 <Button
                                     type="submit"
                                     size="sm"
-                                    className="cursor-pointer border-[2.5px] border-black bg-[#7CFC00] font-black text-black"
+                                    className="cursor-pointer border-[2.5px] border-black dark:border-[#FFF7E8] bg-[#7CFC00] font-black text-black"
                                 >
                                     Setujui
                                 </Button>
@@ -113,7 +113,7 @@ export default function AdminUsersIndex({ users, roles, statuses, pendingCount, 
                             variant="outline"
                             size="sm"
                             onClick={() => setEditing(row)}
-                            className="cursor-pointer border-[2.5px] border-black font-black"
+                            className="cursor-pointer border-[2.5px] border-black dark:border-[#FFF7E8] font-black"
                         >
                             Edit
                         </Button>
@@ -123,7 +123,7 @@ export default function AdminUsersIndex({ users, roles, statuses, pendingCount, 
                                     type="submit"
                                     variant="destructive"
                                     size="sm"
-                                    className="cursor-pointer border-[2.5px] border-black font-black"
+                                    className="cursor-pointer border-[2.5px] border-black dark:border-[#FFF7E8] font-black"
                                 >
                                     Hapus
                                 </Button>
@@ -155,11 +155,11 @@ export default function AdminUsersIndex({ users, roles, statuses, pendingCount, 
                 header: 'Orang Tua',
                 cell: (row) =>
                     row.orang_tua_nama ? (
-                        <Badge className="border-2 border-black bg-[#FFD600] text-black">
+                        <Badge className="border-2 border-black dark:border-[#FFF7E8] bg-[#FFD600] text-black">
                             {row.orang_tua_nama}
                         </Badge>
                     ) : (
-                        <span className="border-2 border-dashed border-black bg-[#FFF7E8] px-2 py-1 text-xs font-black">
+                        <span className="border-2 border-dashed border-black dark:border-[#FFF7E8] bg-[#FFF7E8] dark:bg-zinc-900 px-2 py-1 text-xs font-black">
                             Belum ada
                         </span>
                     ),
@@ -178,7 +178,7 @@ export default function AdminUsersIndex({ users, roles, statuses, pendingCount, 
                         <select
                             name="orang_tua_id"
                             defaultValue={row.orang_tua_id ? String(row.orang_tua_id) : ''}
-                            className="h-9 cursor-pointer border-[3px] border-black bg-[#FFF7E8] px-2 text-sm font-bold"
+                            className="h-9 cursor-pointer border-[3px] border-black dark:border-[#FFF7E8] bg-[#FFF7E8] dark:bg-zinc-900 px-2 text-sm font-bold"
                         >
                             <option value="">— Lepas —</option>
                             {assignOptions.orangTuas.map((o) => (
@@ -190,7 +190,7 @@ export default function AdminUsersIndex({ users, roles, statuses, pendingCount, 
                         <Button
                             type="submit"
                             size="sm"
-                            className="cursor-pointer border-[2.5px] border-black font-black"
+                            className="cursor-pointer border-[2.5px] border-black dark:border-[#FFF7E8] font-black"
                         >
                             Simpan
                         </Button>
@@ -205,14 +205,14 @@ export default function AdminUsersIndex({ users, roles, statuses, pendingCount, 
         <PageContainer>
             <Heading title="Manajemen User" description="Kelola akun dan peran pengguna SIMAHAL." />
 
-            <Card className="overflow-hidden bg-[#FFE7A3]">
+            <Card className="overflow-hidden bg-[#FFE7A3] dark:bg-zinc-900">
                 <CardHeader className="bg-primary">
                     <CardTitle className="font-head font-black uppercase">Daftar User ({users.total})</CardTitle>
                     <CardDescription className="font-bold text-black">
                         10 user per halaman — sisanya via pagination brutal.
                     </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4 bg-[#FFF7E8] pt-6">
+                <CardContent className="space-y-4 bg-[#FFF7E8] dark:bg-zinc-900 pt-6">
                     <DataTable
                         columns={userColumns}
                         data={users.data}
@@ -234,11 +234,11 @@ export default function AdminUsersIndex({ users, roles, statuses, pendingCount, 
                             menolak.
                         </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-3 bg-[#FFF7E8] pt-6">
+                    <CardContent className="space-y-3 bg-[#FFF7E8] dark:bg-zinc-900 pt-6">
                         {pendingUsers.map((user) => (
                             <div
                                 key={user.id}
-                                className="flex flex-col gap-3 border-[3px] border-black bg-white p-3 sm:flex-row sm:items-center"
+                                className="flex flex-col gap-3 border-[3px] border-black dark:border-[#FFF7E8] bg-white dark:bg-zinc-900 p-3 sm:flex-row sm:items-center"
                             >
                                 <div className="flex-1">
                                     <p className="font-black text-black">{user.name}</p>
@@ -253,7 +253,7 @@ export default function AdminUsersIndex({ users, roles, statuses, pendingCount, 
                                             <Button
                                                 type="submit"
                                                 size="sm"
-                                                className="cursor-pointer border-[2.5px] border-black bg-[#7CFC00] font-black text-black"
+                                                className="cursor-pointer border-[2.5px] border-black dark:border-[#FFF7E8] bg-[#7CFC00] font-black text-black"
                                             >
                                                 Setujui
                                             </Button>
@@ -268,7 +268,7 @@ export default function AdminUsersIndex({ users, roles, statuses, pendingCount, 
                                                 type="submit"
                                                 variant="destructive"
                                                 size="sm"
-                                                className="cursor-pointer border-[2.5px] border-black font-black"
+                                                className="cursor-pointer border-[2.5px] border-black dark:border-[#FFF7E8] font-black"
                                             >
                                                 Tolak
                                             </Button>
@@ -290,9 +290,9 @@ export default function AdminUsersIndex({ users, roles, statuses, pendingCount, 
                         lepas.
                     </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6 bg-[#FFF7E8] pt-6">
+                <CardContent className="space-y-6 bg-[#FFF7E8] dark:bg-zinc-900 pt-6">
                     {/* Quick assign */}
-                    <div className="grid gap-3 border-[3px] border-black bg-[#FFF7E8] p-4 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+                    <div className="grid gap-3 border-[3px] border-black dark:border-[#FFF7E8] bg-[#FFF7E8] dark:bg-zinc-900 p-4 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
                         <div className="grid gap-2">
                             <Label className="font-black uppercase">Santri</Label>
                             <Select value={assignSantriId} onValueChange={setAssignSantriId}>
@@ -325,7 +325,7 @@ export default function AdminUsersIndex({ users, roles, statuses, pendingCount, 
                             </Select>
                         </div>
                         <Button
-                            className="h-11 cursor-pointer border-[3px] border-black font-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
+                            className="h-11 cursor-pointer border-[3px] border-black dark:border-[#FFF7E8] font-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)]"
                             disabled={!assignSantriId}
                             onClick={() => {
                                 if (!assignSantriId) return;

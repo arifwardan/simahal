@@ -36,15 +36,15 @@ export default function DistributionDonut({
 }: Props) {
     return (
         <Card className="flex h-full min-h-[380px] w-full flex-col overflow-hidden">
-            <CardHeader className={`min-h-[76px] border-b-[3px] border-black py-4 ${headerClass}`}>
-                <CardTitle className="font-head text-[15px] font-black uppercase leading-none">{title}</CardTitle>
+            <CardHeader className={`min-h-[76px] border-b-[3px] border-black dark:border-[#FFF7E8] py-4 ${headerClass}`}>
+                <CardTitle className="font-head text-[15px] font-black uppercase leading-none text-black">{title}</CardTitle>
                 {description && (
                     <CardDescription className="line-clamp-1 font-bold text-black">{description}</CardDescription>
                 )}
             </CardHeader>
             <CardContent className="flex w-full flex-1 flex-col justify-center gap-4 p-6">
                 {data.length === 0 ? (
-                    <p className="flex flex-1 items-center justify-center border-2 border-dashed border-black bg-accent p-6 text-sm font-black uppercase">
+                    <p className="flex flex-1 items-center justify-center border-2 border-dashed border-black dark:border-[#FFF7E8] bg-accent p-6 text-sm font-black uppercase">
                         Belum ada data
                     </p>
                 ) : (
@@ -75,11 +75,11 @@ export default function DistributionDonut({
                                 </Pie>
                             </PieChart>
                         </ChartContainer>
-                        <div className="flex min-h-[48px] flex-wrap items-center justify-center gap-2 border-t-[3px] border-black bg-muted/20 -mx-6 -mb-6 px-4 py-3">
+                        <div className="flex min-h-[48px] flex-wrap items-center justify-center gap-2 border-t-[3px] border-black dark:border-[#FFF7E8] bg-muted/20 -mx-6 -mb-6 px-4 py-3">
                             {data.map((entry) => (
                                 <span
                                     key={entry.key}
-                                    className="inline-flex items-center gap-1.5 border-[2.5px] border-black bg-[#FFF7E8] px-2.5 py-1 text-[11px] font-black uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                                    className="inline-flex items-center gap-1.5 border-[2.5px] border-black dark:border-[#FFF7E8] bg-[#FFF7E8] dark:bg-zinc-900 px-2.5 py-1 text-[11px] font-black uppercase text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]"
                                     style={{ backgroundColor: `var(--color-${entry.key})` }}
                                 >
                                     {entry.label}: {entry.count}
